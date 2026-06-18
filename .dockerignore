@@ -4,6 +4,5 @@ dist
 .env.*
 !.env.example
 bruno/
-sqitch/
 *.log
 .git
