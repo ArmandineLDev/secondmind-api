@@ -1,0 +1,19 @@
+%syntax-version=1.0.0
+%project=secondMind
+
+auth_0001_BetterAuth_Initialization 2026-05-14T21:23:52Z Armandine,,, <armandine@portableDebian> # BetterAuth Initialization
+project_0001_Project_initialization 2026-05-16T17:43:13Z Armandine,,, <armandine@portableDebian> # Table project (enum project_status, trigger set_updated_at)
+project_0002_kanban_and_tasks 2026-05-23T10:00:00Z Armandine,,, <armandine@portableDebian> # Tables kanban_column, task, project_user
+crm_0001_company_and_contact 2026-05-23T10:01:00Z Armandine,,, <armandine@portableDebian> # Tables company, contact
+crm_0002_lead_and_interaction 2026-05-23T10:02:00Z Armandine,,, <armandine@portableDebian> # Tables lead, interaction
+finance_0001_revenue_budget_expense_time 2026-05-23T10:03:00Z Armandine,,, <armandine@portableDebian> # Tables revenue, budget, expense, time_entry
+finance_0002_invoice 2026-05-23T10:04:00Z Armandine,,, <armandine@portableDebian> # Table invoice
+document_0001_document 2026-05-23T10:05:00Z Armandine,,, <armandine@portableDebian> # Table document
+marketing_0001_offer_and_persona 2026-05-23T10:06:00Z Armandine,,, <armandine@portableDebian> # Tables offer, persona
+marketing_0002_goal_canvas_editorial 2026-05-23T10:07:00Z Armandine,,, <armandine@portableDebian> # Tables goal, business_model_canvas, editorial_post
+stats_0001_views 2026-05-23T10:08:00Z Armandine,,, <armandine@portableDebian> # Vues PostgreSQL (v_project_summary, v_lead_pipeline, v_monthly_revenue, v_project_profitability, v_invoice_summary, v_kpis, v_marketing_kpis)
+project_0003_add_dates 2026-06-03T00:00:00Z Armandine,,, <armandine@portableDebian> # Ajout start_date et end_date sur project (démarrage différé, deadline contractuelle)
+kanban_0001_task_enhancements 2026-06-03T00:01:00Z Armandine,,, <armandine@portableDebian> # Ajout start_date et estimated_hours sur task + table task_dependency
+stats_0002_update_views 2026-06-03T00:02:00Z Armandine,,, <armandine@portableDebian> # Reconstruction v_project_summary et v_project_profitability avec les nouvelles colonnes
+client_0001_project_client 2026-06-03T00:03:00Z Armandine,,, <armandine@portableDebian> # Table pivot project_client pour l'affectation des projets aux clients
+settings_0001_org_settings 2026-06-04T00:00:00Z Armandine,,, <armandine@portableDebian> # Table organization_settings (devise par défaut, TJM par défaut)

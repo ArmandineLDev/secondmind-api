@@ -1,0 +1,29 @@
+# Dépendances
+node_modules/
+
+# Environnement
+.env
+.env.local
+.env.*.local
+
+# Build
+dist/
+build/
+
+# Logs
+logs/
+*.log
+pnpm-debug.log*
+
+# Sqitch — état local de déploiement
+sqitch.plan~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
