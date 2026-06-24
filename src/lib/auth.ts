@@ -17,6 +17,9 @@ export const auth = betterAuth({
 
   emailAndPassword: {
     enabled: true,
+    // Inscription publique fermée : les comptes owner existent déjà et les clients
+    // sont ajoutés par invitation (Paramètres → Accès clients), pas en self-service.
+    disableSignUp: true,
     minPasswordLength: 10,
     maxPasswordLength: 128,
     /*requireEmailVerification: true,
