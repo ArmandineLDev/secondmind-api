@@ -2,9 +2,10 @@ import { betterAuth } from 'better-auth'
 import { organization } from 'better-auth/plugins'
 import { db } from '@/lib/db'
 import { env } from '@/lib/env'
-// import { sendBrevoEmail, buildVerificationEmail, buildResetPasswordEmail } from '@/lib/brevo'
+import { sendBrevoEmail, buildResetPasswordEmail } from '@/lib/brevo'
 
-const SENDER = { email: env.BREVO_SENDER_EMAIL, name: env.BREVO_SENDER_NAME }
+// Origine du front : les liens des emails doivent pointer vers l'app, pas vers l'API.
+const APP_ORIGIN = env.APP_URL ?? env.CORS_ORIGIN
 
 export const auth = betterAuth({
   appName: 'SecondMind',
@@ -19,31 +20,26 @@ export const auth = betterAuth({
     enabled: true,
     // Inscription publique fermée : les comptes owner existent déjà et les clients
     // sont ajoutés par invitation (Paramètres → Accès clients), pas en self-service.
+    // Ne bloque pas la réinitialisation de mot de passe des comptes existants.
     disableSignUp: true,
     minPasswordLength: 10,
     maxPasswordLength: 128,
-    /*requireEmailVerification: true,
-    sendResetPassword: async ({ user, url }) => {
+
+    resetPasswordTokenExpiresIn: 3600, // 1 heure
+
+    sendResetPassword: async ({ user, token }) => {
+      // On construit le lien vers le front nous-mêmes plutôt que d'utiliser l'`url`
+      // fournie par Better Auth : celle-ci passe par une redirection 302 de l'API,
+      // que notre proxy Fastify n'a pas vocation à relayer.
+      const url = `${APP_ORIGIN}/reset-password?token=${encodeURIComponent(token)}`
+
       await sendBrevoEmail({
-        apiKey: env.BREVO_API_KEY,
-        sender: SENDER,
         to: [{ email: user.email, name: user.name }],
         subject: 'Réinitialisation de votre mot de passe — SecondMind',
         htmlContent: buildResetPasswordEmail(url, user.name),
       })
-    } */ },
-
-//   emailVerification: {
-//     sendVerificationEmail: async ({ user, url }) => {
-//       await sendBrevoEmail({
-//         apiKey: env.BREVO_API_KEY,
-//         sender: SENDER,
-//         to: [{ email: user.email, name: user.name }],
-//         subject: 'Vérifiez votre adresse email — SecondMind',
-//         htmlContent: buildVerificationEmail(url, user.name),
-//       })
-//     },
-//   },
+    },
+  },
 
   plugins: [
     organization(),

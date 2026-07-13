@@ -8,6 +8,9 @@ const envSchema = z.object({
   BETTER_AUTH_SECRET: z.string().min(32),
   BETTER_AUTH_URL: z.url(),
   CORS_ORIGIN: z.url(),
+  // Origine du front, utilisée pour construire les liens des emails (reset password).
+  // Optionnelle : par défaut on retombe sur CORS_ORIGIN, qui est déjà l'origine de l'app.
+  APP_URL: z.url().optional(),
   DB_POOL_MAX: z.coerce.number().default(10),
 
   // Brevo
