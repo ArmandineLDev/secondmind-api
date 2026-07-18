@@ -29,9 +29,9 @@ export async function findInvoiceById(id: string, organizationId: string): Promi
 
 export async function createInvoice(organizationId: string, input: CreateInvoiceInput): Promise<Invoice> {
   const result = await db.query<Invoice>(
-    `INSERT INTO invoice (organization_id, type, contact_id, project_id, reference, amount, currency, issue_date, due_date, status, notes)
-     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING *`,
-    [organizationId, input.type, input.contact_id ?? null, input.project_id ?? null, input.reference ?? null,
+    `INSERT INTO invoice (organization_id, type, company_id, contact_id, project_id, reference, amount, currency, issue_date, due_date, status, notes)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING *`,
+    [organizationId, input.type, input.company_id ?? null, input.contact_id ?? null, input.project_id ?? null, input.reference ?? null,
      input.amount, input.currency, input.issue_date, input.due_date ?? null, input.status, input.notes ?? null]
   )
   return result.rows[0]
@@ -45,11 +45,12 @@ export async function updateInvoice(id: string, organizationId: string, input: U
          currency   = COALESCE($5, currency),
          issue_date = COALESCE($6, issue_date),
          status     = COALESCE($7, status),
-         contact_id = CASE WHEN $8::boolean  THEN $9  ELSE contact_id END,
-         project_id = CASE WHEN $10::boolean THEN $11 ELSE project_id END,
-         reference  = CASE WHEN $12::boolean THEN $13 ELSE reference  END,
-         due_date   = CASE WHEN $14::boolean THEN $15 ELSE due_date   END,
-         notes      = CASE WHEN $16::boolean THEN $17 ELSE notes      END
+         company_id = CASE WHEN $8::boolean  THEN $9  ELSE company_id END,
+         contact_id = CASE WHEN $10::boolean THEN $11 ELSE contact_id END,
+         project_id = CASE WHEN $12::boolean THEN $13 ELSE project_id END,
+         reference  = CASE WHEN $14::boolean THEN $15 ELSE reference  END,
+         due_date   = CASE WHEN $16::boolean THEN $17 ELSE due_date   END,
+         notes      = CASE WHEN $18::boolean THEN $19 ELSE notes      END
      WHERE id = $1 AND organization_id = $2
      RETURNING *`,
     [
@@ -59,6 +60,7 @@ export async function updateInvoice(id: string, organizationId: string, input: U
       input.currency   ?? null,
       input.issue_date ?? null,
       input.status     ?? null,
+      'company_id' in input, input.company_id ?? null,
       'contact_id' in input, input.contact_id ?? null,
       'project_id' in input, input.project_id ?? null,
       'reference'  in input, input.reference  ?? null,
