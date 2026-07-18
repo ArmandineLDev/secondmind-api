@@ -4,6 +4,7 @@ export interface OrgSettings {
   organization_id:   string
   default_currency:  string
   default_daily_rate: string | null
+  hours_per_day:     string
   updated_at:        string
 }
 
@@ -29,14 +30,15 @@ export async function getOrCreateSettings(organizationId: string): Promise<OrgSe
 
 export async function upsertSettings(
   organizationId: string,
-  data: { default_currency?: string; default_daily_rate?: number | null }
+  data: { default_currency?: string; default_daily_rate?: number | null; hours_per_day?: number }
 ): Promise<OrgSettings> {
   const result = await db.query<OrgSettings>(
-    `INSERT INTO organization_settings (organization_id, default_currency, default_daily_rate)
-     VALUES ($1, COALESCE($2, 'EUR'), $3)
+    `INSERT INTO organization_settings (organization_id, default_currency, default_daily_rate, hours_per_day)
+     VALUES ($1, COALESCE($2, 'EUR'), $3, COALESCE($5, 7))
      ON CONFLICT (organization_id) DO UPDATE
        SET default_currency   = COALESCE($2, organization_settings.default_currency),
            default_daily_rate = CASE WHEN $4::boolean THEN $3 ELSE organization_settings.default_daily_rate END,
+           hours_per_day      = COALESCE($5, organization_settings.hours_per_day),
            updated_at         = now()
      RETURNING *`,
     [
@@ -44,6 +46,7 @@ export async function upsertSettings(
       data.default_currency ?? null,
       data.default_daily_rate ?? null,
       'default_daily_rate' in data,
+      data.hours_per_day ?? null,
     ]
   )
   return result.rows[0]

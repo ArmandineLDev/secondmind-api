@@ -3,7 +3,9 @@ import { emailSchema } from '@/lib/email.schema'
 
 export const preferencesSchema = z.object({
   default_currency:   z.string().length(3).optional(),
-  default_daily_rate: z.number().positive().nullable().optional(),
+  // Coerce : le formulaire web envoie ces nombres sous forme de chaîne (input HTML).
+  default_daily_rate: z.coerce.number().positive().nullable().optional(),
+  hours_per_day:      z.coerce.number().positive().max(24).optional(),
 })
 
 export const addClientSchema = z.object({

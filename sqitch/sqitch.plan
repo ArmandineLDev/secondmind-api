@@ -21,3 +21,5 @@ finance_0003_invoice_company [finance_0002_invoice crm_0001_company_and_contact]
 finance_0004_invoice_paid_at [finance_0002_invoice] 2026-07-18T15:11:10Z Armandine,,, <armandine@portableDebian> # Ajout invoice.paid_at (date d'encaissement, base du CA en compta de trésorerie)
 stats_0003_ca_from_invoices [finance_0004_invoice_paid_at stats_0002_update_views] 2026-07-18T15:11:10Z Armandine,,, <armandine@portableDebian> # CA dérivé des factures émises payées + vue v_cumulative_pnl
 finance_0005_drop_revenue [stats_0003_ca_from_invoices] 2026-07-18T15:11:11Z Armandine,,, <armandine@portableDebian> # Suppression de la table revenue (CA désormais issu des factures)
+settings_0002_hours_per_day [settings_0001_org_settings] 2026-07-18T17:19:52Z Armandine,,, <armandine@portableDebian> # Ajout hours_per_day (heures facturables/jour, pour dériver le taux horaire du TJM)
+stats_0004_fix_estimated_cost [settings_0002_hours_per_day stats_0003_ca_from_invoices] 2026-07-18T17:19:52Z Armandine,,, <armandine@portableDebian> # Corrige estimated_cost (produit cartésien) + taux dérivé du TJM
