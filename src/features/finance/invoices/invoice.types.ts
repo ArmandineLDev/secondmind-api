@@ -5,6 +5,7 @@ export interface Invoice {
   id: string
   organization_id: string
   type: InvoiceType
+  company_id: string | null
   contact_id: string | null
   project_id: string | null
   reference: string | null
