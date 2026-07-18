@@ -24,3 +24,4 @@ finance_0005_drop_revenue [stats_0003_ca_from_invoices] 2026-07-18T15:11:11Z Arm
 settings_0002_hours_per_day [settings_0001_org_settings] 2026-07-18T17:19:52Z Armandine,,, <armandine@portableDebian> # Ajout hours_per_day (heures facturables/jour, pour dériver le taux horaire du TJM)
 stats_0004_fix_estimated_cost [settings_0002_hours_per_day stats_0003_ca_from_invoices] 2026-07-18T17:19:52Z Armandine,,, <armandine@portableDebian> # Corrige estimated_cost (produit cartésien) + taux dérivé du TJM
 project_0004_company_id [project_0001_Project_initialization crm_0001_company_and_contact] 2026-07-18T19:17:15Z Armandine,,, <armandine@portableDebian> # Ajout project.company_id (entreprise cliente d'un projet, fiche 360)
+kanban_0002_task_recurrence [kanban_0001_task_enhancements] 2026-07-18T20:09:40Z Armandine,,, <armandine@portableDebian> # Récurrence des tâches (freq, interval, days, until)

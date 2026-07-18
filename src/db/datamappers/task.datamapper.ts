@@ -75,8 +75,9 @@ export async function findTaskById(
 
 export async function createTask(projectId: string, input: CreateTaskInput): Promise<Task> {
   const result = await db.query<Task>(
-    `INSERT INTO task (project_id, column_id, title, description, priority, due_date, start_date, estimated_hours, position)
-     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, (
+    `INSERT INTO task (project_id, column_id, title, description, priority, due_date, start_date, estimated_hours,
+                       recurrence_freq, recurrence_interval, recurrence_days, recurrence_until, position)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, (
        SELECT COALESCE(MAX(position), 0) + 1 FROM task WHERE column_id = $2
      ))
      RETURNING *`,
@@ -89,9 +90,37 @@ export async function createTask(projectId: string, input: CreateTaskInput): Pro
       input.due_date ?? null,
       input.start_date ?? null,
       input.estimated_hours ?? null,
+      input.recurrence_freq ?? null,
+      input.recurrence_interval ?? 1,
+      input.recurrence_days ?? null,
+      input.recurrence_until ?? null,
     ]
   )
   return result.rows[0]
+}
+
+// Reprogramme une tâche récurrente : nouvelle échéance + retour en début de board
+// (première colonne du projet, position 0). Cf. recurrence.service.
+export async function rescheduleTask(
+  taskId: string,
+  projectId: string,
+  organizationId: string,
+  nextDue: string
+): Promise<Task | null> {
+  const result = await db.query<Task>(
+    `UPDATE task AS t
+     SET due_date  = $4,
+         column_id = COALESCE(
+           (SELECT id FROM kanban_column WHERE project_id = t.project_id ORDER BY position ASC LIMIT 1),
+           t.column_id
+         ),
+         position  = 0
+     FROM project p
+     WHERE t.id = $1 AND t.project_id = $2 AND p.id = t.project_id AND p.organization_id = $3
+     RETURNING t.*`,
+    [taskId, projectId, organizationId, nextDue]
+  )
+  return result.rows[0] ?? null
 }
 
 export async function updateTask(
@@ -102,12 +131,16 @@ export async function updateTask(
 ): Promise<Task | null> {
   const result = await db.query<Task>(
     `UPDATE task AS t
-     SET title           = COALESCE($4, t.title),
-         description     = CASE WHEN $5::boolean  THEN $6  ELSE t.description     END,
-         priority        = CASE WHEN $7::boolean  THEN $8  ELSE t.priority        END,
-         due_date        = CASE WHEN $9::boolean  THEN $10 ELSE t.due_date        END,
-         start_date      = CASE WHEN $11::boolean THEN $12 ELSE t.start_date      END,
-         estimated_hours = CASE WHEN $13::boolean THEN $14 ELSE t.estimated_hours END
+     SET title               = COALESCE($4, t.title),
+         description         = CASE WHEN $5::boolean  THEN $6  ELSE t.description     END,
+         priority            = CASE WHEN $7::boolean  THEN $8  ELSE t.priority        END,
+         due_date            = CASE WHEN $9::boolean  THEN $10 ELSE t.due_date        END,
+         start_date          = CASE WHEN $11::boolean THEN $12 ELSE t.start_date      END,
+         estimated_hours     = CASE WHEN $13::boolean THEN $14 ELSE t.estimated_hours END,
+         recurrence_freq     = CASE WHEN $15::boolean THEN $16 ELSE t.recurrence_freq END,
+         recurrence_interval = COALESCE($17, t.recurrence_interval),
+         recurrence_days     = CASE WHEN $18::boolean THEN $19 ELSE t.recurrence_days END,
+         recurrence_until    = CASE WHEN $20::boolean THEN $21 ELSE t.recurrence_until END
      FROM project p
      WHERE t.id = $1 AND t.project_id = $2 AND p.id = t.project_id AND p.organization_id = $3
      RETURNING t.*`,
@@ -126,6 +159,13 @@ export async function updateTask(
       input.start_date ?? null,
       'estimated_hours' in input,
       input.estimated_hours ?? null,
+      'recurrence_freq' in input,
+      input.recurrence_freq ?? null,
+      input.recurrence_interval ?? null,
+      'recurrence_days' in input,
+      input.recurrence_days ?? null,
+      'recurrence_until' in input,
+      input.recurrence_until ?? null,
     ]
   )
   return result.rows[0] ?? null
