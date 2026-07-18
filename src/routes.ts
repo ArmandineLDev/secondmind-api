@@ -6,7 +6,6 @@ import { taskDependencyRoutes } from '@/features/tasks/task-dependency.routes'
 import { companyRoutes } from '@/features/crm/companies/company.routes'
 import { contactRoutes } from '@/features/crm/contacts/contact.routes'
 import { leadRoutes } from '@/features/crm/leads/lead.routes'
-import { revenueRoutes } from '@/features/finance/revenues/revenue.routes'
 import { budgetRoutes } from '@/features/finance/budgets/budget.routes'
 import { expenseRoutes } from '@/features/finance/expenses/expense.routes'
 import { timeEntryRoutes } from '@/features/finance/time-entries/time-entry.routes'
@@ -32,7 +31,6 @@ export async function registerRoutes(fastify: FastifyInstance) {
   fastify.register(companyRoutes,        { prefix: '/api/v1' })
   fastify.register(contactRoutes,        { prefix: '/api/v1' })
   fastify.register(leadRoutes,           { prefix: '/api/v1' })
-  fastify.register(revenueRoutes,        { prefix: '/api/v1' })
   fastify.register(budgetRoutes,         { prefix: '/api/v1' })
   fastify.register(expenseRoutes,        { prefix: '/api/v1' })
   fastify.register(timeEntryRoutes,      { prefix: '/api/v1' })

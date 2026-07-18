@@ -60,3 +60,25 @@ export async function deleteCompany(id: string, organizationId: string): Promise
   )
   return (result.rowCount ?? 0) > 0
 }
+
+// Récap financier d'une entreprise pour sa fiche : CA encaissé (factures émises
+// payées) et montant en attente d'encaissement (émises pending/overdue).
+export interface CompanyRevenueSummary {
+  paid: string
+  pending: string
+}
+
+export async function findCompanyRevenueSummary(
+  id: string,
+  organizationId: string
+): Promise<CompanyRevenueSummary> {
+  const result = await db.query<CompanyRevenueSummary>(
+    `SELECT
+       COALESCE(SUM(amount) FILTER (WHERE status = 'paid'), 0)                    AS paid,
+       COALESCE(SUM(amount) FILTER (WHERE status IN ('pending', 'overdue')), 0)   AS pending
+     FROM invoice
+     WHERE company_id = $1 AND organization_id = $2 AND type = 'outgoing'`,
+    [id, organizationId]
+  )
+  return result.rows[0]
+}

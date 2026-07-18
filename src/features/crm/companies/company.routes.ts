@@ -7,6 +7,7 @@ export async function companyRoutes(fastify: FastifyInstance) {
   fastify.get('/companies', auth,     company.getAll)
   fastify.post('/companies', auth,    company.create)
   fastify.get('/companies/:id', auth, company.getById)
+  fastify.get('/companies/:id/revenue-summary', auth, company.getRevenueSummary)
   fastify.put('/companies/:id', auth, company.update)
   fastify.delete('/companies/:id', auth, company.remove)
 }

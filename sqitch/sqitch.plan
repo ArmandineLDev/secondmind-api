@@ -18,3 +18,6 @@ stats_0002_update_views 2026-06-03T00:02:00Z Armandine,,, <armandine@portableDeb
 client_0001_project_client 2026-06-03T00:03:00Z Armandine,,, <armandine@portableDebian> # Table pivot project_client pour l'affectation des projets aux clients
 settings_0001_org_settings 2026-06-04T00:00:00Z Armandine,,, <armandine@portableDebian> # Table organization_settings (devise par défaut, TJM par défaut)
 finance_0003_invoice_company [finance_0002_invoice crm_0001_company_and_contact] 2026-07-18T13:09:21Z Armandine,,, <armandine@portableDebian> # Ajout company_id sur invoice (facturation B2B par défaut, contact_id conservé pour B2C)
+finance_0004_invoice_paid_at [finance_0002_invoice] 2026-07-18T15:11:10Z Armandine,,, <armandine@portableDebian> # Ajout invoice.paid_at (date d'encaissement, base du CA en compta de trésorerie)
+stats_0003_ca_from_invoices [finance_0004_invoice_paid_at stats_0002_update_views] 2026-07-18T15:11:10Z Armandine,,, <armandine@portableDebian> # CA dérivé des factures émises payées + vue v_cumulative_pnl
+finance_0005_drop_revenue [stats_0003_ca_from_invoices] 2026-07-18T15:11:11Z Armandine,,, <armandine@portableDebian> # Suppression de la table revenue (CA désormais issu des factures)

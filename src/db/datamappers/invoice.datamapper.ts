@@ -29,10 +29,10 @@ export async function findInvoiceById(id: string, organizationId: string): Promi
 
 export async function createInvoice(organizationId: string, input: CreateInvoiceInput): Promise<Invoice> {
   const result = await db.query<Invoice>(
-    `INSERT INTO invoice (organization_id, type, company_id, contact_id, project_id, reference, amount, currency, issue_date, due_date, status, notes)
-     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING *`,
+    `INSERT INTO invoice (organization_id, type, company_id, contact_id, project_id, reference, amount, currency, issue_date, due_date, status, notes, paid_at)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING *`,
     [organizationId, input.type, input.company_id ?? null, input.contact_id ?? null, input.project_id ?? null, input.reference ?? null,
-     input.amount, input.currency, input.issue_date, input.due_date ?? null, input.status, input.notes ?? null]
+     input.amount, input.currency, input.issue_date, input.due_date ?? null, input.status, input.notes ?? null, input.paid_at ?? null]
   )
   return result.rows[0]
 }
@@ -50,7 +50,8 @@ export async function updateInvoice(id: string, organizationId: string, input: U
          project_id = CASE WHEN $12::boolean THEN $13 ELSE project_id END,
          reference  = CASE WHEN $14::boolean THEN $15 ELSE reference  END,
          due_date   = CASE WHEN $16::boolean THEN $17 ELSE due_date   END,
-         notes      = CASE WHEN $18::boolean THEN $19 ELSE notes      END
+         notes      = CASE WHEN $18::boolean THEN $19 ELSE notes      END,
+         paid_at    = CASE WHEN $20::boolean THEN $21 ELSE paid_at    END
      WHERE id = $1 AND organization_id = $2
      RETURNING *`,
     [
@@ -66,6 +67,7 @@ export async function updateInvoice(id: string, organizationId: string, input: U
       'reference'  in input, input.reference  ?? null,
       'due_date'   in input, input.due_date   ?? null,
       'notes'      in input, input.notes      ?? null,
+      'paid_at'    in input, input.paid_at    ?? null,
     ]
   )
   return result.rows[0] ?? null

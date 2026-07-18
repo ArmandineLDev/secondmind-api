@@ -34,3 +34,10 @@ export async function remove(req: FastifyRequest, reply: FastifyReply) {
   if (!deleted) return reply.notFound('Entreprise introuvable')
   reply.code(204).send()
 }
+
+export async function getRevenueSummary(req: FastifyRequest, reply: FastifyReply) {
+  const { id } = companyParamsSchema.parse(req.params)
+  const company = await dm.findCompanyById(id, req.organizationId)
+  if (!company) return reply.notFound('Entreprise introuvable')
+  reply.send(await dm.findCompanyRevenueSummary(id, req.organizationId))
+}
