@@ -13,6 +13,7 @@ export interface Invoice {
   currency: string
   issue_date: string
   due_date: string | null
+  paid_at: string | null
   status: InvoiceStatus
   notes: string | null
   created_at: Date
