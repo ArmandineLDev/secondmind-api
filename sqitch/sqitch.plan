@@ -17,3 +17,4 @@ kanban_0001_task_enhancements 2026-06-03T00:01:00Z Armandine,,, <armandine@porta
 stats_0002_update_views 2026-06-03T00:02:00Z Armandine,,, <armandine@portableDebian> # Reconstruction v_project_summary et v_project_profitability avec les nouvelles colonnes
 client_0001_project_client 2026-06-03T00:03:00Z Armandine,,, <armandine@portableDebian> # Table pivot project_client pour l'affectation des projets aux clients
 settings_0001_org_settings 2026-06-04T00:00:00Z Armandine,,, <armandine@portableDebian> # Table organization_settings (devise par défaut, TJM par défaut)
+finance_0003_invoice_company [finance_0002_invoice crm_0001_company_and_contact] 2026-07-18T13:09:21Z Armandine,,, <armandine@portableDebian> # Ajout company_id sur invoice (facturation B2B par défaut, contact_id conservé pour B2C)
