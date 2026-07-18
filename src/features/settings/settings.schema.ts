@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { emailSchema } from '@/lib/email.schema'
 
 export const preferencesSchema = z.object({
   default_currency:   z.string().length(3).optional(),
@@ -6,7 +7,7 @@ export const preferencesSchema = z.object({
 })
 
 export const addClientSchema = z.object({
-  email: z.string().email(),
+  email: emailSchema,
 })
 
 export const memberParamsSchema = z.object({

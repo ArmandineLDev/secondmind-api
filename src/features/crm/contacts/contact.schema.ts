@@ -1,11 +1,12 @@
 import { z } from 'zod'
+import { emailSchema } from '@/lib/email.schema'
 
 const CONTACT_STATUSES = ['lead', 'prospect', 'client', 'former_client', 'partner', 'other'] as const
 
 export const createContactSchema = z.object({
   first_name: z.string().min(1).max(100),
   last_name:  z.string().min(1).max(100),
-  email:      z.string().email().max(255).optional(),
+  email:      emailSchema.optional(),
   phone:      z.string().max(30).optional(),
   company_id: z.string().uuid().optional(),
   status:     z.enum(CONTACT_STATUSES).default('lead'),
@@ -15,7 +16,7 @@ export const createContactSchema = z.object({
 export const updateContactSchema = z.object({
   first_name: z.string().min(1).max(100).optional(),
   last_name:  z.string().min(1).max(100).optional(),
-  email:      z.string().email().max(255).nullish(),
+  email:      emailSchema.nullish(),
   phone:      z.string().max(30).nullish(),
   company_id: z.string().uuid().nullish(),
   status:     z.enum(CONTACT_STATUSES).optional(),
