@@ -1,4 +1,5 @@
 export type TaskPriority = 'low' | 'medium' | 'high' | 'urgent'
+export type RecurrenceFreq = 'weekly' | 'monthly' | 'yearly'
 
 export interface Task {
   id: string
@@ -11,6 +12,10 @@ export interface Task {
   due_date: string | null
   start_date: string | null
   estimated_hours: number | null
+  recurrence_freq: RecurrenceFreq | null
+  recurrence_interval: number
+  recurrence_days: number[] | null
+  recurrence_until: string | null
   is_blocked: boolean
   created_at: Date
   updated_at: Date
