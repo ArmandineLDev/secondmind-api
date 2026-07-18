@@ -1,6 +1,7 @@
 import type { FastifyRequest, FastifyReply } from 'fastify'
 import { createCompanySchema, updateCompanySchema, companyParamsSchema } from './company.schema'
 import * as dm from '@/db/datamappers/company.datamapper'
+import * as projectDm from '@/db/datamappers/project.datamapper'
 
 export async function getAll(req: FastifyRequest, reply: FastifyReply) {
   const companies = await dm.findAllCompanies(req.organizationId)
@@ -40,4 +41,11 @@ export async function getRevenueSummary(req: FastifyRequest, reply: FastifyReply
   const company = await dm.findCompanyById(id, req.organizationId)
   if (!company) return reply.notFound('Entreprise introuvable')
   reply.send(await dm.findCompanyRevenueSummary(id, req.organizationId))
+}
+
+export async function getProjects(req: FastifyRequest, reply: FastifyReply) {
+  const { id } = companyParamsSchema.parse(req.params)
+  const company = await dm.findCompanyById(id, req.organizationId)
+  if (!company) return reply.notFound('Entreprise introuvable')
+  reply.send(await projectDm.findProjectsByCompany(id, req.organizationId))
 }

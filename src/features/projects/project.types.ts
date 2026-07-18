@@ -3,6 +3,7 @@ export type ProjectStatus = 'not_started' | 'in_progress' | 'on_hold' | 'complet
 export interface Project {
   id: string
   organization_id: string
+  company_id: string | null
   name: string
   description: string | null
   status: ProjectStatus
