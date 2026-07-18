@@ -10,4 +10,5 @@ export async function statsRoutes(fastify: FastifyInstance) {
   fastify.get('/stats/projects', auth,     stats.getProjectProfitability)
   fastify.get('/stats/invoices', auth,     stats.getInvoiceSummary)
   fastify.get('/stats/marketing', auth,    stats.getMarketingKpis)
+  fastify.get('/stats/cumulative', auth,   stats.getCumulativePnl)
 }

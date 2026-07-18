@@ -6,6 +6,7 @@ import type {
   ProjectProfitability,
   InvoiceSummaryRow,
   MarketingKpis,
+  CumulativePnl,
 } from '@/features/stats/stats.types'
 
 export async function getKpis(organizationId: string): Promise<Kpis | null> {
@@ -67,4 +68,12 @@ export async function getMarketingKpis(organizationId: string): Promise<Marketin
     [organizationId]
   )
   return result.rows[0] ?? null
+}
+
+export async function getCumulativePnl(organizationId: string): Promise<CumulativePnl[]> {
+  const result = await db.query<CumulativePnl>(
+    `SELECT * FROM v_cumulative_pnl WHERE organization_id = $1 ORDER BY year ASC`,
+    [organizationId]
+  )
+  return result.rows
 }

@@ -54,3 +54,12 @@ export interface MarketingKpis {
   won_leads:             string
   won_value:             string
 }
+
+export interface CumulativePnl {
+  organization_id: string
+  year:            number
+  revenue:         string
+  expenses:        string
+  net:             string
+  cumulative_net:  string
+}

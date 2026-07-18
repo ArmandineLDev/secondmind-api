@@ -34,3 +34,8 @@ export async function getMarketingKpis(req: FastifyRequest, reply: FastifyReply)
   const kpis = await dm.getMarketingKpis(req.organizationId)
   reply.send(kpis ?? {})
 }
+
+export async function getCumulativePnl(req: FastifyRequest, reply: FastifyReply) {
+  const rows = await dm.getCumulativePnl(req.organizationId)
+  reply.send(rows)
+}
