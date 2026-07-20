@@ -1,75 +1,75 @@
 import { db } from '@/lib/db'
-import type { Lead, LeadWithRelations } from '@/features/crm/leads/lead.types'
-import type { CreateLeadInput, UpdateLeadInput, LeadQuery } from '@/features/crm/leads/lead.schema'
+import type { Opportunity, OpportunityWithRelations } from '@/features/crm/opportunities/opportunity.types'
+import type { CreateOpportunityInput, UpdateOpportunityInput, OpportunityQuery } from '@/features/crm/opportunities/opportunity.schema'
 
-export async function findAllLeads(
+export async function findAllOpportunities(
   organizationId: string,
-  query: LeadQuery
-): Promise<LeadWithRelations[]> {
-  const conditions: string[] = ['l.organization_id = $1']
+  query: OpportunityQuery
+): Promise<OpportunityWithRelations[]> {
+  const conditions: string[] = ['op.organization_id = $1']
   const params: unknown[] = [organizationId]
   let i = 2
 
   if (query.stage) {
-    conditions.push(`l.stage = $${i++}`)
+    conditions.push(`op.stage = $${i++}`)
     params.push(query.stage)
   }
   if (query.contact_id) {
-    conditions.push(`l.contact_id = $${i++}`)
+    conditions.push(`op.contact_id = $${i++}`)
     params.push(query.contact_id)
   }
   if (query.company_id) {
-    conditions.push(`l.company_id = $${i++}`)
+    conditions.push(`op.company_id = $${i++}`)
     params.push(query.company_id)
   }
 
-  const result = await db.query<LeadWithRelations>(
-    `SELECT l.*,
+  const result = await db.query<OpportunityWithRelations>(
+    `SELECT op.*,
             ct.first_name   AS contact_first_name,
             ct.last_name    AS contact_last_name,
             co.name         AS company_name,
-            CASE WHEN l.value IS NOT NULL AND l.probability IS NOT NULL
-                 THEN (l.value * l.probability / 100)::numeric(12,2)
+            CASE WHEN op.value IS NOT NULL AND op.probability IS NOT NULL
+                 THEN (op.value * op.probability / 100)::numeric(12,2)
                  ELSE NULL
             END             AS weighted_value
-     FROM lead l
-     LEFT JOIN contact ct ON ct.id = l.contact_id
-     LEFT JOIN company co ON co.id = l.company_id
+     FROM opportunity op
+     LEFT JOIN contact ct ON ct.id = op.contact_id
+     LEFT JOIN company co ON co.id = op.company_id
      WHERE ${conditions.join(' AND ')}
-     ORDER BY l.created_at DESC`,
+     ORDER BY op.created_at DESC`,
     params
   )
   return result.rows
 }
 
-export async function findLeadById(
+export async function findOpportunityById(
   id: string,
   organizationId: string
-): Promise<LeadWithRelations | null> {
-  const result = await db.query<LeadWithRelations>(
-    `SELECT l.*,
+): Promise<OpportunityWithRelations | null> {
+  const result = await db.query<OpportunityWithRelations>(
+    `SELECT op.*,
             ct.first_name   AS contact_first_name,
             ct.last_name    AS contact_last_name,
             co.name         AS company_name,
-            CASE WHEN l.value IS NOT NULL AND l.probability IS NOT NULL
-                 THEN (l.value * l.probability / 100)::numeric(12,2)
+            CASE WHEN op.value IS NOT NULL AND op.probability IS NOT NULL
+                 THEN (op.value * op.probability / 100)::numeric(12,2)
                  ELSE NULL
             END             AS weighted_value
-     FROM lead l
-     LEFT JOIN contact ct ON ct.id = l.contact_id
-     LEFT JOIN company co ON co.id = l.company_id
-     WHERE l.id = $1 AND l.organization_id = $2`,
+     FROM opportunity op
+     LEFT JOIN contact ct ON ct.id = op.contact_id
+     LEFT JOIN company co ON co.id = op.company_id
+     WHERE op.id = $1 AND op.organization_id = $2`,
     [id, organizationId]
   )
   return result.rows[0] ?? null
 }
 
-export async function createLead(
+export async function createOpportunity(
   organizationId: string,
-  input: CreateLeadInput
-): Promise<Lead> {
-  const result = await db.query<Lead>(
-    `INSERT INTO lead (organization_id, contact_id, company_id, title, value, stage, probability, notes, closed_at)
+  input: CreateOpportunityInput
+): Promise<Opportunity> {
+  const result = await db.query<Opportunity>(
+    `INSERT INTO opportunity (organization_id, contact_id, company_id, title, value, stage, probability, notes, closed_at)
      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
      RETURNING *`,
     [
@@ -87,13 +87,13 @@ export async function createLead(
   return result.rows[0]
 }
 
-export async function updateLead(
+export async function updateOpportunity(
   id: string,
   organizationId: string,
-  input: UpdateLeadInput
-): Promise<Lead | null> {
-  const result = await db.query<Lead>(
-    `UPDATE lead
+  input: UpdateOpportunityInput
+): Promise<Opportunity | null> {
+  const result = await db.query<Opportunity>(
+    `UPDATE opportunity
      SET title       = COALESCE($3, title),
          stage       = COALESCE($4, stage),
          contact_id  = CASE WHEN $5::boolean  THEN $6  ELSE contact_id  END,
@@ -120,9 +120,9 @@ export async function updateLead(
   return result.rows[0] ?? null
 }
 
-export async function deleteLead(id: string, organizationId: string): Promise<boolean> {
+export async function deleteOpportunity(id: string, organizationId: string): Promise<boolean> {
   const result = await db.query(
-    `DELETE FROM lead WHERE id = $1 AND organization_id = $2`,
+    `DELETE FROM opportunity WHERE id = $1 AND organization_id = $2`,
     [id, organizationId]
   )
   return (result.rowCount ?? 0) > 0

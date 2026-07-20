@@ -1,13 +1,13 @@
-export type LeadStage = 'prospect' | 'qualification' | 'proposal' | 'negotiation' | 'won' | 'lost'
+export type OpportunityStage = 'prospect' | 'qualification' | 'proposal' | 'negotiation' | 'won' | 'lost'
 
-export interface Lead {
+export interface Opportunity {
   id: string
   organization_id: string
   contact_id: string | null
   company_id: string | null
   title: string
   value: string | null
-  stage: LeadStage
+  stage: OpportunityStage
   probability: number | null
   notes: string | null
   closed_at: string | null
@@ -15,7 +15,7 @@ export interface Lead {
   updated_at: Date
 }
 
-export interface LeadWithRelations extends Lead {
+export interface OpportunityWithRelations extends Opportunity {
   contact_first_name: string | null
   contact_last_name: string | null
   company_name: string | null

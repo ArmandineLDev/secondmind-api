@@ -5,14 +5,14 @@ const INTERACTION_TYPES = ['email', 'call', 'meeting', 'other'] as const
 export const createInteractionSchema = z.object({
   type:    z.enum(INTERACTION_TYPES),
   date:    z.string().date(),
-  lead_id: z.string().uuid().optional(),
+  opportunity_id: z.string().uuid().optional(),
   notes:   z.string().optional(),
 })
 
 export const updateInteractionSchema = z.object({
   type:    z.enum(INTERACTION_TYPES).optional(),
   date:    z.string().date().optional(),
-  lead_id: z.string().uuid().nullish(),
+  opportunity_id: z.string().uuid().nullish(),
   notes:   z.string().nullish(),
 })
 

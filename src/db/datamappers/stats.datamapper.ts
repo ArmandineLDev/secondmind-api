@@ -2,7 +2,7 @@ import { db } from '@/lib/db'
 import type {
   Kpis,
   MonthlyRevenue,
-  LeadPipelineRow,
+  OpportunityPipelineRow,
   ProjectProfitability,
   InvoiceSummaryRow,
   MarketingKpis,
@@ -38,9 +38,9 @@ export async function getMonthlyRevenue(
   return result.rows
 }
 
-export async function getLeadPipeline(organizationId: string): Promise<LeadPipelineRow[]> {
-  const result = await db.query<LeadPipelineRow>(
-    `SELECT * FROM v_lead_pipeline WHERE organization_id = $1`,
+export async function getOpportunityPipeline(organizationId: string): Promise<OpportunityPipelineRow[]> {
+  const result = await db.query<OpportunityPipelineRow>(
+    `SELECT * FROM v_opportunity_pipeline WHERE organization_id = $1`,
     [organizationId]
   )
   return result.rows
