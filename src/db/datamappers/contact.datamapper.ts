@@ -54,18 +54,25 @@ export async function createContact(
   input: CreateContactInput
 ): Promise<Contact> {
   const result = await db.query<Contact>(
-    `INSERT INTO contact (organization_id, company_id, first_name, last_name, email, phone, status, notes)
-     VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+    `INSERT INTO contact (
+       organization_id, company_id, first_name, last_name, email, phone, status,
+       source_channel, source_detail, next_follow_up_at, follow_up_note, notes
+     )
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
      RETURNING *`,
     [
       organizationId,
-      input.company_id  ?? null,
+      input.company_id        ?? null,
       input.first_name,
       input.last_name,
-      input.email       ?? null,
-      input.phone       ?? null,
+      input.email             ?? null,
+      input.phone             ?? null,
       input.status,
-      input.notes       ?? null,
+      input.source_channel    ?? null,
+      input.source_detail     ?? null,
+      input.next_follow_up_at ?? null,
+      input.follow_up_note    ?? null,
+      input.notes             ?? null,
     ]
   )
   return result.rows[0]
@@ -78,13 +85,17 @@ export async function updateContact(
 ): Promise<Contact | null> {
   const result = await db.query<Contact>(
     `UPDATE contact
-     SET first_name = COALESCE($3, first_name),
-         last_name  = COALESCE($4, last_name),
-         status     = COALESCE($5, status),
-         email      = CASE WHEN $6::boolean THEN $7  ELSE email      END,
-         phone      = CASE WHEN $8::boolean THEN $9  ELSE phone      END,
-         company_id = CASE WHEN $10::boolean THEN $11 ELSE company_id END,
-         notes      = CASE WHEN $12::boolean THEN $13 ELSE notes      END
+     SET first_name        = COALESCE($3, first_name),
+         last_name         = COALESCE($4, last_name),
+         status            = COALESCE($5, status),
+         email             = CASE WHEN $6::boolean  THEN $7  ELSE email             END,
+         phone             = CASE WHEN $8::boolean  THEN $9  ELSE phone             END,
+         company_id        = CASE WHEN $10::boolean THEN $11 ELSE company_id        END,
+         source_channel    = CASE WHEN $12::boolean THEN $13 ELSE source_channel    END,
+         source_detail     = CASE WHEN $14::boolean THEN $15 ELSE source_detail     END,
+         next_follow_up_at = CASE WHEN $16::boolean THEN $17 ELSE next_follow_up_at END,
+         follow_up_note    = CASE WHEN $18::boolean THEN $19 ELSE follow_up_note    END,
+         notes             = CASE WHEN $20::boolean THEN $21 ELSE notes             END
      WHERE id = $1 AND organization_id = $2
      RETURNING *`,
     [
@@ -93,10 +104,14 @@ export async function updateContact(
       input.first_name ?? null,
       input.last_name  ?? null,
       input.status     ?? null,
-      'email'      in input, input.email      ?? null,
-      'phone'      in input, input.phone      ?? null,
-      'company_id' in input, input.company_id ?? null,
-      'notes'      in input, input.notes      ?? null,
+      'email'             in input, input.email             ?? null,
+      'phone'             in input, input.phone             ?? null,
+      'company_id'        in input, input.company_id        ?? null,
+      'source_channel'    in input, input.source_channel    ?? null,
+      'source_detail'     in input, input.source_detail     ?? null,
+      'next_follow_up_at' in input, input.next_follow_up_at ?? null,
+      'follow_up_note'    in input, input.follow_up_note    ?? null,
+      'notes'             in input, input.notes             ?? null,
     ]
   )
   return result.rows[0] ?? null

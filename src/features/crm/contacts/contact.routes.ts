@@ -1,6 +1,7 @@
 import type { FastifyInstance } from 'fastify'
 import * as contact from './contact.controller'
 import * as interaction from '@/features/crm/interactions/interaction.controller'
+import * as socialLink from './social-link.controller'
 
 export async function contactRoutes(fastify: FastifyInstance) {
   const auth = { onRequest: [fastify.authenticate] }
@@ -16,4 +17,10 @@ export async function contactRoutes(fastify: FastifyInstance) {
   fastify.post('/contacts/:contactId/interactions', auth,    interaction.create)
   fastify.put('/contacts/:contactId/interactions/:id', auth, interaction.update)
   fastify.delete('/contacts/:contactId/interactions/:id', auth, interaction.remove)
+
+  // Liens réseaux sociaux imbriqués sous contact
+  fastify.get('/contacts/:contactId/social-links', auth,     socialLink.getByContact)
+  fastify.post('/contacts/:contactId/social-links', auth,    socialLink.create)
+  fastify.put('/contacts/:contactId/social-links/:id', auth, socialLink.update)
+  fastify.delete('/contacts/:contactId/social-links/:id', auth, socialLink.remove)
 }

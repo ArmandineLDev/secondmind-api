@@ -27,3 +27,5 @@ project_0004_company_id [project_0001_Project_initialization crm_0001_company_an
 kanban_0002_task_recurrence [kanban_0001_task_enhancements] 2026-07-18T20:09:40Z Armandine,,, <armandine@portableDebian> # Récurrence des tâches (freq, interval, days, until)
 crm_0003_rename_lead_to_opportunity [crm_0002_lead_and_interaction] 2026-07-20T16:11:41Z Armandine,,, <armandine@portableDebian> # Renommage table lead -> opportunity (contact.status reste 'lead')
 stats_0005_rename_lead_views [stats_0004_fix_estimated_cost crm_0003_rename_lead_to_opportunity] 2026-07-20T16:12:09Z Armandine,,, <armandine@portableDebian> # Vues v_kpis/v_opportunity_pipeline/v_marketing_kpis alignées sur opportunity
+crm_0004_contact_enrichment [crm_0003_rename_lead_to_opportunity] 2026-07-20T17:48:51Z Armandine,,, <armandine@portableDebian> # Provenance contact (source_channel/source_detail), relance (next_follow_up_at/follow_up_note), table contact_social_link
+crm_0005_interaction_message_type [crm_0004_contact_enrichment] 2026-07-20T17:48:51Z Armandine,,, <armandine@portableDebian> # Ajout du type 'message' aux interactions (DM réseaux sociaux)

@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-const INTERACTION_TYPES = ['email', 'call', 'meeting', 'other'] as const
+const INTERACTION_TYPES = ['email', 'call', 'meeting', 'message', 'other'] as const
 
 export const createInteractionSchema = z.object({
   type:    z.enum(INTERACTION_TYPES),
