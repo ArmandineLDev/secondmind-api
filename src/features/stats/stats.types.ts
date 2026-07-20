@@ -4,7 +4,7 @@ export interface Kpis {
   archived_projects: string
   revenue_ytd:      string
   expenses_ytd:     string
-  open_leads:       string
+  open_opportunities: string
   receivables:      string
   payables:         string
 }
@@ -16,12 +16,12 @@ export interface MonthlyRevenue {
   total:           string
 }
 
-export interface LeadPipelineRow {
-  organization_id: string
-  stage:           string
-  lead_count:      string
-  total_value:     string
-  avg_probability: string
+export interface OpportunityPipelineRow {
+  organization_id:  string
+  stage:            string
+  opportunity_count: string
+  total_value:      string
+  avg_probability:  string
 }
 
 export interface ProjectProfitability {
@@ -48,11 +48,11 @@ export interface InvoiceSummaryRow {
 }
 
 export interface MarketingKpis {
-  organization_id:       string
-  total_leads:           string
-  leads_with_interaction: string
-  won_leads:             string
-  won_value:             string
+  organization_id:                string
+  total_opportunities:            string
+  opportunities_with_interaction: string
+  won_opportunities:              string
+  won_value:                      string
 }
 
 export interface CumulativePnl {

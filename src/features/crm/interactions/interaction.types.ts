@@ -1,9 +1,9 @@
-export type InteractionType = 'email' | 'call' | 'meeting' | 'other'
+export type InteractionType = 'email' | 'call' | 'meeting' | 'message' | 'other'
 
 export interface Interaction {
   id: string
   contact_id: string
-  lead_id: string | null
+  opportunity_id: string | null
   type: InteractionType
   date: string
   notes: string | null

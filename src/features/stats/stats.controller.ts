@@ -15,8 +15,8 @@ export async function getMonthlyRevenue(req: FastifyRequest, reply: FastifyReply
   reply.send(rows)
 }
 
-export async function getLeadPipeline(req: FastifyRequest, reply: FastifyReply) {
-  const rows = await dm.getLeadPipeline(req.organizationId)
+export async function getOpportunityPipeline(req: FastifyRequest, reply: FastifyReply) {
+  const rows = await dm.getOpportunityPipeline(req.organizationId)
   reply.send(rows)
 }
 

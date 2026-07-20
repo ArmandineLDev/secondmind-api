@@ -37,10 +37,10 @@ export async function createInteraction(
   input: CreateInteractionInput
 ): Promise<Interaction> {
   const result = await db.query<Interaction>(
-    `INSERT INTO interaction (contact_id, lead_id, type, date, notes)
+    `INSERT INTO interaction (contact_id, opportunity_id, type, date, notes)
      VALUES ($1, $2, $3, $4, $5)
      RETURNING *`,
-    [contactId, input.lead_id ?? null, input.type, input.date, input.notes ?? null]
+    [contactId, input.opportunity_id ?? null, input.type, input.date, input.notes ?? null]
   )
   return result.rows[0]
 }
@@ -53,10 +53,10 @@ export async function updateInteraction(
 ): Promise<Interaction | null> {
   const result = await db.query<Interaction>(
     `UPDATE interaction AS i
-     SET type    = COALESCE($4, i.type),
-         date    = COALESCE($5, i.date),
-         lead_id = CASE WHEN $6::boolean THEN $7 ELSE i.lead_id END,
-         notes   = CASE WHEN $8::boolean THEN $9 ELSE i.notes   END
+     SET type           = COALESCE($4, i.type),
+         date           = COALESCE($5, i.date),
+         opportunity_id = CASE WHEN $6::boolean THEN $7 ELSE i.opportunity_id END,
+         notes          = CASE WHEN $8::boolean THEN $9 ELSE i.notes         END
      FROM contact ct
      WHERE i.id = $1 AND i.contact_id = $2 AND ct.id = i.contact_id AND ct.organization_id = $3
      RETURNING i.*`,
@@ -66,8 +66,8 @@ export async function updateInteraction(
       organizationId,
       input.type  ?? null,
       input.date  ?? null,
-      'lead_id' in input, input.lead_id ?? null,
-      'notes'   in input, input.notes   ?? null,
+      'opportunity_id' in input, input.opportunity_id ?? null,
+      'notes'          in input, input.notes          ?? null,
     ]
   )
   return result.rows[0] ?? null

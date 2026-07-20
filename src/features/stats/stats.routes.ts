@@ -6,7 +6,7 @@ export async function statsRoutes(fastify: FastifyInstance) {
 
   fastify.get('/stats/kpis', auth,         stats.getKpis)
   fastify.get('/stats/revenue', auth,      stats.getMonthlyRevenue)
-  fastify.get('/stats/pipeline', auth,     stats.getLeadPipeline)
+  fastify.get('/stats/pipeline', auth,     stats.getOpportunityPipeline)
   fastify.get('/stats/projects', auth,     stats.getProjectProfitability)
   fastify.get('/stats/invoices', auth,     stats.getInvoiceSummary)
   fastify.get('/stats/marketing', auth,    stats.getMarketingKpis)
