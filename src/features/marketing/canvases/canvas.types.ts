@@ -11,6 +11,10 @@ export interface Canvas {
   key_activities: string | null
   key_partners: string | null
   cost_structure: string | null
+  problem: string | null
+  solution: string | null
+  key_metrics: string | null
+  unfair_advantage: string | null
   created_at: Date
   updated_at: Date
 }

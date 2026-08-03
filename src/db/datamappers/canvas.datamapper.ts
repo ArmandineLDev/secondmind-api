@@ -4,7 +4,7 @@ import type { CreateCanvasInput, UpdateCanvasInput } from '@/features/marketing/
 
 export async function findAllCanvases(organizationId: string): Promise<Canvas[]> {
   const result = await db.query<Canvas>(
-    `SELECT * FROM canvas WHERE organization_id = $1 ORDER BY name ASC`,
+    `SELECT * FROM business_model_canvas WHERE organization_id = $1 ORDER BY name ASC`,
     [organizationId]
   )
   return result.rows
@@ -15,7 +15,7 @@ export async function findCanvasById(
   organizationId: string
 ): Promise<Canvas | null> {
   const result = await db.query<Canvas>(
-    `SELECT * FROM canvas WHERE id = $1 AND organization_id = $2`,
+    `SELECT * FROM business_model_canvas WHERE id = $1 AND organization_id = $2`,
     [id, organizationId]
   )
   return result.rows[0] ?? null
@@ -26,12 +26,13 @@ export async function createCanvas(
   input: CreateCanvasInput
 ): Promise<Canvas> {
   const result = await db.query<Canvas>(
-    `INSERT INTO canvas (
+    `INSERT INTO business_model_canvas (
        organization_id, name,
        customer_segments, value_propositions, channels, customer_relationships,
-       revenue_streams, key_resources, key_activities, key_partners, cost_structure
+       revenue_streams, key_resources, key_activities, key_partners, cost_structure,
+       problem, solution, key_metrics, unfair_advantage
      )
-     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)
+     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15)
      RETURNING *`,
     [
       organizationId,
@@ -45,6 +46,10 @@ export async function createCanvas(
       input.key_activities         ?? null,
       input.key_partners           ?? null,
       input.cost_structure         ?? null,
+      input.problem                ?? null,
+      input.solution               ?? null,
+      input.key_metrics            ?? null,
+      input.unfair_advantage       ?? null,
     ]
   )
   return result.rows[0]
@@ -56,7 +61,7 @@ export async function updateCanvas(
   input: UpdateCanvasInput
 ): Promise<Canvas | null> {
   const result = await db.query<Canvas>(
-    `UPDATE canvas
+    `UPDATE business_model_canvas
      SET name                   = COALESCE($3, name),
          customer_segments      = CASE WHEN $4::boolean  THEN $5  ELSE customer_segments      END,
          value_propositions     = CASE WHEN $6::boolean  THEN $7  ELSE value_propositions     END,
@@ -66,7 +71,11 @@ export async function updateCanvas(
          key_resources          = CASE WHEN $14::boolean THEN $15 ELSE key_resources          END,
          key_activities         = CASE WHEN $16::boolean THEN $17 ELSE key_activities         END,
          key_partners           = CASE WHEN $18::boolean THEN $19 ELSE key_partners           END,
-         cost_structure         = CASE WHEN $20::boolean THEN $21 ELSE cost_structure         END
+         cost_structure         = CASE WHEN $20::boolean THEN $21 ELSE cost_structure         END,
+         problem                = CASE WHEN $22::boolean THEN $23 ELSE problem                END,
+         solution               = CASE WHEN $24::boolean THEN $25 ELSE solution               END,
+         key_metrics            = CASE WHEN $26::boolean THEN $27 ELSE key_metrics             END,
+         unfair_advantage       = CASE WHEN $28::boolean THEN $29 ELSE unfair_advantage        END
      WHERE id = $1 AND organization_id = $2
      RETURNING *`,
     [
@@ -82,6 +91,10 @@ export async function updateCanvas(
       'key_activities'         in input, input.key_activities         ?? null,
       'key_partners'           in input, input.key_partners           ?? null,
       'cost_structure'         in input, input.cost_structure         ?? null,
+      'problem'                in input, input.problem                ?? null,
+      'solution'               in input, input.solution               ?? null,
+      'key_metrics'            in input, input.key_metrics             ?? null,
+      'unfair_advantage'       in input, input.unfair_advantage        ?? null,
     ]
   )
   return result.rows[0] ?? null
@@ -89,7 +102,7 @@ export async function updateCanvas(
 
 export async function deleteCanvas(id: string, organizationId: string): Promise<boolean> {
   const result = await db.query(
-    `DELETE FROM canvas WHERE id = $1 AND organization_id = $2`,
+    `DELETE FROM business_model_canvas WHERE id = $1 AND organization_id = $2`,
     [id, organizationId]
   )
   return (result.rowCount ?? 0) > 0

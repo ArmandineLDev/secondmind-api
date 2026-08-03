@@ -9,6 +9,8 @@ export const createOfferSchema = z.object({
   currency:     z.string().length(3).default('EUR'),
   billing_type: z.enum(BILLING_TYPES),
   is_active:    z.boolean().default(true),
+  canvas_id:    z.string().uuid().nullish(),
+  swot_id:      z.string().uuid().nullish(),
 })
 
 export const updateOfferSchema = z.object({
@@ -18,6 +20,8 @@ export const updateOfferSchema = z.object({
   currency:     z.string().length(3).optional(),
   billing_type: z.enum(BILLING_TYPES).optional(),
   is_active:    z.boolean().optional(),
+  canvas_id:    z.string().uuid().nullish(),
+  swot_id:      z.string().uuid().nullish(),
 })
 
 export const offerParamsSchema = z.object({ id: z.string().uuid() })
