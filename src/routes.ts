@@ -14,6 +14,8 @@ import { offerRoutes } from '@/features/marketing/offers/offer.routes'
 import { personaRoutes } from '@/features/marketing/personas/persona.routes'
 import { goalRoutes } from '@/features/marketing/goals/goal.routes'
 import { canvasRoutes } from '@/features/marketing/canvases/canvas.routes'
+import { swotRoutes } from '@/features/marketing/swot/swot.routes'
+import { vpCanvasRoutes } from '@/features/marketing/vp-canvas/vp-canvas.routes'
 import { editorialPostRoutes } from '@/features/marketing/editorial-posts/editorial-post.routes'
 import { statsRoutes } from '@/features/stats/stats.routes'
 import { documentRoutes } from '@/features/documents/document.routes'
@@ -39,6 +41,8 @@ export async function registerRoutes(fastify: FastifyInstance) {
   fastify.register(personaRoutes,        { prefix: '/api/v1' })
   fastify.register(goalRoutes,           { prefix: '/api/v1' })
   fastify.register(canvasRoutes,         { prefix: '/api/v1' })
+  fastify.register(swotRoutes,           { prefix: '/api/v1' })
+  fastify.register(vpCanvasRoutes,       { prefix: '/api/v1' })
   fastify.register(editorialPostRoutes,  { prefix: '/api/v1' })
   fastify.register(statsRoutes,          { prefix: '/api/v1' })
   fastify.register(documentRoutes,       { prefix: '/api/v1' })

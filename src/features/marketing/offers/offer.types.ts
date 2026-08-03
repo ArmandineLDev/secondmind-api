@@ -9,6 +9,8 @@ export interface Offer {
   currency: string
   billing_type: BillingType
   is_active: boolean
+  canvas_id: string | null
+  swot_id: string | null
   created_at: Date
   updated_at: Date
 }

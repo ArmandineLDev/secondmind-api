@@ -40,8 +40,8 @@ export async function createOffer(
   input: CreateOfferInput
 ): Promise<Offer> {
   const result = await db.query<Offer>(
-    `INSERT INTO offer (organization_id, name, description, price, currency, billing_type, is_active)
-     VALUES ($1, $2, $3, $4, $5, $6, $7)
+    `INSERT INTO offer (organization_id, name, description, price, currency, billing_type, is_active, canvas_id, swot_id)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
      RETURNING *`,
     [
       organizationId,
@@ -51,6 +51,8 @@ export async function createOffer(
       input.currency,
       input.billing_type,
       input.is_active,
+      input.canvas_id   ?? null,
+      input.swot_id     ?? null,
     ]
   )
   return result.rows[0]
@@ -67,8 +69,10 @@ export async function updateOffer(
          currency     = COALESCE($4, currency),
          billing_type = COALESCE($5, billing_type),
          is_active    = COALESCE($6, is_active),
-         description  = CASE WHEN $7::boolean THEN $8  ELSE description END,
-         price        = CASE WHEN $9::boolean THEN $10 ELSE price        END
+         description  = CASE WHEN $7::boolean  THEN $8  ELSE description END,
+         price        = CASE WHEN $9::boolean  THEN $10 ELSE price      END,
+         canvas_id    = CASE WHEN $11::boolean THEN $12 ELSE canvas_id  END,
+         swot_id      = CASE WHEN $13::boolean THEN $14 ELSE swot_id    END
      WHERE id = $1 AND organization_id = $2
      RETURNING *`,
     [
@@ -80,6 +84,8 @@ export async function updateOffer(
       input.is_active    ?? null,
       'description' in input, input.description ?? null,
       'price'       in input, input.price       ?? null,
+      'canvas_id'   in input, input.canvas_id   ?? null,
+      'swot_id'     in input, input.swot_id     ?? null,
     ]
   )
   return result.rows[0] ?? null
