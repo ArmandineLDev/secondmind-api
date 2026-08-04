@@ -1,10 +1,23 @@
 export type TaskPriority = 'low' | 'medium' | 'high' | 'urgent'
 export type RecurrenceFreq = 'weekly' | 'monthly' | 'yearly'
 
+/**
+ * Étape de vie d'une tâche (cf. functional-spec §3.9).
+ * Pas de `done` : l'achèvement reste porté par la colonne kanban « Terminé »,
+ * pour n'avoir qu'une seule source de vérité.
+ */
+export type TaskStage = 'inbox' | 'backlog' | 'active' | 'cancelled'
+
 export interface Task {
   id: string
-  project_id: string
-  column_id: string
+  organization_id: string
+  /** null tant que la tâche n'est pas rattachée à un projet (inbox, backlog). */
+  project_id: string | null
+  /** null tant que la tâche n'est pas posée sur un board. */
+  column_id: string | null
+  stage: TaskStage
+  /** Tâche `inbox` masquée du tri jusqu'à cette date. */
+  snooze_until: string | null
   title: string
   description: string | null
   priority: TaskPriority | null

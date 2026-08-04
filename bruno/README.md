@@ -32,6 +32,7 @@ en PR, et suit les migrations du schéma.
 | `auth` | Connexion, session, `/api/me`, mot de passe oublié |
 | `projects` | Projets, colonnes kanban, réordonnancement |
 | `tasks` | Tâches, déplacement, dépendances, récurrence |
+| `inbox` | Capture rapide, tri hebdomadaire, passage sur un board (§3.9) |
 | `crm` | Entreprises, contacts, opportunités, interactions, liens sociaux |
 | `finance` | Budget, dépenses, temps, factures |
 | `marketing` | Canvas hybride, SWOT, VP Canvas, offres, personas, objectifs, calendrier |
@@ -89,6 +90,8 @@ Certaines requêtes existent pour verrouiller un bug déjà survenu. Ne pas les 
 | `marketing/01-create-canvas` | Datamapper visant une table `canvas` inexistante — 500 sur tout le module, non détecté pendant des semaines |
 | `marketing/02-create-canvas-empty-blocks` | Schéma de création refusant `null` sur les champs texte alors que le formulaire en envoie |
 | `marketing/14-create-persona-minimal` | Même faille sur les personas |
+| `inbox/03-snooze` | Une tâche différée doit disparaître du tri jusqu'à sa date |
+| `inbox/12-refus-colonne-etrangere` | Poser une tâche sur la colonne d'un autre projet doit être refusé |
 | `crm/13-get-opportunity` | Calcul `weighted_value` + jointures contact/entreprise |
 | `client/04-client-document-url` | Doit répondre 404 sur un document d'un autre client |
 

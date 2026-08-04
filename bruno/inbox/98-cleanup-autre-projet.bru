@@ -1,0 +1,15 @@
+meta {
+  name: Nettoyage — supprimer l'autre projet
+  type: http
+  seq: 98
+}
+
+delete {
+  url: {{apiUrl}}/projects/{{autreProjetId}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 204
+}

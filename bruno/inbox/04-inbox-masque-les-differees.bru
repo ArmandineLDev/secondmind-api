@@ -1,0 +1,27 @@
+meta {
+  name: L'inbox masque les différées
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{apiUrl}}/tasks?stage=inbox
+  body: none
+  auth: none
+}
+
+params:query {
+  stage: inbox
+}
+
+assert {
+  res.status: eq 200
+  res.body: isArray
+}
+
+docs {
+  ⚠️ Vérification à l'œil : « [Bruno] Idée captée à la volée », différée jusqu'en
+  2099 à l'étape précédente, ne doit PAS figurer dans cette liste.
+  (Assertion non automatisable sans script : Bruno ne sait pas exprimer
+  « aucun élément ne porte ce titre ».)
+}

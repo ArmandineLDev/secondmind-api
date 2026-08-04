@@ -1,0 +1,19 @@
+meta {
+  name: Nettoyage — supprimer le projet support
+  type: http
+  seq: 99
+}
+
+delete {
+  url: {{apiUrl}}/projects/{{inboxProjectId}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 204
+}
+
+docs {
+  Supprime le projet et, en cascade, la tâche de test qui y était rattachée.
+}

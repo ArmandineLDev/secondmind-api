@@ -1,0 +1,22 @@
+meta {
+  name: Annuler une tâche
+  type: http
+  seq: 13
+}
+
+patch {
+  url: {{apiUrl}}/tasks/{{inboxTaskId}}/triage
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "action": "cancel"
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.stage: eq cancelled
+}

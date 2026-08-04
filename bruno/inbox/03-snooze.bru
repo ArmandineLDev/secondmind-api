@@ -1,0 +1,30 @@
+meta {
+  name: Différer une tâche
+  type: http
+  seq: 3
+}
+
+patch {
+  url: {{apiUrl}}/tasks/{{inboxTaskId}}/triage
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "action": "snooze",
+    "snooze_until": "2099-01-01"
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.stage: eq inbox
+  res.body.snooze_until: isDefined
+}
+
+docs {
+  ⚠️ Requête sentinelle. La tâche reste en `inbox` mais doit DISPARAÎTRE de la
+  liste de tri jusqu'à la date choisie — c'est ce que vérifie la requête
+  suivante. Sans ce masquage, le tri hebdomadaire ne se vide jamais.
+}
