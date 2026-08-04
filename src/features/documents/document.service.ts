@@ -25,7 +25,6 @@ export function isMimeTypeAllowed(mimeType: string): boolean {
 
 export async function uploadDocument(
   organizationId: string,
-  currentUserId:  string,
   meta:           DocumentMeta,
   fileBuffer:     Buffer,
   mimeType:       string,
@@ -43,7 +42,11 @@ export async function uploadDocument(
 
   return dm.createDocument({
     organizationId,
-    clientId:  meta.client_id ?? currentUserId,
+    // NULL = document interne, non adressé à un client. On ne le rattache plus
+    // par défaut à l'uploader : ce repli n'existait que pour contourner le
+    // NOT NULL de la colonne (levé par document_0002) et rendait la donnée
+    // trompeuse — un document interne apparaissait « adressé » à l'owner.
+    clientId:  meta.client_id ?? null,
     projectId: meta.project_id,
     name:      meta.name,
     type:      meta.type,

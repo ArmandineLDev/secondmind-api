@@ -1,0 +1,23 @@
+meta {
+  name: RGPD — empreinte du contact
+  type: http
+  seq: 10
+}
+
+get {
+  url: {{apiUrl}}/contacts/{{contactId}}/footprint
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body.interactions: isNumber
+  res.body.invoices: isNumber
+}
+
+docs {
+  Ce qu'une suppression détruirait (interactions, liens sociaux) et ce qu'elle
+  se contenterait de détacher (opportunités, factures). Sert à confirmer un
+  effacement en connaissance de cause.
+}

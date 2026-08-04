@@ -38,7 +38,6 @@ export async function upload(req: FastifyRequest, reply: FastifyReply) {
   const fileBuffer = await data.toBuffer()
   const doc = await svc.uploadDocument(
     req.organizationId,
-    req.session.user.id,
     metaResult.data,
     fileBuffer,
     data.mimetype,
