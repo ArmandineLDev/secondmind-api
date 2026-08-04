@@ -1,0 +1,15 @@
+meta {
+  name: Nettoyage — supprimer l'entreprise
+  type: http
+  seq: 99
+}
+
+delete {
+  url: {{apiUrl}}/companies/{{companyId}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 204
+}

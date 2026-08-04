@@ -1,0 +1,33 @@
+meta {
+  name: Créer une tâche
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{apiUrl}}/projects/{{taskProjectId}}/tasks
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "title": "[Bruno] Tâche principale",
+    "description": "Tâche créée par la collection Bruno.",
+    "column_id": "{{todoColumnId}}",
+    "priority": "high",
+    "due_date": "2026-09-30",
+    "start_date": "2026-09-01",
+    "estimated_hours": 8
+  }
+}
+
+vars:post-response {
+  taskId: res.body.id
+}
+
+assert {
+  res.status: eq 201
+  res.body.title: eq [Bruno] Tâche principale
+  res.body.priority: eq high
+}

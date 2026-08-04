@@ -1,0 +1,19 @@
+meta {
+  name: Pipeline opportunités
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{apiUrl}}/stats/pipeline
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}
+
+docs {
+  Vue PostgreSQL : v_opportunity_pipeline — renommée en stats_0005
+}

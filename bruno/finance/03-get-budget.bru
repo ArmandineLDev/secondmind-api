@@ -1,11 +1,11 @@
 meta {
-  name: Get Session
+  name: Budget d'un projet
   type: http
-  seq: 2
+  seq: 3
 }
 
 get {
-  url: {{baseUrl}}/api/auth/get-session
+  url: {{apiUrl}}/projects/{{finProjectId}}/budget
   body: none
   auth: none
 }

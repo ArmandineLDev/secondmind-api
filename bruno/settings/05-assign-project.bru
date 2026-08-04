@@ -1,0 +1,22 @@
+meta {
+  name: Affecter un projet à un client
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{apiUrl}}/settings/clients/{{memberId}}/projects
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "project_id": "{{projectId}}"
+  }
+}
+
+docs {
+  Requête manuelle : renseigner memberId (via « Lister les accès clients »)
+  et projectId.
+}

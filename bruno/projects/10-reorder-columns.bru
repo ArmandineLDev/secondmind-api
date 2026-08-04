@@ -1,0 +1,26 @@
+meta {
+  name: Réordonner les colonnes
+  type: http
+  seq: 10
+}
+
+patch {
+  url: {{apiUrl}}/projects/{{projectId}}/columns/reorder
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "order": ["{{newColumnId}}", "{{columnId}}", "{{columnId2}}"]
+  }
+}
+
+assert {
+  res.status: eq 204
+}
+
+docs {
+  Renvoie 204 sans corps (et non la liste réordonnée) : le front doit
+  réinvalider la query des colonnes après cet appel.
+}

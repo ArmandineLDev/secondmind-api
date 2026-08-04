@@ -1,0 +1,15 @@
+meta {
+  name: Supprimer un document
+  type: http
+  seq: 5
+}
+
+delete {
+  url: {{apiUrl}}/documents/{{documentId}}
+  body: none
+  auth: none
+}
+
+docs {
+  Supprime l'objet S3 ET la ligne en base.
+}

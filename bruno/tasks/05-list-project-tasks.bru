@@ -1,0 +1,21 @@
+meta {
+  name: Tâches d'un projet
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{apiUrl}}/projects/{{taskProjectId}}/tasks
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body: isArray
+}
+
+docs {
+  Vérifier que chaque tâche porte bien `is_blocked` (calculé via EXISTS
+  sur task_dependency dans findTasksByProject).
+}

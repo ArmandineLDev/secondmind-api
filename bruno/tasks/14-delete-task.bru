@@ -1,0 +1,15 @@
+meta {
+  name: Supprimer une tâche
+  type: http
+  seq: 14
+}
+
+delete {
+  url: {{apiUrl}}/projects/{{taskProjectId}}/tasks/{{taskId}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 204
+}

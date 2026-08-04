@@ -1,0 +1,23 @@
+meta {
+  name: Modifier un contact
+  type: http
+  seq: 10
+}
+
+put {
+  url: {{apiUrl}}/contacts/{{contactId}}
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "status": "prospect",
+    "notes": "Qualifié après premier échange."
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.status: eq prospect
+}

@@ -1,0 +1,23 @@
+meta {
+  name: Modifier une dépense
+  type: http
+  seq: 6
+}
+
+put {
+  url: {{apiUrl}}/expenses/{{expenseId}}
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "amount": 39.90,
+    "category": "equipment"
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.category: eq equipment
+}

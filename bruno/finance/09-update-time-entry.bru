@@ -1,0 +1,22 @@
+meta {
+  name: Modifier une saisie de temps
+  type: http
+  seq: 9
+}
+
+put {
+  url: {{apiUrl}}/time-entries/{{timeEntryId}}
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "duration_minutes": 240
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.duration_minutes: eq 240
+}

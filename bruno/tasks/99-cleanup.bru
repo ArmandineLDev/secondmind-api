@@ -1,0 +1,15 @@
+meta {
+  name: Nettoyage — supprimer le projet support
+  type: http
+  seq: 99
+}
+
+delete {
+  url: {{apiUrl}}/projects/{{taskProjectId}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 204
+}

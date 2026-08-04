@@ -1,0 +1,23 @@
+meta {
+  name: Modifier un post éditorial
+  type: http
+  seq: 25
+}
+
+put {
+  url: {{apiUrl}}/editorial-posts/{{postId}}
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "status": "published",
+    "published_at": "2026-09-10T09:05:00.000Z"
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.status: eq published
+}

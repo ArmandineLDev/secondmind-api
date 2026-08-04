@@ -1,0 +1,19 @@
+meta {
+  name: KPIs globaux
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{apiUrl}}/stats/kpis
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}
+
+docs {
+  Vue PostgreSQL : v_kpis — dont open_opportunities et revenue_ytd (factures payées)
+}

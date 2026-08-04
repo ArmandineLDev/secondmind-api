@@ -1,0 +1,15 @@
+meta {
+  name: Nettoyage — supprimer le budget
+  type: http
+  seq: 98
+}
+
+delete {
+  url: {{apiUrl}}/projects/{{finProjectId}}/budget
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 204
+}

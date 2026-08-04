@@ -1,0 +1,20 @@
+meta {
+  name: Supprimer le projet (nettoyage)
+  type: http
+  seq: 12
+}
+
+delete {
+  url: {{apiUrl}}/projects/{{projectId}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 204
+}
+
+docs {
+  Nettoyage de fin de dossier : le dossier ne laisse aucune donnée en base.
+  Le projet par défaut (is_default = true) est protégé et ne peut pas être supprimé.
+}

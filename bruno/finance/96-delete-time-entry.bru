@@ -1,0 +1,15 @@
+meta {
+  name: Nettoyage — supprimer la saisie de temps
+  type: http
+  seq: 96
+}
+
+delete {
+  url: {{apiUrl}}/time-entries/{{timeEntryId}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 204
+}

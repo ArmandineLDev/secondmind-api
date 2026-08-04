@@ -1,0 +1,15 @@
+meta {
+  name: Nettoyage — supprimer la dépense
+  type: http
+  seq: 97
+}
+
+delete {
+  url: {{apiUrl}}/expenses/{{expenseId}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 204
+}

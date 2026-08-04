@@ -1,0 +1,28 @@
+meta {
+  name: Modifier les préférences
+  type: http
+  seq: 2
+}
+
+put {
+  url: {{apiUrl}}/settings/preferences
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "default_currency": "EUR",
+    "default_daily_rate": 500,
+    "hours_per_day": 7
+  }
+}
+
+assert {
+  res.status: eq 200
+}
+
+docs {
+  ⚠️ Ces deux valeurs pilotent estimated_cost dans v_project_profitability :
+  taux horaire = default_daily_rate / hours_per_day (500 / 7 ≈ 71,43 €/h).
+}

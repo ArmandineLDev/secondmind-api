@@ -1,0 +1,20 @@
+meta {
+  name: Fait — replanifier
+  type: http
+  seq: 13
+}
+
+patch {
+  url: {{apiUrl}}/projects/{{taskProjectId}}/tasks/{{recurringTaskId}}/reschedule
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}
+
+docs {
+  Avance due_date à la prochaine occurrence (computeNextOccurrence) et remet
+  la tâche en tête de board. Sur une tâche non récurrente, doit répondre 400.
+}

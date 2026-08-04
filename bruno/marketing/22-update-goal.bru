@@ -1,0 +1,21 @@
+meta {
+  name: Modifier un objectif
+  type: http
+  seq: 22
+}
+
+put {
+  url: {{apiUrl}}/goals/{{goalId}}
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "current_value": 5
+  }
+}
+
+assert {
+  res.status: eq 200
+}

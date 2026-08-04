@@ -1,0 +1,20 @@
+meta {
+  name: Lister toutes les tâches
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{apiUrl}}/tasks?project_id={{taskProjectId}}
+  body: none
+  auth: none
+}
+
+params:query {
+  project_id: {{taskProjectId}}
+}
+
+assert {
+  res.status: eq 200
+  res.body: isArray
+}

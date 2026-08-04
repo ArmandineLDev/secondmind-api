@@ -1,0 +1,26 @@
+meta {
+  name: Modifier une offre
+  type: http
+  seq: 12
+}
+
+put {
+  url: {{apiUrl}}/offers/{{offerId}}
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "price": 950,
+    "swot_id": null
+  }
+}
+
+assert {
+  res.status: eq 200
+}
+
+docs {
+  Vérifie aussi qu'on peut détacher un SWOT (swot_id: null).
+}

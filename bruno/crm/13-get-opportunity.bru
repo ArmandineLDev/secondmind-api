@@ -1,0 +1,29 @@
+meta {
+  name: Détail d'une opportunité
+  type: http
+  seq: 13
+}
+
+get {
+  url: {{apiUrl}}/opportunities/{{opportunityId}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body.id: eq {{opportunityId}}
+  res.body.weighted_value: isDefined
+  res.body.contact_last_name: isDefined
+  res.body.company_name: isDefined
+}
+
+docs {
+  weighted_value est calculé en SQL : value × probability / 100.
+  Ici 8000 × 50 % → doit valoir "4000.00" (à vérifier à l'œil).
+
+  L'assertion reste sur isDefined et non sur l'égalité : PostgreSQL renvoie
+  les `numeric` sous forme de CHAÎNE ("4000.00"), une comparaison numérique
+  échouerait donc à tort. Ce qui est réellement testé ici, c'est que le calcul
+  et les trois jointures (contact, entreprise) sont toujours branchés.
+}

@@ -1,0 +1,24 @@
+meta {
+  name: Modifier une tâche
+  type: http
+  seq: 6
+}
+
+put {
+  url: {{apiUrl}}/projects/{{taskProjectId}}/tasks/{{taskId}}
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "title": "[Bruno] Tâche modifiée",
+    "priority": "urgent"
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.title: eq [Bruno] Tâche modifiée
+  res.body.priority: eq urgent
+}

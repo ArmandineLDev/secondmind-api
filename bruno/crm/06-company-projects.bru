@@ -1,0 +1,20 @@
+meta {
+  name: Projets d'une entreprise
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{apiUrl}}/companies/{{companyId}}/projects
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body: isArray
+}
+
+docs {
+  Fiche client 360 : projets reliés via project.company_id.
+}

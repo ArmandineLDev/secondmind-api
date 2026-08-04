@@ -1,0 +1,31 @@
+meta {
+  name: Créer une dépense
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{apiUrl}}/expenses
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "category": "subscription",
+    "description": "[Bruno] Abonnement outil",
+    "amount": 29.90,
+    "date": "2026-08-01",
+    "project_id": "{{finProjectId}}",
+    "currency": "EUR"
+  }
+}
+
+vars:post-response {
+  expenseId: res.body.id
+}
+
+assert {
+  res.status: eq 201
+  res.body.category: eq subscription
+}

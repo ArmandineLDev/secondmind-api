@@ -1,0 +1,33 @@
+meta {
+  name: Créer une interaction
+  type: http
+  seq: 15
+}
+
+post {
+  url: {{apiUrl}}/contacts/{{contactId}}/interactions
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "type": "message",
+    "date": "2026-08-03",
+    "opportunity_id": "{{opportunityId}}",
+    "notes": "DM LinkedIn — a répondu favorablement."
+  }
+}
+
+vars:post-response {
+  interactionId: res.body.id
+}
+
+assert {
+  res.status: eq 201
+  res.body.type: eq message
+}
+
+docs {
+  Le type `message` (DM réseaux sociaux) a été ajouté en crm_0005.
+}

@@ -1,0 +1,20 @@
+meta {
+  name: CA d'une entreprise
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{apiUrl}}/companies/{{companyId}}/revenue-summary
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}
+
+docs {
+  Alimente le bloc « Chiffre d'affaires » de la fiche entreprise :
+  { paid, pending }, dérivés des factures émises.
+}

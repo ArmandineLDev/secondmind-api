@@ -1,0 +1,23 @@
+meta {
+  name: Lister les factures
+  type: http
+  seq: 11
+}
+
+get {
+  url: {{apiUrl}}/invoices?type=outgoing
+  body: none
+  auth: none
+}
+
+params:query {
+  type: outgoing
+  ~status: pending
+  ~project_id: {{finProjectId}}
+  ~year: 2026
+}
+
+assert {
+  res.status: eq 200
+  res.body: isArray
+}

@@ -1,0 +1,15 @@
+meta {
+  name: Nettoyage — supprimer l'objectif
+  type: http
+  seq: 91
+}
+
+delete {
+  url: {{apiUrl}}/goals/{{goalId}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 204
+}

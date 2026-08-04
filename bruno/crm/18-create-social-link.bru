@@ -1,0 +1,29 @@
+meta {
+  name: Ajouter un lien social
+  type: http
+  seq: 18
+}
+
+post {
+  url: {{apiUrl}}/contacts/{{contactId}}/social-links
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "platform": "linkedin",
+    "label": "Profil pro",
+    "url": "https://www.linkedin.com/in/exemple",
+    "position": 0
+  }
+}
+
+vars:post-response {
+  socialLinkId: res.body.id
+}
+
+assert {
+  res.status: eq 201
+  res.body.platform: eq linkedin
+}

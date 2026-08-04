@@ -1,0 +1,35 @@
+meta {
+  name: Créer un persona à champs vides
+  type: http
+  seq: 14
+}
+
+post {
+  url: {{apiUrl}}/personas
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "[Bruno] Persona minimal",
+    "demo_first_name": null,
+    "demo_age": null,
+    "interests": null,
+    "general_description": null,
+    "path_to_goal": null
+  }
+}
+
+vars:post-response {
+  minimalPersonaId: res.body.id
+}
+
+assert {
+  res.status: eq 201
+}
+
+docs {
+  ⚠️ Même faille que le canvas : createPersonaSchema refusait `null`
+  (corrigé le 2026-08-03). Cette requête verrouille le cas.
+}

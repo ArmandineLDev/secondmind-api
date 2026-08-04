@@ -1,0 +1,32 @@
+meta {
+  name: Créer une opportunité
+  type: http
+  seq: 11
+}
+
+post {
+  url: {{apiUrl}}/opportunities
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "title": "[Bruno] Refonte de site",
+    "contact_id": "{{contactId}}",
+    "company_id": "{{companyId}}",
+    "value": 8000,
+    "stage": "qualification",
+    "probability": 50,
+    "notes": "Devis à envoyer."
+  }
+}
+
+vars:post-response {
+  opportunityId: res.body.id
+}
+
+assert {
+  res.status: eq 201
+  res.body.stage: eq qualification
+}

@@ -1,0 +1,16 @@
+meta {
+  name: URL signée de téléchargement
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{apiUrl}}/documents/{{documentId}}/url
+  body: none
+  auth: none
+}
+
+docs {
+  Renvoie une URL Scaleway signée, à durée de vie limitée. Le fichier n'est
+  jamais servi directement par l'API.
+}

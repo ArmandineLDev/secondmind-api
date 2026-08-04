@@ -1,0 +1,27 @@
+meta {
+  name: Définir le budget
+  type: http
+  seq: 2
+}
+
+put {
+  url: {{apiUrl}}/projects/{{finProjectId}}/budget
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "planned_amount": 12000,
+    "currency": "EUR"
+  }
+}
+
+assert {
+  res.status: eq 200
+}
+
+docs {
+  Upsert (ON CONFLICT) : rejouer cette requête met à jour le budget existant
+  au lieu d'échouer.
+}

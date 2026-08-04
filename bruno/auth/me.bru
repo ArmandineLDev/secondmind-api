@@ -1,0 +1,20 @@
+meta {
+  name: Me
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/api/me
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}
+
+docs {
+  Renvoie la session + organizationId. Si ça répond 403 « Aucun workspace
+  actif », c'est que le hook session.create.before n'a pas trouvé d'organisation.
+}

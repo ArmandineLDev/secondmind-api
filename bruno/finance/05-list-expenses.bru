@@ -1,0 +1,22 @@
+meta {
+  name: Lister les dépenses
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{apiUrl}}/expenses?project_id={{finProjectId}}
+  body: none
+  auth: none
+}
+
+params:query {
+  project_id: {{finProjectId}}
+  ~category: subscription
+  ~year: 2026
+}
+
+assert {
+  res.status: eq 200
+  res.body: isArray
+}

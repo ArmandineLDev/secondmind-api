@@ -1,0 +1,15 @@
+meta {
+  name: Nettoyage — supprimer le SWOT
+  type: http
+  seq: 96
+}
+
+delete {
+  url: {{apiUrl}}/swots/{{swotId}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 204
+}

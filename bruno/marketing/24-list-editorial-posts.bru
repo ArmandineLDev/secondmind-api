@@ -1,0 +1,23 @@
+meta {
+  name: Lister les posts éditoriaux
+  type: http
+  seq: 24
+}
+
+get {
+  url: {{apiUrl}}/editorial-posts?year=2026&month=9
+  body: none
+  auth: none
+}
+
+params:query {
+  year: 2026
+  month: 9
+  ~network: linkedin
+  ~status: scheduled
+}
+
+assert {
+  res.status: eq 200
+  res.body: isArray
+}

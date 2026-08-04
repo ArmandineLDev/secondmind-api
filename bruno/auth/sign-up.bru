@@ -1,7 +1,7 @@
 meta {
-  name: Sign Up
+  name: Sign Up (fermé)
   type: http
-  seq: 1
+  seq: 90
 }
 
 post {
@@ -15,7 +15,15 @@ headers {
 }
 
 body:json {
-  {"email": "armandine@allsky-web.dev",
-  "password": "motdepasse123",
-  "name": "Test User"}
+  {
+    "name": "Compte Test",
+    "email": "nouveau@exemple.dev",
+    "password": "motdepasse-long-10"
+  }
+}
+
+docs {
+  ⚠️ L'inscription publique est fermée (disableSignUp: true dans lib/auth.ts).
+  Cette requête doit donc ÉCHOUER — elle est conservée pour vérifier que la
+  fermeture est bien effective. Un 200 ici serait une régression de sécurité.
 }

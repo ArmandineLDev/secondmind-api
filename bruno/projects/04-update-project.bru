@@ -1,0 +1,24 @@
+meta {
+  name: Modifier un projet
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{apiUrl}}/projects/{{projectId}}
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "[Bruno] Projet renommé",
+    "status": "on_hold"
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.name: eq [Bruno] Projet renommé
+  res.body.status: eq on_hold
+}

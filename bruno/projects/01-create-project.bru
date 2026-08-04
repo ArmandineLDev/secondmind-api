@@ -1,0 +1,31 @@
+meta {
+  name: Créer un projet
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{apiUrl}}/projects
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "[Bruno] Projet de test",
+    "description": "Créé par la collection Bruno, supprimé en fin de dossier.",
+    "status": "in_progress",
+    "start_date": "2026-01-15",
+    "end_date": "2026-12-31"
+  }
+}
+
+vars:post-response {
+  projectId: res.body.id
+}
+
+assert {
+  res.status: eq 201
+  res.body.name: eq [Bruno] Projet de test
+  res.body.is_default: eq false
+}

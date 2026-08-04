@@ -1,0 +1,17 @@
+meta {
+  name: Lister les dépendances
+  type: http
+  seq: 10
+}
+
+get {
+  url: {{apiUrl}}/projects/{{taskProjectId}}/tasks/{{taskId}}/dependencies
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body: isArray
+  res.body: length 1
+}

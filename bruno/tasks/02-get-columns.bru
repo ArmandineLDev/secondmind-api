@@ -1,0 +1,20 @@
+meta {
+  name: Setup — récupérer les colonnes
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{apiUrl}}/projects/{{taskProjectId}}/columns
+  body: none
+  auth: none
+}
+
+vars:post-response {
+  todoColumnId: res.body[0].id
+  doingColumnId: res.body[1].id
+}
+
+assert {
+  res.status: eq 200
+}

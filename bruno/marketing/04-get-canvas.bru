@@ -1,0 +1,16 @@
+meta {
+  name: Détail d'un canvas
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{apiUrl}}/canvases/{{canvasId}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body.id: eq {{canvasId}}
+}

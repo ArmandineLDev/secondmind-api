@@ -1,0 +1,15 @@
+meta {
+  name: Retirer une dépendance
+  type: http
+  seq: 11
+}
+
+delete {
+  url: {{apiUrl}}/projects/{{taskProjectId}}/tasks/{{taskId}}/dependencies/{{blockingTaskId}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 204
+}

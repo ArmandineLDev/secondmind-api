@@ -1,0 +1,26 @@
+meta {
+  name: Ajouter une dépendance
+  type: http
+  seq: 9
+}
+
+post {
+  url: {{apiUrl}}/projects/{{taskProjectId}}/tasks/{{taskId}}/dependencies
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "depends_on_id": "{{blockingTaskId}}"
+  }
+}
+
+assert {
+  res.status: eq 201
+}
+
+docs {
+  Après cet appel, GET /projects/:id/tasks doit renvoyer is_blocked = true
+  sur la tâche principale.
+}

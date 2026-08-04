@@ -1,7 +1,7 @@
 meta {
   name: Sign In
   type: http
-  seq: 2
+  seq: 1
 }
 
 post {
@@ -15,6 +15,18 @@ headers {
 }
 
 body:json {
-  {"email": "armandine@allsky-web.dev",
-  "password": "motdepasse123"}
+  {
+    "email": "{{process.env.TEST_EMAIL}}",
+    "password": "{{process.env.TEST_PASSWORD}}"
+  }
+}
+
+assert {
+  res.status: eq 200
+}
+
+docs {
+  Doit tourner en premier : dépose le cookie de session réutilisé par
+  toutes les autres requêtes de la collection.
+  Identifiants lus depuis bruno/.env (voir .env.example).
 }

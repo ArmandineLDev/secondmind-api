@@ -1,0 +1,15 @@
+meta {
+  name: Nettoyage — supprimer le persona
+  type: http
+  seq: 93
+}
+
+delete {
+  url: {{apiUrl}}/personas/{{personaId}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 204
+}

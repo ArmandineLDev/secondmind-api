@@ -1,0 +1,21 @@
+meta {
+  name: Modifier un persona
+  type: http
+  seq: 16
+}
+
+put {
+  url: {{apiUrl}}/personas/{{personaId}}
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "purchase_barriers": "Peur de la migration, budget serré"
+  }
+}
+
+assert {
+  res.status: eq 200
+}

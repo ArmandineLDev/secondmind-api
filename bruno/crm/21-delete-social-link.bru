@@ -1,0 +1,15 @@
+meta {
+  name: Supprimer un lien social
+  type: http
+  seq: 21
+}
+
+delete {
+  url: {{apiUrl}}/contacts/{{contactId}}/social-links/{{socialLinkId}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 204
+}

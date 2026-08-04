@@ -1,0 +1,22 @@
+meta {
+  name: Désarchiver un projet
+  type: http
+  seq: 6
+}
+
+patch {
+  url: {{apiUrl}}/projects/{{projectId}}/archive
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "archive": false
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.is_archived: eq false
+}

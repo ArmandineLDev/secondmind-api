@@ -1,0 +1,27 @@
+meta {
+  name: Colonnes du projet
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{apiUrl}}/projects/{{projectId}}/columns
+  body: none
+  auth: none
+}
+
+vars:post-response {
+  columnId: res.body[0].id
+  columnId2: res.body[1].id
+}
+
+assert {
+  res.status: eq 200
+  res.body: isArray
+  res.body: length 3
+}
+
+docs {
+  Un projet créé reçoit automatiquement 3 colonnes par défaut
+  (« À faire » / « En cours » / « Terminé ») via createDefaultColumns().
+}

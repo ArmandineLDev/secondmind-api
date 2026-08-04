@@ -1,0 +1,15 @@
+meta {
+  name: Supprimer une colonne
+  type: http
+  seq: 11
+}
+
+delete {
+  url: {{apiUrl}}/projects/{{projectId}}/columns/{{newColumnId}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 204
+}

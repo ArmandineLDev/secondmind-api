@@ -1,0 +1,15 @@
+meta {
+  name: Nettoyage — supprimer le VP Canvas
+  type: http
+  seq: 92
+}
+
+delete {
+  url: {{apiUrl}}/vp-canvases/{{vpCanvasId}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 204
+}

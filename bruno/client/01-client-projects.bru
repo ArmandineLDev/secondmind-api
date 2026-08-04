@@ -1,0 +1,17 @@
+meta {
+  name: Projets du client
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{apiUrl}}/client/projects
+  body: none
+  auth: none
+}
+
+docs {
+  ⚠️ À exécuter connecté avec un COMPTE CLIENT, pas le compte owner.
+  Doit ne renvoyer que les projets affectés via project_client.
+  Connecté en owner, la liste sera vide (aucune affectation sur soi-même).
+}
