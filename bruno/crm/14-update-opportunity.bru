@@ -1,0 +1,24 @@
+meta {
+  name: Modifier une opportunité
+  type: http
+  seq: 14
+}
+
+put {
+  url: {{apiUrl}}/opportunities/{{opportunityId}}
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "stage": "won",
+    "probability": 100,
+    "closed_at": "2026-08-03"
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.stage: eq won
+}

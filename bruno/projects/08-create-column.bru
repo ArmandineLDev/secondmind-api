@@ -1,0 +1,27 @@
+meta {
+  name: Créer une colonne
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{apiUrl}}/projects/{{projectId}}/columns
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "[Bruno] En revue",
+    "color": "#7c3aed"
+  }
+}
+
+vars:post-response {
+  newColumnId: res.body.id
+}
+
+assert {
+  res.status: eq 201
+  res.body.name: eq [Bruno] En revue
+}

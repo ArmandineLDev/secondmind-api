@@ -1,0 +1,15 @@
+meta {
+  name: Supprimer une interaction
+  type: http
+  seq: 22
+}
+
+delete {
+  url: {{apiUrl}}/contacts/{{contactId}}/interactions/{{interactionId}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 204
+}

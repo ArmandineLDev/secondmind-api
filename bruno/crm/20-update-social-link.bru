@@ -1,0 +1,22 @@
+meta {
+  name: Modifier un lien social
+  type: http
+  seq: 20
+}
+
+put {
+  url: {{apiUrl}}/contacts/{{contactId}}/social-links/{{socialLinkId}}
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "label": "LinkedIn perso"
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.label: eq LinkedIn perso
+}

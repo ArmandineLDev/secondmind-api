@@ -1,0 +1,33 @@
+meta {
+  name: Créer une facture émise
+  type: http
+  seq: 10
+}
+
+post {
+  url: {{apiUrl}}/invoices
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "type": "outgoing",
+    "amount": 3500,
+    "issue_date": "2026-08-01",
+    "due_date": "2026-08-31",
+    "project_id": "{{finProjectId}}",
+    "reference": "[Bruno] F-2026-001",
+    "status": "pending",
+    "currency": "EUR"
+  }
+}
+
+vars:post-response {
+  invoiceId: res.body.id
+}
+
+assert {
+  res.status: eq 201
+  res.body.status: eq pending
+}

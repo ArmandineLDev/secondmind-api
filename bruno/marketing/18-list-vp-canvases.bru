@@ -1,0 +1,16 @@
+meta {
+  name: Lister les VP Canvas
+  type: http
+  seq: 18
+}
+
+get {
+  url: {{apiUrl}}/vp-canvases
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body: isArray
+}

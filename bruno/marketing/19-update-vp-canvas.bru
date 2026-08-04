@@ -1,0 +1,27 @@
+meta {
+  name: Modifier un VP Canvas
+  type: http
+  seq: 19
+}
+
+put {
+  url: {{apiUrl}}/vp-canvases/{{vpCanvasId}}
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "customer_pains": "Perd du temps, oublie ses relances",
+    "persona_id": null
+  }
+}
+
+assert {
+  res.status: eq 200
+}
+
+docs {
+  Vérifie le détachement du persona (persona_id: null) et que la jointure
+  renvoie bien persona_name à null derrière.
+}

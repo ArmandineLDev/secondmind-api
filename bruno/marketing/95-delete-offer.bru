@@ -1,0 +1,15 @@
+meta {
+  name: Nettoyage — supprimer l'offre
+  type: http
+  seq: 95
+}
+
+delete {
+  url: {{apiUrl}}/offers/{{offerId}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 204
+}

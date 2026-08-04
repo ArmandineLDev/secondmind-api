@@ -1,0 +1,16 @@
+meta {
+  name: URL signée d'un document client
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{apiUrl}}/client/documents/{{clientDocumentId}}/url
+  body: none
+  auth: none
+}
+
+docs {
+  ⚠️ Test de sécurité : avec l'id d'un document NON destiné à ce client,
+  la réponse doit être 404 — jamais une URL signée.
+}

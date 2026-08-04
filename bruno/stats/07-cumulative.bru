@@ -1,0 +1,19 @@
+meta {
+  name: Résultat cumulé
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{apiUrl}}/stats/cumulative
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}
+
+docs {
+  Vue PostgreSQL : v_cumulative_pnl — CA encaissé moins dépenses, cumulé par an
+}

@@ -1,0 +1,39 @@
+meta {
+  name: Créer une offre (liée BM + SWOT)
+  type: http
+  seq: 10
+}
+
+post {
+  url: {{apiUrl}}/offers
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "[Bruno] Accompagnement mensuel",
+    "description": "Suivi et évolutions en continu.",
+    "price": 800,
+    "currency": "EUR",
+    "billing_type": "monthly",
+    "is_active": true,
+    "canvas_id": "{{canvasId}}",
+    "swot_id": "{{swotId}}"
+  }
+}
+
+vars:post-response {
+  offerId: res.body.id
+}
+
+assert {
+  res.status: eq 201
+  res.body.canvas_id: eq {{canvasId}}
+  res.body.swot_id: eq {{swotId}}
+}
+
+docs {
+  Liens ajoutés en marketing_0006. Plusieurs offres peuvent pointer sur le
+  même canvas et le même SWOT.
+}

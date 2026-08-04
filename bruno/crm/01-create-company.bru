@@ -1,0 +1,29 @@
+meta {
+  name: Créer une entreprise
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{apiUrl}}/companies
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "[Bruno] Entreprise de test",
+    "website": "https://exemple.dev",
+    "industry": "Services numériques",
+    "notes": "Créée par la collection Bruno."
+  }
+}
+
+vars:post-response {
+  companyId: res.body.id
+}
+
+assert {
+  res.status: eq 201
+  res.body.name: eq [Bruno] Entreprise de test
+}

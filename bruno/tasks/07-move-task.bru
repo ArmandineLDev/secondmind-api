@@ -1,0 +1,23 @@
+meta {
+  name: Déplacer une tâche
+  type: http
+  seq: 7
+}
+
+patch {
+  url: {{apiUrl}}/projects/{{taskProjectId}}/tasks/{{taskId}}/move
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "column_id": "{{doingColumnId}}",
+    "position": 0
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.column_id: eq {{doingColumnId}}
+}

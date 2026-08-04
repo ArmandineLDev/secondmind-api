@@ -1,0 +1,40 @@
+meta {
+  name: Créer un contact
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{apiUrl}}/contacts
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "first_name": "Camille",
+    "last_name": "[Bruno] Test",
+    "email": "camille.test@exemple.dev",
+    "phone": "0600000000",
+    "company_id": "{{companyId}}",
+    "status": "lead",
+    "source_channel": "social_media",
+    "source_detail": "LinkedIn",
+    "next_follow_up_at": "2026-09-15",
+    "follow_up_note": "Recontacter après le webinaire"
+  }
+}
+
+vars:post-response {
+  contactId: res.body.id
+}
+
+assert {
+  res.status: eq 201
+  res.body.status: eq lead
+}
+
+docs {
+  ⚠️ `status: "lead"` = statut d'un contact non qualifié — à ne pas confondre
+  avec l'entité `opportunity` (affaire chiffrée), renommée en crm_0003.
+}

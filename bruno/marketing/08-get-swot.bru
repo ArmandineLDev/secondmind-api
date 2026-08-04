@@ -1,0 +1,16 @@
+meta {
+  name: Détail d'un SWOT
+  type: http
+  seq: 8
+}
+
+get {
+  url: {{apiUrl}}/swots/{{swotId}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body.id: eq {{swotId}}
+}

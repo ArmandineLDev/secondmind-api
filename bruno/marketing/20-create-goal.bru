@@ -1,0 +1,33 @@
+meta {
+  name: Créer un objectif
+  type: http
+  seq: 20
+}
+
+post {
+  url: {{apiUrl}}/goals
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "title": "[Bruno] 10 clients d'ici décembre",
+    "description": "Objectif commercial de l'année.",
+    "category": "revenue",
+    "target_value": 10,
+    "current_value": 3,
+    "unit": "clients",
+    "due_date": "2026-12-31",
+    "status": "in_progress"
+  }
+}
+
+vars:post-response {
+  goalId: res.body.id
+}
+
+assert {
+  res.status: eq 201
+  res.body.category: eq revenue
+}

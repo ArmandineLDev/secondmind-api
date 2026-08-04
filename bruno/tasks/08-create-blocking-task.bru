@@ -1,0 +1,26 @@
+meta {
+  name: Créer une tâche bloquante
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{apiUrl}}/projects/{{taskProjectId}}/tasks
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "title": "[Bruno] Tâche bloquante",
+    "column_id": "{{todoColumnId}}"
+  }
+}
+
+vars:post-response {
+  blockingTaskId: res.body.id
+}
+
+assert {
+  res.status: eq 201
+}

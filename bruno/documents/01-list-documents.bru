@@ -1,0 +1,16 @@
+meta {
+  name: Lister les documents
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{apiUrl}}/documents
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body: isArray
+}

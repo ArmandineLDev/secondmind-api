@@ -1,0 +1,19 @@
+meta {
+  name: CA mensuel
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{apiUrl}}/stats/revenue
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}
+
+docs {
+  Vue PostgreSQL : v_monthly_revenue — factures émises payées, datées à paid_at
+}

@@ -1,7 +1,7 @@
 meta {
   name: Sign Out
   type: http
-  seq: 4
+  seq: 99
 }
 
 post {
@@ -11,5 +11,14 @@ post {
 }
 
 headers {
-  Origin: http://localhost:3000
+  Origin: {{baseUrl}}
+}
+
+assert {
+  res.status: eq 200
+}
+
+docs {
+  seq 99 volontairement : détruit la session. À ne lancer qu'en dernier,
+  sinon toutes les requêtes suivantes tombent en 401.
 }

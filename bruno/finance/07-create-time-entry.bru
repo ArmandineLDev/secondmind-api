@@ -1,0 +1,30 @@
+meta {
+  name: Saisir du temps
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{apiUrl}}/time-entries
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "duration_minutes": 210,
+    "date": "2026-08-03",
+    "project_id": "{{finProjectId}}",
+    "hourly_rate": 71.43,
+    "description": "[Bruno] Développement"
+  }
+}
+
+vars:post-response {
+  timeEntryId: res.body.id
+}
+
+assert {
+  res.status: eq 201
+  res.body.duration_minutes: eq 210
+}

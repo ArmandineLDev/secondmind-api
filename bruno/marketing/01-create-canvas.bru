@@ -1,0 +1,48 @@
+meta {
+  name: Créer un canvas (13 blocs)
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{apiUrl}}/canvases
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "[Bruno] BM hybride",
+    "customer_segments": "Freelances et TPE du numérique",
+    "value_propositions": "Un outil unique à la place de cinq",
+    "channels": "LinkedIn, bouche-à-oreille",
+    "customer_relationships": "Accompagnement direct",
+    "revenue_streams": "Abonnement mensuel",
+    "key_resources": "Le produit, le temps de dev",
+    "key_activities": "Développement, support",
+    "key_partners": "Hébergeur, Brevo",
+    "cost_structure": "VPS, services tiers",
+    "problem": "Éparpillement des outils",
+    "solution": "Modules pré-structurés",
+    "key_metrics": "Comptes actifs, rétention",
+    "unfair_advantage": "Conçu depuis un besoin vécu"
+  }
+}
+
+vars:post-response {
+  canvasId: res.body.id
+}
+
+assert {
+  res.status: eq 201
+  res.body.name: eq [Bruno] BM hybride
+  res.body.problem: isDefined
+  res.body.unfair_advantage: isDefined
+}
+
+docs {
+  ⚠️ Requête sentinelle. C'est exactement ce cas qui était cassé jusqu'au
+  2026-08-03 : le datamapper visait une table `canvas` inexistante (la vraie
+  s'appelle `business_model_canvas`) → 500 sur tout le module.
+  Les 4 derniers champs sont les blocs Lean ajoutés en marketing_0003.
+}

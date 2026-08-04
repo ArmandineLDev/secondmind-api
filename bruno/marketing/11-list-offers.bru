@@ -1,0 +1,20 @@
+meta {
+  name: Lister les offres
+  type: http
+  seq: 11
+}
+
+get {
+  url: {{apiUrl}}/offers?is_active=true
+  body: none
+  auth: none
+}
+
+params:query {
+  is_active: true
+}
+
+assert {
+  res.status: eq 200
+  res.body: isArray
+}

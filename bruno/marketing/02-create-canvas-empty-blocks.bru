@@ -1,0 +1,44 @@
+meta {
+  name: Créer un canvas à blocs vides
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{apiUrl}}/canvases
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "[Bruno] Canvas minimal",
+    "customer_segments": "Rempli",
+    "value_propositions": null,
+    "channels": null,
+    "customer_relationships": null,
+    "revenue_streams": null,
+    "key_resources": null,
+    "key_activities": null,
+    "key_partners": null,
+    "cost_structure": null,
+    "problem": null,
+    "solution": null,
+    "key_metrics": null,
+    "unfair_advantage": null
+  }
+}
+
+vars:post-response {
+  emptyCanvasId: res.body.id
+}
+
+assert {
+  res.status: eq 201
+}
+
+docs {
+  ⚠️ Deuxième régression du 2026-08-03 : createCanvasSchema n'acceptait que
+  `undefined` (.optional()) alors que le formulaire web envoie `null` pour un
+  champ vide → ZodError remontée en 500. Cette requête verrouille le cas.
+}

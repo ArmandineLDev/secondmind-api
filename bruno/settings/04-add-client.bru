@@ -1,0 +1,25 @@
+meta {
+  name: Inviter un client
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{apiUrl}}/settings/clients
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "client-test@exemple.dev"
+  }
+}
+
+docs {
+  ⚠️ Requête manuelle : exige qu'un compte existe déjà pour cet email
+  (renvoie 404 sinon). L'inscription publique étant fermée, le compte doit
+  être créé en base à la main.
+  ⚠️ Un client ajouté ici devient membre de VOTRE organisation — tant que le
+  P1 de la Phase 11.5 n'est pas fait, il accède à toutes vos données métier.
+}

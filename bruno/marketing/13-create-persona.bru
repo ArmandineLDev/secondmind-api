@@ -1,0 +1,40 @@
+meta {
+  name: Créer un persona
+  type: http
+  seq: 13
+}
+
+post {
+  url: {{apiUrl}}/personas
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "[Bruno] Sophie la freelance",
+    "demo_first_name": "Sophie",
+    "demo_last_name": "Martin",
+    "demo_age": "32 ans",
+    "demo_marital_status": "En couple",
+    "demo_job_title": "Développeuse web",
+    "demo_professional_status": "Freelance",
+    "demo_income": "3 000 €/mois",
+    "interests": "Tech, artisanat, running",
+    "general_description": "Freelance depuis 3 ans, très organisée mais dispersée sur ses outils.",
+    "drivers": "Autonomie, sens du travail",
+    "vital_needs": "Y voir clair sur sa charge et sa trésorerie",
+    "purchase_motivations": "Gagner du temps",
+    "purchase_barriers": "Peur de devoir tout remigrer",
+    "offer_discovery": "LinkedIn, recommandations",
+    "path_to_goal": "Essai gratuit puis abonnement"
+  }
+}
+
+vars:post-response {
+  personaId: res.body.id
+}
+
+assert {
+  res.status: eq 201
+}

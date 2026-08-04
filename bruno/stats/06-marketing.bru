@@ -1,0 +1,19 @@
+meta {
+  name: KPIs marketing
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{apiUrl}}/stats/marketing
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}
+
+docs {
+  Vue PostgreSQL : v_marketing_kpis — total_opportunities, won_opportunities
+}

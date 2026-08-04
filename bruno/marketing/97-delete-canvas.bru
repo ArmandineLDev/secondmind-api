@@ -1,0 +1,15 @@
+meta {
+  name: Nettoyage — supprimer le canvas
+  type: http
+  seq: 97
+}
+
+delete {
+  url: {{apiUrl}}/canvases/{{canvasId}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 204
+}

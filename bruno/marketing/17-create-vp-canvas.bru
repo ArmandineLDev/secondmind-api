@@ -1,0 +1,40 @@
+meta {
+  name: Créer un Value Proposition Canvas
+  type: http
+  seq: 17
+}
+
+post {
+  url: {{apiUrl}}/vp-canvases
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "[Bruno] VPC Accompagnement × Sophie",
+    "offer_id": "{{offerId}}",
+    "persona_id": "{{personaId}}",
+    "customer_jobs": "Suivre ses projets, facturer, relancer",
+    "customer_pains": "Perd du temps entre cinq outils",
+    "customer_gains": "Une vue unique de son activité",
+    "products_services": "Accompagnement mensuel + outil",
+    "pain_relievers": "Tout centralisé, rien à réinstaller",
+    "gain_creators": "Tableau de bord unique et KPIs à jour"
+  }
+}
+
+vars:post-response {
+  vpCanvasId: res.body.id
+}
+
+assert {
+  res.status: eq 201
+  res.body.offer_name: isDefined
+  res.body.persona_name: isDefined
+}
+
+docs {
+  La réponse est enrichie par jointure : offer_name et persona_name
+  viennent du datamapper (SELECT_WITH_RELATIONS), pas de la table.
+}

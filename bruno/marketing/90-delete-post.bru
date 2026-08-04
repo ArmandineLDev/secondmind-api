@@ -1,0 +1,15 @@
+meta {
+  name: Nettoyage — supprimer le post
+  type: http
+  seq: 90
+}
+
+delete {
+  url: {{apiUrl}}/editorial-posts/{{postId}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 204
+}

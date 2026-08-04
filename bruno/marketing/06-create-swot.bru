@@ -1,0 +1,30 @@
+meta {
+  name: Créer un SWOT
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{apiUrl}}/swots
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "[Bruno] SWOT global",
+    "strengths": "Maîtrise technique, produit vécu de l'intérieur",
+    "weaknesses": "Temps disponible limité, seule sur le projet",
+    "opportunities": "Demande d'outils souverains en hausse",
+    "threats": "Concurrents installés et financés"
+  }
+}
+
+vars:post-response {
+  swotId: res.body.id
+}
+
+assert {
+  res.status: eq 201
+  res.body.name: eq [Bruno] SWOT global
+}

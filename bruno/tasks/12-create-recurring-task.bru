@@ -1,0 +1,31 @@
+meta {
+  name: Créer une tâche récurrente
+  type: http
+  seq: 12
+}
+
+post {
+  url: {{apiUrl}}/projects/{{taskProjectId}}/tasks
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "title": "[Bruno] Facturation mensuelle",
+    "column_id": "{{todoColumnId}}",
+    "due_date": "2026-09-01",
+    "recurrence_freq": "monthly",
+    "recurrence_interval": 1,
+    "recurrence_days": [1, 15]
+  }
+}
+
+vars:post-response {
+  recurringTaskId: res.body.id
+}
+
+assert {
+  res.status: eq 201
+  res.body.recurrence_freq: eq monthly
+}

@@ -1,0 +1,19 @@
+meta {
+  name: Rentabilité projets
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{apiUrl}}/stats/projects
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}
+
+docs {
+  Vue PostgreSQL : v_project_profitability — estimated_cost corrigé en stats_0004 (TJM / hours_per_day)
+}

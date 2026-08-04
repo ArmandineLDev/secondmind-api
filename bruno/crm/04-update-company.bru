@@ -1,0 +1,22 @@
+meta {
+  name: Modifier une entreprise
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{apiUrl}}/companies/{{companyId}}
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "industry": "Conseil"
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.industry: eq Conseil
+}

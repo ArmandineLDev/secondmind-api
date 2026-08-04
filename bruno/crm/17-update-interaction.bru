@@ -1,0 +1,23 @@
+meta {
+  name: Modifier une interaction
+  type: http
+  seq: 17
+}
+
+put {
+  url: {{apiUrl}}/contacts/{{contactId}}/interactions/{{interactionId}}
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "type": "call",
+    "notes": "Finalement appelée au téléphone."
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.type: eq call
+}

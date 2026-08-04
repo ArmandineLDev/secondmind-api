@@ -1,0 +1,17 @@
+meta {
+  name: Liens sociaux d'un contact
+  type: http
+  seq: 19
+}
+
+get {
+  url: {{apiUrl}}/contacts/{{contactId}}/social-links
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body: isArray
+  res.body: length 1
+}

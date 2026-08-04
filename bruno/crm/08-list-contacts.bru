@@ -1,0 +1,22 @@
+meta {
+  name: Lister les contacts
+  type: http
+  seq: 8
+}
+
+get {
+  url: {{apiUrl}}/contacts?status=lead
+  body: none
+  auth: none
+}
+
+params:query {
+  status: lead
+  ~search: Camille
+  ~company_id: {{companyId}}
+}
+
+assert {
+  res.status: eq 200
+  res.body: isArray
+}

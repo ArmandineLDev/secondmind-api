@@ -1,0 +1,15 @@
+meta {
+  name: Détail d'un document
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{apiUrl}}/documents/{{documentId}}
+  body: none
+  auth: none
+}
+
+docs {
+  Dépend de l'upload manuel (requête 02) pour renseigner documentId.
+}

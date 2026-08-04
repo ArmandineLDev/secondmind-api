@@ -1,0 +1,16 @@
+meta {
+  name: Détail d'un projet client
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{apiUrl}}/client/projects/{{clientProjectId}}
+  body: none
+  auth: none
+}
+
+docs {
+  Renvoie le projet avec ses colonnes et ses tâches, en lecture seule.
+  Un projet non affecté doit répondre 404, jamais son contenu.
+}

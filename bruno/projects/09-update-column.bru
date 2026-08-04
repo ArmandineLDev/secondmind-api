@@ -1,0 +1,23 @@
+meta {
+  name: Modifier une colonne
+  type: http
+  seq: 9
+}
+
+put {
+  url: {{apiUrl}}/projects/{{projectId}}/columns/{{newColumnId}}
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "[Bruno] Relecture",
+    "color": "#0ea5e9"
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.name: eq [Bruno] Relecture
+}

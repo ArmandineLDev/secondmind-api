@@ -1,0 +1,16 @@
+meta {
+  name: Lister les entreprises
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{apiUrl}}/companies
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body: isArray
+}

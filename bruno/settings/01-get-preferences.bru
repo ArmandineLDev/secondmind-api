@@ -1,0 +1,19 @@
+meta {
+  name: Préférences
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{apiUrl}}/settings/preferences
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}
+
+docs {
+  getOrCreateSettings : crée la ligne organization_settings au premier appel.
+}

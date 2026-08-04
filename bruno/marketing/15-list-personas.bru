@@ -1,0 +1,16 @@
+meta {
+  name: Lister les personas
+  type: http
+  seq: 15
+}
+
+get {
+  url: {{apiUrl}}/personas
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body: isArray
+}

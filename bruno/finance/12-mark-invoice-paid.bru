@@ -1,0 +1,29 @@
+meta {
+  name: Marquer la facture payée
+  type: http
+  seq: 12
+}
+
+put {
+  url: {{apiUrl}}/invoices/{{invoiceId}}
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "status": "paid",
+    "paid_at": "2026-08-20"
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.status: eq paid
+  res.body.paid_at: isDefined
+}
+
+docs {
+  Compta de trésorerie : le CA n'est reconnu qu'ici, à la date `paid_at`.
+  C'est cette facture payée qui alimente v_monthly_revenue et v_kpis.
+}

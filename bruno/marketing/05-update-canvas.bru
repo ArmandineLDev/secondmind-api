@@ -1,0 +1,22 @@
+meta {
+  name: Modifier un canvas
+  type: http
+  seq: 5
+}
+
+put {
+  url: {{apiUrl}}/canvases/{{canvasId}}
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "key_metrics": "Comptes actifs, rétention à 3 mois, NPS",
+    "unfair_advantage": null
+  }
+}
+
+assert {
+  res.status: eq 200
+}

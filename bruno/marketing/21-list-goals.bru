@@ -1,0 +1,21 @@
+meta {
+  name: Lister les objectifs
+  type: http
+  seq: 21
+}
+
+get {
+  url: {{apiUrl}}/goals?status=in_progress
+  body: none
+  auth: none
+}
+
+params:query {
+  status: in_progress
+  ~category: revenue
+}
+
+assert {
+  res.status: eq 200
+  res.body: isArray
+}

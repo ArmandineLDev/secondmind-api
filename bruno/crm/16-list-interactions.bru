@@ -1,0 +1,17 @@
+meta {
+  name: Interactions d'un contact
+  type: http
+  seq: 16
+}
+
+get {
+  url: {{apiUrl}}/contacts/{{contactId}}/interactions
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body: isArray
+  res.body: length 1
+}

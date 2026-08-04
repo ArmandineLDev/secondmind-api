@@ -1,0 +1,15 @@
+meta {
+  name: Documents du client
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{apiUrl}}/client/documents
+  body: none
+  auth: none
+}
+
+docs {
+  Ne doit renvoyer que les documents dont le client est destinataire.
+}

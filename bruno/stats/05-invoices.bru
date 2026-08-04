@@ -1,0 +1,19 @@
+meta {
+  name: Synthèse factures
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{apiUrl}}/stats/invoices
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}
+
+docs {
+  Vue PostgreSQL : v_invoice_summary — créances et passif
+}

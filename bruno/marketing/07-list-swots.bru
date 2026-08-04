@@ -1,0 +1,16 @@
+meta {
+  name: Lister les SWOT
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{apiUrl}}/swots
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body: isArray
+}
