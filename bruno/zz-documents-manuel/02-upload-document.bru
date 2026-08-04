@@ -1,0 +1,44 @@
+meta {
+  name: Uploader un document
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{apiUrl}}/documents
+  body: multipartForm
+  auth: none
+}
+
+body:multipart-form {
+  file: @file(fixtures/exemple.pdf)
+  name: [Bruno] Document de test
+  type: other
+}
+
+vars:post-response {
+  documentId: res.body.id
+}
+
+assert {
+  res.status: eq 201
+}
+
+docs {
+  ⚠️ DOSSIER MANUEL — ne pas lancer en automatique : cette requête écrit
+  réellement sur Scaleway Object Storage.
+
+  Le multipart doit porter TROIS champs, pas seulement le fichier :
+    · `file` — le binaire (chemin relatif à la racine de la collection)
+    · `name` — obligatoire (documentMetaSchema)
+    · `type` — obligatoire : spec | contract | invoice | other
+
+  Envoyer `file` seul renvoie un 400 « name: Required ».
+
+  Limites : 50 Mo, 1 fichier (multipart.plugin.ts). Types MIME filtrés par
+  ALLOWED_MIME_TYPES (document.service.ts) : pdf, png, jpeg, webp, doc(x),
+  xls(x), txt, csv.
+
+  Penser à lancer « Supprimer un document » à la fin pour ne pas laisser
+  l'objet sur S3.
+}

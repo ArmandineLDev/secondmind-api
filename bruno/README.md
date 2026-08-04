@@ -22,8 +22,8 @@ en PR, et suit les migrations du schéma.
 
 4. Sélectionner l'environnement **local** en haut à droite.
 
-5. Lancer **Auth → Sign In** en premier : la session est un cookie, toutes les autres
-   requêtes en dépendent.
+5. Lancer le dossier **`auth`** en premier : la session est un cookie, toutes les autres
+   requêtes en dépendent. Lancer ensuite les autres dossiers dans l'ordre voulu.
 
 ## Organisation
 
@@ -36,9 +36,12 @@ en PR, et suit les migrations du schéma.
 | `finance` | Budget, dépenses, temps, factures |
 | `marketing` | Canvas hybride, SWOT, VP Canvas, offres, personas, objectifs, calendrier |
 | `stats` | Les 7 vues PostgreSQL |
-| `documents` | Upload S3, URL signée (manuel) |
+| `documents` | Liste des documents (lancé automatiquement) |
 | `settings` | Préférences, accès clients |
 | `client` | Espace client (à lancer connecté **en tant que client**) |
+| `zz-documents-manuel` | Upload / URL signée / suppression — **à la main**, écrit réellement sur Scaleway |
+| `zz-securite-manuel` | Vérification du rate-limiting — **à la main**, à répéter jusqu'au 429 |
+| `zz-deconnexion` | Sign Out — **à lancer à la main uniquement**, il détruit la session |
 
 ## Chaînage automatique
 
@@ -53,15 +56,26 @@ donc rien en base.
 ⚠️ Ne pas interrompre un run en cours de route : les requêtes de nettoyage ne passeraient pas
 et des données `[Bruno]` resteraient en base.
 
+⚠️ **`seq` doit commencer à 1** : Bruno n'honore pas `seq: 0` et relègue la requête en fin de
+dossier — le chaînage des variables casse alors silencieusement.
+
+⚠️ **Sign Out est isolé dans `zz-deconnexion/`** et ne doit jamais être lancé en automatique :
+il détruit la session et tous les dossiers suivants tomberaient en 401.
+
 ## Requêtes non automatisables
 
 Elles n'ont volontairement pas d'assertion bloquante et sont documentées dans leur onglet *Docs* :
 
-- `documents/02-upload-document` — exige un fichier dans `bruno/fixtures/` et écrit réellement
-  sur Scaleway.
+- `zz-documents-manuel/*` — écrit réellement sur Scaleway. Le fichier d'exemple
+  (`fixtures/exemple.pdf`, un PDF minimal de 595 octets) est committé. Le multipart exige
+  **trois** champs : `file`, `name` et `type` — envoyer le fichier seul renvoie un 400.
 - `settings/04-add-client`, `settings/05-assign-project` — exigent un compte client existant.
 - `client/*` — à exécuter connecté avec un **compte client**, pas le compte owner.
 - `auth/sign-up` — **doit échouer** (`disableSignUp: true`). Un 200 ici serait une régression.
+- `auth/request-password-reset` — déclenche un **envoi Brevo réel** si le compte existe.
+- `zz-deconnexion/sign-out` — détruit la session.
+- `zz-securite-manuel/rate-limit-sign-in` — à envoyer en boucle jusqu'au 429 ; sans assertion,
+  puisqu'un envoi isolé renvoie légitimement 401.
 
 ## Requêtes sentinelles
 
