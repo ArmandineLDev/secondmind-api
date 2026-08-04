@@ -95,9 +95,17 @@ Certaines requêtes existent pour verrouiller un bug déjà survenu. Ne pas les 
 | `crm/13-get-opportunity` | Calcul `weighted_value` + jointures contact/entreprise |
 | `client/04-client-document-url` | Doit répondre 404 sur un document d'un autre client |
 
-## Limite connue
+## Limites connues
 
-Cette collection teste le **fonctionnel**, pas le **cloisonnement**. Tant que le P1 de la
-Phase 11.5 (`docs/TODO.md`) n'est pas fait, un compte client authentifié peut appeler toutes
-les routes `/api/v1` et recevoir 200. Les requêtes du dossier `client` sont le point de départ
-pour vérifier ce correctif une fois qu'il sera posé.
+**Bruno valide l'API, pas l'application.** C'est un client HTTP : ni JavaScript, ni politique de
+sécurité de navigateur, ni rendu. Une route peut être verte ici et parfaitement inutilisable depuis
+l'interface — c'est arrivé le 2026-08-04 avec `PATCH` absent de la configuration CORS, qui rendait
+six routes inaccessibles au navigateur alors qu'elles passaient toutes ici.
+
+Échappent notamment à cette collection : le CORS, les cookies (`SameSite`, domaines croisés),
+l'hydratation SSR, et tout le comportement d'interface. Détail et règle à suivre dans
+`docs/tests.md` § « Ce que la collection Bruno ne peut pas tester ».
+
+**Cloisonnement client** : les assertions du dossier `client/` vérifient que l'owner est refusé.
+Le versant « un client ne voit que ses projets » exige un vrai compte client — dossier
+`zz-cloisonnement-client`, à lancer à la main.
