@@ -1,0 +1,33 @@
+meta {
+  name: Capturer une idée
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{apiUrl}}/tasks
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "title": "[Bruno] Idée captée à la volée"
+  }
+}
+
+vars:post-response {
+  inboxTaskId: res.body.id
+}
+
+assert {
+  res.status: eq 201
+  res.body.stage: eq inbox
+  res.body.project_id: isNull
+  res.body.column_id: isNull
+}
+
+docs {
+  Capture rapide : un titre suffit, rien d'autre. Route NON imbriquée sous un
+  projet — c'est tout l'intérêt de la feature, la tâche n'en a pas encore.
+}

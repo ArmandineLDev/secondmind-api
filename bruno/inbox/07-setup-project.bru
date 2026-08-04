@@ -1,0 +1,25 @@
+meta {
+  name: Setup — projet et colonnes
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{apiUrl}}/projects
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "[Bruno] Projet support inbox"
+  }
+}
+
+vars:post-response {
+  inboxProjectId: res.body.id
+}
+
+assert {
+  res.status: eq 201
+}

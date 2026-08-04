@@ -1,0 +1,19 @@
+meta {
+  name: Setup — colonne de l'autre projet
+  type: http
+  seq: 11
+}
+
+get {
+  url: {{apiUrl}}/projects/{{autreProjetId}}/columns
+  body: none
+  auth: none
+}
+
+vars:post-response {
+  autreColonneId: res.body[0].id
+}
+
+assert {
+  res.status: eq 200
+}

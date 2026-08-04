@@ -1,0 +1,19 @@
+meta {
+  name: Setup — récupérer une colonne
+  type: http
+  seq: 8
+}
+
+get {
+  url: {{apiUrl}}/projects/{{inboxProjectId}}/columns
+  body: none
+  auth: none
+}
+
+vars:post-response {
+  inboxColumnId: res.body[0].id
+}
+
+assert {
+  res.status: eq 200
+}

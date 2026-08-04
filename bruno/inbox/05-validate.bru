@@ -1,0 +1,28 @@
+meta {
+  name: Valider vers le backlog
+  type: http
+  seq: 5
+}
+
+patch {
+  url: {{apiUrl}}/tasks/{{inboxTaskId}}/triage
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "action": "validate"
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.stage: eq backlog
+  res.body.snooze_until: isNull
+}
+
+docs {
+  La validation lève le report : la tâche a été tranchée, elle n'a plus à
+  réapparaître au tri.
+}

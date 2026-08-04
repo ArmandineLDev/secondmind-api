@@ -1,0 +1,31 @@
+meta {
+  name: Setup — un AUTRE projet
+  type: http
+  seq: 10
+}
+
+post {
+  url: {{apiUrl}}/projects
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "[Bruno] Autre projet (colonne étrangère)"
+  }
+}
+
+vars:post-response {
+  autreProjetId: res.body.id
+}
+
+assert {
+  res.status: eq 201
+}
+
+docs {
+  Sert uniquement à obtenir une colonne appartenant à un AUTRE projet, pour le
+  test de refus qui suit. Le dossier reste ainsi autonome : il ne dépend
+  d'aucune variable produite ailleurs.
+}

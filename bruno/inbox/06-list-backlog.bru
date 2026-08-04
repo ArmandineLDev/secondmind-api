@@ -1,0 +1,20 @@
+meta {
+  name: Lister le backlog
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{apiUrl}}/tasks?stage=backlog
+  body: none
+  auth: none
+}
+
+params:query {
+  stage: backlog
+}
+
+assert {
+  res.status: eq 200
+  res.body: isArray
+}

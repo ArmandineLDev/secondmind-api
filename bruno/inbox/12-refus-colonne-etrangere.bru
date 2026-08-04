@@ -1,0 +1,32 @@
+meta {
+  name: Refus — colonne d'un autre projet
+  type: http
+  seq: 12
+}
+
+patch {
+  url: {{apiUrl}}/tasks/{{inboxTaskId}}/assign
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "project_id": "{{inboxProjectId}}",
+    "column_id": "{{autreColonneId}}"
+  }
+}
+
+assert {
+  res.status: eq 400
+}
+
+docs {
+  ⚠️ Requête sentinelle. On tente de poser la tâche sur une colonne qui
+  appartient à un AUTRE projet (créé aux étapes 10 et 11). Le datamapper vérifie
+  en une seule requête que le projet appartient au workspace ET que la colonne
+  appartient bien à ce projet.
+
+  Un 200 ici signifierait qu'on peut poser une tâche sur le board d'un autre
+  projet — voire d'un autre workspace.
+}

@@ -8,6 +8,9 @@ import {
   moveTask,
   rescheduleTask,
   deleteTask,
+  captureTask as createCapturedTask,
+  triageTask as triageCapturedTask,
+  assignTask as assignCapturedTask,
 } from '@/db/datamappers/task.datamapper'
 import { findProjectById } from '@/db/datamappers/project.datamapper'
 import { computeNextOccurrence } from '@/features/tasks/recurrence.service'
@@ -17,6 +20,10 @@ import {
   moveTaskSchema,
   taskParamsSchema,
   listTasksQuerySchema,
+  captureTaskSchema,
+  triageTaskSchema,
+  assignTaskSchema,
+  taskIdParamsSchema,
 } from '@/features/tasks/task.schema'
 import { projectParamsSchema } from '@/features/projects/project.schema'
 
@@ -124,4 +131,51 @@ export async function removeTask(request: FastifyRequest, reply: FastifyReply) {
   const deleted = await deleteTask(params.data.taskId, params.data.id, request.organizationId)
   if (!deleted) return reply.notFound('Tâche introuvable')
   return reply.status(204).send()
+}
+
+// ─── Capture / Inbox (functional-spec §3.9) ──────────────────────────────────
+
+// Capture rapide : POST /tasks avec un titre. Volontairement NON imbriquée sous
+// un projet — c'est tout le point, la tâche n'en a pas encore.
+export async function captureTask(request: FastifyRequest, reply: FastifyReply) {
+  const body = captureTaskSchema.safeParse(request.body)
+  if (!body.success) return reply.badRequest(body.error.message)
+
+  const task = await createCapturedTask(request.organizationId, body.data.title)
+  return reply.status(201).send(task)
+}
+
+// Tri hebdomadaire : valider / différer / annuler.
+export async function triage(request: FastifyRequest, reply: FastifyReply) {
+  const params = taskIdParamsSchema.safeParse(request.params)
+  if (!params.success) return reply.badRequest(params.error.message)
+
+  const body = triageTaskSchema.safeParse(request.body)
+  if (!body.success) return reply.badRequest(body.error.message)
+
+  const task = await triageCapturedTask(params.data.taskId, request.organizationId, body.data)
+  if (!task) {
+    // Le report ne s'applique qu'à une tâche encore dans l'inbox : distinguer les
+    // deux cas évite de faire croire à une tâche disparue.
+    return body.data.action === 'snooze'
+      ? reply.badRequest('Seule une tâche encore dans l\'inbox peut être différée')
+      : reply.notFound('Tâche introuvable')
+  }
+  return reply.send(task)
+}
+
+// Passage sur un board : la tâche devient `active`.
+export async function assign(request: FastifyRequest, reply: FastifyReply) {
+  const params = taskIdParamsSchema.safeParse(request.params)
+  if (!params.success) return reply.badRequest(params.error.message)
+
+  const body = assignTaskSchema.safeParse(request.body)
+  if (!body.success) return reply.badRequest(body.error.message)
+
+  const task = await assignCapturedTask(params.data.taskId, request.organizationId, body.data)
+  // Un null ici signifie soit une tâche inconnue, soit un projet/colonne hors du
+  // workspace, soit une colonne n'appartenant pas au projet visé : le datamapper
+  // vérifie les trois d'un coup, on ne peut pas les distinguer sans requête en plus.
+  if (!task) return reply.badRequest('Tâche, projet ou colonne introuvable, ou colonne n\'appartenant pas à ce projet')
+  return reply.send(task)
 }
