@@ -3,6 +3,7 @@ import { db } from '@/lib/db'
 import { env } from '@/lib/env'
 import corsPlugin from '@/plugins/cors.plugin'
 import sensiblePlugin from '@/plugins/sensible.plugin'
+import errorHandlerPlugin from '@/plugins/error-handler.plugin'
 import authPlugin from '@/plugins/auth.plugin'
 import multipartPlugin from '@/plugins/multipart.plugin'
 import { registerRoutes } from '@/routes'
@@ -26,6 +27,9 @@ export const buildApp = async () => {
 
   await app.register(corsPlugin)
   await app.register(sensiblePlugin)
+  // Après sensible (dont il rattrape les erreurs) et avant les routes, pour que
+  // le gestionnaire soit posé sur l'instance racine et couvre tout l'arbre.
+  await app.register(errorHandlerPlugin)
   await app.register(authPlugin)
   await app.register(multipartPlugin)
   await app.register(registerRoutes)
