@@ -13,6 +13,11 @@ export async function contactRoutes(fastify: FastifyInstance) {
   fastify.put('/contacts/:id', auth, contact.update)
   fastify.delete('/contacts/:id', auth, contact.remove)
 
+  // RGPD — droit d'accès / portabilité (art. 15 et 20) et aperçu de l'empreinte
+  // avant effacement. Placées avant les routes imbriquées pour rester lisibles.
+  fastify.get('/contacts/:id/export', auth,    contact.exportData)
+  fastify.get('/contacts/:id/footprint', auth, contact.footprint)
+
   // Interactions imbriquées sous contact
   fastify.get('/contacts/:contactId/interactions', auth,     interaction.getByContact)
   fastify.post('/contacts/:contactId/interactions', auth,    interaction.create)

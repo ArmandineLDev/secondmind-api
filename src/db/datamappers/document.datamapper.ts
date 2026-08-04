@@ -4,7 +4,7 @@ import type { DocumentQuery } from '@/features/documents/document.schema'
 
 interface CreateDocumentParams {
   organizationId: string
-  clientId:       string
+  clientId:       string | null
   projectId?:     string
   name:           string
   type:           string

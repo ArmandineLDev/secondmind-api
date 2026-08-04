@@ -124,3 +124,88 @@ export async function deleteContact(id: string, organizationId: string): Promise
   )
   return (result.rowCount ?? 0) > 0
 }
+
+// ─── RGPD ─────────────────────────────────────────────────────────────────────
+
+export interface ContactExport {
+  contact:       Record<string, unknown> | null
+  company:       Record<string, unknown> | null
+  social_links:  Record<string, unknown>[]
+  interactions:  Record<string, unknown>[]
+  opportunities: Record<string, unknown>[]
+  invoices:      Record<string, unknown>[]
+}
+
+/**
+ * Rassemble TOUT ce que l'organisation détient sur une personne, pour répondre
+ * à une demande d'accès ou de portabilité (RGPD art. 15 et 20).
+ *
+ * Les factures sont incluses : elles portent le nom de la personne et relèvent
+ * donc de son droit d'accès — même si elles ne peuvent pas être effacées
+ * (conservation comptable obligatoire).
+ */
+export async function exportContactData(
+  id: string,
+  organizationId: string
+): Promise<ContactExport | null> {
+  const contact = await db.query(
+    `SELECT * FROM contact WHERE id = $1 AND organization_id = $2`,
+    [id, organizationId]
+  )
+  if (contact.rowCount === 0) return null
+
+  const [company, socialLinks, interactions, opportunities, invoices] = await Promise.all([
+    db.query(
+      `SELECT co.* FROM company co
+       JOIN contact ct ON ct.company_id = co.id
+       WHERE ct.id = $1 AND co.organization_id = $2`,
+      [id, organizationId]
+    ),
+    db.query(`SELECT * FROM contact_social_link WHERE contact_id = $1 ORDER BY position`, [id]),
+    db.query(`SELECT * FROM interaction WHERE contact_id = $1 ORDER BY date DESC`, [id]),
+    db.query(
+      `SELECT * FROM opportunity WHERE contact_id = $1 AND organization_id = $2 ORDER BY created_at DESC`,
+      [id, organizationId]
+    ),
+    db.query(
+      `SELECT * FROM invoice WHERE contact_id = $1 AND organization_id = $2 ORDER BY issue_date DESC`,
+      [id, organizationId]
+    ),
+  ])
+
+  return {
+    contact:       contact.rows[0] as Record<string, unknown>,
+    company:       (company.rows[0] as Record<string, unknown>) ?? null,
+    social_links:  socialLinks.rows as Record<string, unknown>[],
+    interactions:  interactions.rows as Record<string, unknown>[],
+    opportunities: opportunities.rows as Record<string, unknown>[],
+    invoices:      invoices.rows as Record<string, unknown>[],
+  }
+}
+
+/**
+ * Compte ce qu'une suppression détruirait ou détacherait, pour que l'owner
+ * décide en connaissance de cause avant d'effacer.
+ */
+export async function countContactFootprint(
+  id: string,
+  organizationId: string
+): Promise<{ interactions: number; social_links: number; opportunities: number; invoices: number }> {
+  const result = await db.query<{
+    interactions: string; social_links: string; opportunities: string; invoices: string
+  }>(
+    `SELECT
+       (SELECT COUNT(*) FROM interaction          WHERE contact_id = $1)                          AS interactions,
+       (SELECT COUNT(*) FROM contact_social_link  WHERE contact_id = $1)                          AS social_links,
+       (SELECT COUNT(*) FROM opportunity          WHERE contact_id = $1 AND organization_id = $2) AS opportunities,
+       (SELECT COUNT(*) FROM invoice              WHERE contact_id = $1 AND organization_id = $2) AS invoices`,
+    [id, organizationId]
+  )
+  const r = result.rows[0]
+  return {
+    interactions:  Number(r.interactions),
+    social_links:  Number(r.social_links),
+    opportunities: Number(r.opportunities),
+    invoices:      Number(r.invoices),
+  }
+}

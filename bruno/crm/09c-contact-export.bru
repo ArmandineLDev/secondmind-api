@@ -1,0 +1,28 @@
+meta {
+  name: RGPD — export des données
+  type: http
+  seq: 11
+}
+
+get {
+  url: {{apiUrl}}/contacts/{{contactId}}/export
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body.contact: isDefined
+  res.body.interactions: isArray
+  res.body.invoices: isArray
+  res.body.notice: isDefined
+}
+
+docs {
+  Droit d'accès et de portabilité (RGPD art. 15 et 20) : tout ce que
+  l'organisation détient sur la personne, en un seul JSON téléchargeable.
+
+  Les factures y figurent au titre du droit d'ACCÈS, bien qu'elles ne puissent
+  pas être effacées — conservation comptable obligatoire de 10 ans. Le champ
+  `notice` l'explique dans le fichier remis à la personne.
+}
