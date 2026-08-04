@@ -33,9 +33,13 @@ export default fp(async (fastify: FastifyInstance) => {
   fastify.decorate(
     'authenticate',
     async (request: FastifyRequest, reply: FastifyReply) => {
-      const session = await auth.api.getSession({
-        headers: fromNodeHeaders(request.headers),
-      })
+      // Même en-tête d'IP de confiance que dans le proxy `/auth/*` : ces appels
+      // ne passent pas par lui, et sans cela Better Auth ne résoudrait aucune IP
+      // ici (`advanced.ipAddress.ipAddressHeaders` ne lit que cet en-tête).
+      const headers = fromNodeHeaders(request.headers)
+      headers.set('x-secondmind-client-ip', request.ip)
+
+      const session = await auth.api.getSession({ headers })
 
       // Pas de session = utilisateur non connecté
       if (!session) {

@@ -1,0 +1,30 @@
+meta {
+  name: Sign Out
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/api/auth/sign-out
+  body: none
+  auth: none
+}
+
+headers {
+  Origin: {{baseUrl}}
+}
+
+assert {
+  res.status: eq 200
+}
+
+docs {
+  ⚠️ ISOLÉ DANS SON PROPRE DOSSIER — À LANCER À LA MAIN, JAMAIS EN AUTOMATIQUE.
+
+  Cette requête détruit la session. Elle était initialement dans le dossier
+  `auth` en seq 99 : lancer « Run Folder » sur `auth` connectait puis
+  déconnectait aussitôt, et tous les dossiers suivants tombaient en 401.
+
+  Le dossier est préfixé `zz-` pour rester en dernier dans la liste et ne pas
+  être lancé par réflexe.
+}
