@@ -2,7 +2,8 @@ import type { FastifyInstance } from 'fastify'
 import * as goal from './goal.controller'
 
 export async function goalRoutes(fastify: FastifyInstance) {
-  const auth = { onRequest: [fastify.authenticate] }
+  // Routes métier : réservées à l'owner du workspace (cf. auth.plugin.ts).
+  const auth = { onRequest: [fastify.authenticate, fastify.requireOwner] }
 
   fastify.get('/goals', auth,     goal.getAll)
   fastify.post('/goals', auth,    goal.create)

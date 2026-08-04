@@ -11,7 +11,8 @@ import { getColumns, addColumn, patchColumn, removeColumn, reorder } from '@/fea
 import { getProjectTasks, addTask } from '@/features/tasks/task.controller'
 
 export async function projectRoutes(fastify: FastifyInstance) {
-  const auth = { onRequest: [fastify.authenticate] }
+  // Routes métier : réservées à l'owner du workspace (cf. auth.plugin.ts).
+  const auth = { onRequest: [fastify.authenticate, fastify.requireOwner] }
 
   fastify.get('/projects', auth, getProjects)
   fastify.post('/projects', auth, createProject)

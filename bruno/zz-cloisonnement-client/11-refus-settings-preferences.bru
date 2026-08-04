@@ -1,0 +1,24 @@
+meta {
+  name: Refus — /settings/preferences
+  type: http
+  seq: 11
+}
+
+get {
+  url: {{apiUrl}}/settings/preferences
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 403
+  res.body.error: eq Réservé au propriétaire du workspace
+}
+
+docs {
+  ⚠️ CŒUR DU TEST DE CLOISONNEMENT.
+  Avant le correctif du 2026-08-04, cette requête renvoyait **200 avec les
+  données de l'owner** : le client était membre de la même organisation et les
+  datamappers ne filtrent que sur `organization_id`.
+  Un 200 ici est une régression de sécurité majeure.
+}

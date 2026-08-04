@@ -4,7 +4,8 @@ import * as interaction from '@/features/crm/interactions/interaction.controller
 import * as socialLink from './social-link.controller'
 
 export async function contactRoutes(fastify: FastifyInstance) {
-  const auth = { onRequest: [fastify.authenticate] }
+  // Routes métier : réservées à l'owner du workspace (cf. auth.plugin.ts).
+  const auth = { onRequest: [fastify.authenticate, fastify.requireOwner] }
 
   fastify.get('/contacts', auth,     contact.getAll)
   fastify.post('/contacts', auth,    contact.create)

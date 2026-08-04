@@ -2,7 +2,8 @@ import type { FastifyInstance } from 'fastify'
 import * as doc from './document.controller'
 
 export async function documentRoutes(fastify: FastifyInstance) {
-  const auth = { onRequest: [fastify.authenticate] }
+  // Routes métier : réservées à l'owner du workspace (cf. auth.plugin.ts).
+  const auth = { onRequest: [fastify.authenticate, fastify.requireOwner] }
 
   fastify.get('/documents', auth,            doc.getAll)
   fastify.post('/documents', auth,           doc.upload)

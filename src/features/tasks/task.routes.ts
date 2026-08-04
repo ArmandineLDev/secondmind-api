@@ -2,7 +2,8 @@ import type { FastifyInstance } from 'fastify'
 import { getTasks, patchTask, relocateTask, rescheduleRecurringTask, removeTask } from '@/features/tasks/task.controller'
 
 export async function taskRoutes(fastify: FastifyInstance) {
-  const auth = { onRequest: [fastify.authenticate] }
+  // Routes métier : réservées à l'owner du workspace (cf. auth.plugin.ts).
+  const auth = { onRequest: [fastify.authenticate, fastify.requireOwner] }
 
   // Vue globale de toutes les tâches du workspace (avec filtres optionnels)
   fastify.get('/tasks', auth, getTasks)

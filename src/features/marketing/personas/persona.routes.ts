@@ -2,7 +2,8 @@ import type { FastifyInstance } from 'fastify'
 import * as persona from './persona.controller'
 
 export async function personaRoutes(fastify: FastifyInstance) {
-  const auth = { onRequest: [fastify.authenticate] }
+  // Routes métier : réservées à l'owner du workspace (cf. auth.plugin.ts).
+  const auth = { onRequest: [fastify.authenticate, fastify.requireOwner] }
 
   fastify.get('/personas', auth,     persona.getAll)
   fastify.post('/personas', auth,    persona.create)

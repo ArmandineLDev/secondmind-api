@@ -1,0 +1,21 @@
+meta {
+  name: Vérifier le rôle
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/api/me
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body.role: eq client
+}
+
+docs {
+  `/api/me` est la seule route authentifiée sans garde de rôle : c'est elle qui
+  permet au front de savoir où orienter l'utilisateur.
+}

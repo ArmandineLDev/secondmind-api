@@ -2,7 +2,8 @@ import type { FastifyInstance } from 'fastify'
 import * as timeEntry from './time-entry.controller'
 
 export async function timeEntryRoutes(fastify: FastifyInstance) {
-  const auth = { onRequest: [fastify.authenticate] }
+  // Routes métier : réservées à l'owner du workspace (cf. auth.plugin.ts).
+  const auth = { onRequest: [fastify.authenticate, fastify.requireOwner] }
 
   fastify.get('/time-entries', auth,     timeEntry.getAll)
   fastify.post('/time-entries', auth,    timeEntry.create)

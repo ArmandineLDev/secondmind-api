@@ -41,6 +41,7 @@ en PR, et suit les migrations du schéma.
 | `client` | Espace client (à lancer connecté **en tant que client**) |
 | `zz-documents-manuel` | Upload / URL signée / suppression — **à la main**, écrit réellement sur Scaleway |
 | `zz-securite-manuel` | Vérification du rate-limiting — **à la main**, à répéter jusqu'au 429 |
+| `zz-cloisonnement-client` | Cloisonnement vu depuis un **compte client** — **à la main**, remplace la session |
 | `zz-deconnexion` | Sign Out — **à lancer à la main uniquement**, il détruit la session |
 
 ## Chaînage automatique
@@ -70,7 +71,9 @@ Elles n'ont volontairement pas d'assertion bloquante et sont documentées dans l
   (`fixtures/exemple.pdf`, un PDF minimal de 595 octets) est committé. Le multipart exige
   **trois** champs : `file`, `name` et `type` — envoyer le fichier seul renvoie un 400.
 - `settings/04-add-client`, `settings/05-assign-project` — exigent un compte client existant.
-- `client/*` — à exécuter connecté avec un **compte client**, pas le compte owner.
+- `client/*` — reste dans le run automatique, mais teste désormais l'inverse : **connecté en
+  owner, ces 4 routes doivent répondre 403**. Le versant « un client ne voit que ses projets »
+  est dans `zz-cloisonnement-client`.
 - `auth/sign-up` — **doit échouer** (`disableSignUp: true`). Un 200 ici serait une régression.
 - `auth/request-password-reset` — déclenche un **envoi Brevo réel** si le compte existe.
 - `zz-deconnexion/sign-out` — détruit la session.

@@ -2,7 +2,8 @@ import type { FastifyInstance } from 'fastify'
 import * as company from './company.controller'
 
 export async function companyRoutes(fastify: FastifyInstance) {
-  const auth = { onRequest: [fastify.authenticate] }
+  // Routes métier : réservées à l'owner du workspace (cf. auth.plugin.ts).
+  const auth = { onRequest: [fastify.authenticate, fastify.requireOwner] }
 
   fastify.get('/companies', auth,     company.getAll)
   fastify.post('/companies', auth,    company.create)

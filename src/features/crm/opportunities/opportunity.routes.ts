@@ -2,7 +2,8 @@ import type { FastifyInstance } from 'fastify'
 import * as opportunity from './opportunity.controller'
 
 export async function opportunityRoutes(fastify: FastifyInstance) {
-  const auth = { onRequest: [fastify.authenticate] }
+  // Routes métier : réservées à l'owner du workspace (cf. auth.plugin.ts).
+  const auth = { onRequest: [fastify.authenticate, fastify.requireOwner] }
 
   fastify.get('/opportunities', auth,     opportunity.getAll)
   fastify.post('/opportunities', auth,    opportunity.create)
