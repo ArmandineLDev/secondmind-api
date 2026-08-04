@@ -3,9 +3,17 @@ import { fromNodeHeaders } from 'better-auth/node'
 import { auth } from '@/lib/auth'
 
 export async function authRoutes(fastify: FastifyInstance) {
-  // Retourne la session courante — utilisé par le frontend pour savoir si l'utilisateur est connecté
+  // Session courante — utilisé par le frontend pour savoir qui est connecté.
+  //
+  // Volontairement SANS garde de rôle : c'est précisément la route qui permet au
+  // front de découvrir son rôle et de s'orienter (espace owner ou espace client).
+  // Elle doit donc répondre aux deux.
   fastify.get('/me', { onRequest: [fastify.authenticate] }, async (request, reply) => {
-    return reply.send(request.session)
+    return reply.send({
+      ...request.session,
+      organizationId: request.organizationId,
+      role: request.role,
+    })
   })
 
   // Proxy vers Better Auth — gère sign-in, sign-out, et toutes les routes internes de Better Auth

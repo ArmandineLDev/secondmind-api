@@ -1,0 +1,39 @@
+meta {
+  name: Connexion avec un compte CLIENT
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/api/auth/sign-in/email
+  body: json
+  auth: none
+}
+
+headers {
+  Origin: {{baseUrl}}
+}
+
+body:json {
+  {
+    "email": "{{process.env.TEST_CLIENT_EMAIL}}",
+    "password": "{{process.env.TEST_CLIENT_PASSWORD}}"
+  }
+}
+
+assert {
+  res.status: eq 200
+}
+
+docs {
+  ⚠️ DOSSIER MANUEL — remplace la session courante par celle d'un client.
+
+  Exige un compte client dans `bruno/.env` :
+    TEST_CLIENT_EMAIL=...
+    TEST_CLIENT_PASSWORD=...
+
+  L'inscription publique étant fermée, ce compte doit être créé à la main puis
+  invité via Paramètres → Accès clients.
+
+  Après ce dossier, relancer `auth` pour retrouver la session owner.
+}

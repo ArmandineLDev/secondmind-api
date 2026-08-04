@@ -1,0 +1,22 @@
+meta {
+  name: Accès autorisé — ses propres projets
+  type: http
+  seq: 20
+}
+
+get {
+  url: {{apiUrl}}/client/projects
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body: isArray
+}
+
+docs {
+  Versant utile du cloisonnement : le client accède bien à SON espace.
+  Vérifier à l'œil que la liste ne contient que les projets qui lui sont
+  assignés via `project_client` — et aucun autre.
+}

@@ -1,5 +1,5 @@
 meta {
-  name: Détail d'un projet client
+  name: Détail d'un projet client — refusé à l'owner
   type: http
   seq: 2
 }
@@ -10,7 +10,13 @@ get {
   auth: none
 }
 
+assert {
+  res.status: eq 403
+  res.body.error: eq Réservé aux accès clients
+}
+
 docs {
-  Renvoie le projet avec ses colonnes et ses tâches, en lecture seule.
-  Un projet non affecté doit répondre 404, jamais son contenu.
+  ⚠️ TEST DE CLOISONNEMENT — lancé connecté en OWNER.
+  La garde `requireClient` s'applique avant même la résolution du paramètre
+  d'URL : la variable non renseignée n'a donc aucune incidence, on attend un 403.
 }

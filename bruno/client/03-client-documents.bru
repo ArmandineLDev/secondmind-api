@@ -1,5 +1,5 @@
 meta {
-  name: Documents du client
+  name: Documents du client — refusé à l'owner
   type: http
   seq: 3
 }
@@ -10,6 +10,13 @@ get {
   auth: none
 }
 
+assert {
+  res.status: eq 403
+  res.body.error: eq Réservé aux accès clients
+}
+
 docs {
-  Ne doit renvoyer que les documents dont le client est destinataire.
+  ⚠️ TEST DE CLOISONNEMENT — lancé connecté en OWNER.
+  La garde `requireClient` s'applique avant même la résolution du paramètre
+  d'URL : la variable non renseignée n'a donc aucune incidence, on attend un 403.
 }

@@ -2,7 +2,8 @@ import type { FastifyInstance } from 'fastify'
 import * as stats from './stats.controller'
 
 export async function statsRoutes(fastify: FastifyInstance) {
-  const auth = { onRequest: [fastify.authenticate] }
+  // Routes métier : réservées à l'owner du workspace (cf. auth.plugin.ts).
+  const auth = { onRequest: [fastify.authenticate, fastify.requireOwner] }
 
   fastify.get('/stats/kpis', auth,         stats.getKpis)
   fastify.get('/stats/revenue', auth,      stats.getMonthlyRevenue)

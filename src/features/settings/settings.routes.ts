@@ -2,7 +2,8 @@ import type { FastifyInstance } from 'fastify'
 import * as s from './settings.controller'
 
 export async function settingsRoutes(fastify: FastifyInstance) {
-  const auth = { onRequest: [fastify.authenticate] }
+  // Routes métier : réservées à l'owner du workspace (cf. auth.plugin.ts).
+  const auth = { onRequest: [fastify.authenticate, fastify.requireOwner] }
 
   fastify.get('/settings/preferences', auth,                            s.getPreferences)
   fastify.put('/settings/preferences', auth,                            s.updatePreferences)

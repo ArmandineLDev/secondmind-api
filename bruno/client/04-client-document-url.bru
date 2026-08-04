@@ -1,5 +1,5 @@
 meta {
-  name: URL signée d'un document client
+  name: URL signée — refusé à l'owner
   type: http
   seq: 4
 }
@@ -10,7 +10,13 @@ get {
   auth: none
 }
 
+assert {
+  res.status: eq 403
+  res.body.error: eq Réservé aux accès clients
+}
+
 docs {
-  ⚠️ Test de sécurité : avec l'id d'un document NON destiné à ce client,
-  la réponse doit être 404 — jamais une URL signée.
+  ⚠️ TEST DE CLOISONNEMENT — lancé connecté en OWNER.
+  La garde `requireClient` s'applique avant même la résolution du paramètre
+  d'URL : la variable non renseignée n'a donc aucune incidence, on attend un 403.
 }

@@ -2,7 +2,8 @@ import type { FastifyInstance } from 'fastify'
 import * as swot from './swot.controller'
 
 export async function swotRoutes(fastify: FastifyInstance) {
-  const auth = { onRequest: [fastify.authenticate] }
+  // Routes métier : réservées à l'owner du workspace (cf. auth.plugin.ts).
+  const auth = { onRequest: [fastify.authenticate, fastify.requireOwner] }
 
   fastify.get('/swots', auth,     swot.getAll)
   fastify.post('/swots', auth,    swot.create)
