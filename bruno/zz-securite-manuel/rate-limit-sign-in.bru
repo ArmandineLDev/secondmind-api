@@ -1,0 +1,58 @@
+meta {
+  name: Rate limit — connexion
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/api/auth/sign-in/email
+  body: json
+  auth: none
+}
+
+headers {
+  Origin: {{baseUrl}}
+}
+
+body:json {
+  {
+    "email": "{{process.env.TEST_EMAIL}}",
+    "password": "mot-de-passe-volontairement-faux"
+  }
+}
+
+docs {
+  ⚠️ DOSSIER MANUEL — ne pas lancer en automatique.
+
+  VÉRIFICATION DU RATE-LIMITING (tâche 1.2)
+
+  Lancer cette requête PLUSIEURS FOIS d'affilée (bouton Send, en boucle) :
+    · les premières fois     → 401 « Invalid email or password »
+    · au-delà du seuil        → 429, avec un en-tête `Retry-After`
+
+  Seuils configurés dans `lib/auth.ts` :
+    · en production  : 5 tentatives / 15 min
+    · en local       : 30 tentatives / 15 min (pour ne pas gêner les tests)
+
+  Il faut donc 31 envois en local pour déclencher le 429. Plus rapide en ligne
+  de commande :
+
+    for i in $(seq 1 32); do
+      curl -s -o /dev/null -w "%{http_code} " -X POST \
+        http://localhost:1974/api/auth/sign-in/email \
+        -H "Content-Type: application/json" -H "Origin: http://localhost:1974" \
+        -d '{"email":"test@exemple.dev","password":"faux"}'
+    done; echo
+
+  On doit voir une série de 401 puis des 429.
+
+  ⚠️ EN PRODUCTION, LE POINT CRITIQUE EST AILLEURS : si Better Auth n'arrive pas
+  à déterminer l'IP du client, il IGNORE purement la limitation (un unique
+  avertissement en logs : « Rate limiting skipped: could not determine client IP »).
+  Après déploiement, refaire le test contre api.secondmind.fr : 6 essais doivent
+  suffire à obtenir un 429. Si tout reste en 401, c'est que l'IP ne remonte pas —
+  vérifier alors `trustProxy` (app.ts) et l'en-tête injecté par le proxy.
+
+  ⚠️ Ne pas lancer avec le VRAI mot de passe : en cas de succès la session
+  courante serait remplacée.
+}

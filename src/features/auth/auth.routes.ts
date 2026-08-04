@@ -16,6 +16,15 @@ export async function authRoutes(fastify: FastifyInstance) {
       const url = new URL(request.url, `${request.protocol}://${request.headers.host}`)
       const headers = fromNodeHeaders(request.headers)
 
+      // IP client de confiance pour le rate-limiting de Better Auth.
+      // Better Auth lit `x-forwarded-for` et en prend la PREMIÈRE valeur ; or
+      // Traefik ajoute la vraie IP à la suite de ce que le client a envoyé.
+      // Un attaquant forgeant cet en-tête ferait donc varier sa clé de limitation
+      // à volonté et passerait au travers. `request.ip` est résolu par Fastify
+      // avec `trustProxy: 1` (cf. app.ts) : c'est l'IP vue par Traefik, non forgeable.
+      // `set` écrase toute valeur homonyme envoyée par le client.
+      headers.set('x-secondmind-client-ip', request.ip)
+
       const req = new Request(url.toString(), {
         method: request.method,
         headers,

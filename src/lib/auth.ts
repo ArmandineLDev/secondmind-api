@@ -77,6 +77,54 @@ export const auth = betterAuth({
     },
   },
 
+  // Better Auth résout l'IP du client depuis un en-tête. Par défaut il lit
+  // `x-forwarded-for` et en prend la PREMIÈRE valeur — forgeable par le client,
+  // puisque Traefik se contente d'ajouter la vraie IP à la suite. On lui fait
+  // donc lire l'en-tête que le proxy Fastify injecte à partir de `request.ip`
+  // (cf. `features/auth/auth.routes.ts`), qui n'est pas manipulable de l'extérieur.
+  advanced: {
+    ipAddress: {
+      ipAddressHeaders: ['x-secondmind-client-ip'],
+    },
+  },
+
+  // Limitation du débit sur les routes d'authentification.
+  //
+  // Better Auth embarque son propre limiteur, mais ses réglages par défaut sont
+  // insuffisants ici :
+  //   · `enabled` vaut `isProduction` → aucune protection ni test possible en local ;
+  //   · le défaut global est de 100 requêtes / 10 s ;
+  //   · sa règle intégrée sur /sign-in autorise 3 requêtes / 10 s, soit encore
+  //     1080 tentatives par heure depuis une même IP — trop pour du brute force patient.
+  //
+  // ⚠️ Si l'IP ne peut pas être déterminée, Better Auth IGNORE la limitation
+  // (un avertissement est écrit une seule fois dans les logs). D'où le soin
+  // apporté ci-dessus à la résolution de l'IP.
+  //
+  // Le stockage est en mémoire (Map du process) : les compteurs repartent à zéro
+  // à chaque redéploiement. Acceptable pour un conteneur unique ; à basculer sur
+  // `secondary-storage` le jour où l'API tournera en plusieurs instances.
+  rateLimit: {
+    enabled: true,
+    // Défaut volontairement large : /get-session est appelé à chaque chargement
+    // de page par le front, il ne doit jamais être bridé.
+    window: 10,
+    max: 100,
+    customRules: {
+      // Connexion : 5 essais par quart d'heure en production. Assez permissif
+      // pour des fautes de frappe, assez strict pour rendre le brute force vain.
+      // Plus souple en local pour ne pas gêner les passages de la collection Bruno.
+      '/sign-in/email': {
+        window: 900,
+        max: env.NODE_ENV === 'production' ? 5 : 30,
+      },
+      // Réinitialisation : protège aussi le quota Brevo et évite qu'on puisse
+      // noyer une boîte mail sous les demandes.
+      '/request-password-reset': { window: 3600, max: 3 },
+      '/reset-password':         { window: 900,  max: 5 },
+    },
+  },
+
   plugins: [
     organization(),
   ],
