@@ -1,0 +1,26 @@
+meta {
+  name: Rattacher l'opportunité à une offre
+  type: http
+  seq: 23
+}
+
+put {
+  url: {{apiUrl}}/opportunities/{{opportunityId}}
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "offer_id": "{{crmOfferId}}"
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.offer_id: eq {{crmOfferId}}
+}
+
+docs {
+  Dépend de la requête « Setup — offre du catalogue » (seq 0).
+}

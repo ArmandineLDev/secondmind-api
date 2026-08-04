@@ -33,3 +33,5 @@ marketing_0003_canvas_lean_fields [marketing_0002_goal_canvas_editorial] 2026-08
 marketing_0004_swot_analysis [marketing_0003_canvas_lean_fields] 2026-08-03T16:42:53Z Armandine,,, <armandine@portableDebian> # Table swot_analysis (forces/faiblesses/opportunités/menaces)
 marketing_0005_value_proposition_canvas [marketing_0004_swot_analysis marketing_0001_offer_and_persona] 2026-08-03T16:42:54Z Armandine,,, <armandine@portableDebian> # Table value_proposition_canvas (liée à offer + persona)
 marketing_0006_offer_canvas_swot_link [marketing_0005_value_proposition_canvas] 2026-08-03T16:42:54Z Armandine,,, <armandine@portableDebian> # Ajout offer.canvas_id / offer.swot_id (plusieurs offres -> un même BM/SWOT)
+crm_0006_opportunity_offer_link [crm_0003_rename_lead_to_opportunity marketing_0001_offer_and_persona] 2026-08-04T06:29:36Z Armandine,,, <armandine@portableDebian> # Ajout opportunity.offer_id (offre du catalogue ou sur-mesure si NULL)
+stats_0006_offer_performance [crm_0006_opportunity_offer_link stats_0005_rename_lead_views] 2026-08-04T06:29:36Z Armandine,,, <armandine@portableDebian> # Vue v_offer_performance (conversion et CA par offre, + ligne sur-mesure)

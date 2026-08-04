@@ -22,12 +22,17 @@ export async function findAllOpportunities(
     conditions.push(`op.company_id = $${i++}`)
     params.push(query.company_id)
   }
+  if (query.offer_id) {
+    conditions.push(`op.offer_id = $${i++}`)
+    params.push(query.offer_id)
+  }
 
   const result = await db.query<OpportunityWithRelations>(
     `SELECT op.*,
             ct.first_name   AS contact_first_name,
             ct.last_name    AS contact_last_name,
             co.name         AS company_name,
+            of.name         AS offer_name,
             CASE WHEN op.value IS NOT NULL AND op.probability IS NOT NULL
                  THEN (op.value * op.probability / 100)::numeric(12,2)
                  ELSE NULL
@@ -35,6 +40,7 @@ export async function findAllOpportunities(
      FROM opportunity op
      LEFT JOIN contact ct ON ct.id = op.contact_id
      LEFT JOIN company co ON co.id = op.company_id
+     LEFT JOIN offer   of ON of.id = op.offer_id
      WHERE ${conditions.join(' AND ')}
      ORDER BY op.created_at DESC`,
     params
@@ -51,6 +57,7 @@ export async function findOpportunityById(
             ct.first_name   AS contact_first_name,
             ct.last_name    AS contact_last_name,
             co.name         AS company_name,
+            of.name         AS offer_name,
             CASE WHEN op.value IS NOT NULL AND op.probability IS NOT NULL
                  THEN (op.value * op.probability / 100)::numeric(12,2)
                  ELSE NULL
@@ -58,6 +65,7 @@ export async function findOpportunityById(
      FROM opportunity op
      LEFT JOIN contact ct ON ct.id = op.contact_id
      LEFT JOIN company co ON co.id = op.company_id
+     LEFT JOIN offer   of ON of.id = op.offer_id
      WHERE op.id = $1 AND op.organization_id = $2`,
     [id, organizationId]
   )
@@ -69,13 +77,14 @@ export async function createOpportunity(
   input: CreateOpportunityInput
 ): Promise<Opportunity> {
   const result = await db.query<Opportunity>(
-    `INSERT INTO opportunity (organization_id, contact_id, company_id, title, value, stage, probability, notes, closed_at)
-     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    `INSERT INTO opportunity (organization_id, contact_id, company_id, offer_id, title, value, stage, probability, notes, closed_at)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
      RETURNING *`,
     [
       organizationId,
       input.contact_id  ?? null,
       input.company_id  ?? null,
+      input.offer_id    ?? null,
       input.title,
       input.value       ?? null,
       input.stage,
@@ -101,7 +110,8 @@ export async function updateOpportunity(
          value       = CASE WHEN $9::boolean  THEN $10 ELSE value       END,
          probability = CASE WHEN $11::boolean THEN $12 ELSE probability END,
          notes       = CASE WHEN $13::boolean THEN $14 ELSE notes       END,
-         closed_at   = CASE WHEN $15::boolean THEN $16 ELSE closed_at   END
+         closed_at   = CASE WHEN $15::boolean THEN $16 ELSE closed_at   END,
+         offer_id    = CASE WHEN $17::boolean THEN $18 ELSE offer_id    END
      WHERE id = $1 AND organization_id = $2
      RETURNING *`,
     [
@@ -115,6 +125,7 @@ export async function updateOpportunity(
       'probability' in input, input.probability ?? null,
       'notes'       in input, input.notes       ?? null,
       'closed_at'   in input, input.closed_at   ?? null,
+      'offer_id'    in input, input.offer_id    ?? null,
     ]
   )
   return result.rows[0] ?? null

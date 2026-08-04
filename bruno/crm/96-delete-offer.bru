@@ -1,0 +1,15 @@
+meta {
+  name: Nettoyage — supprimer l'offre support
+  type: http
+  seq: 96
+}
+
+delete {
+  url: {{apiUrl}}/offers/{{crmOfferId}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 204
+}

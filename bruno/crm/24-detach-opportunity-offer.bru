@@ -1,0 +1,29 @@
+meta {
+  name: Détacher l'offre (retour sur-mesure)
+  type: http
+  seq: 24
+}
+
+put {
+  url: {{apiUrl}}/opportunities/{{opportunityId}}
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "offer_id": null
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.offer_id: isNull
+}
+
+docs {
+  ⚠️ Requête sentinelle. Le formulaire web envoyait `undefined` pour un champ
+  vidé : la clé disparaissait du JSON, `'offer_id' in input` était faux côté
+  datamapper, et la valeur n'était JAMAIS effacée. Corrigé le 2026-08-04 en
+  envoyant `null`. Même bug corrigé au passage sur contact_id et company_id.
+}

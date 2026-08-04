@@ -63,3 +63,21 @@ export interface CumulativePnl {
   net:             string
   cumulative_net:  string
 }
+
+/** Une ligne par offre du catalogue, plus une ligne agrégée pour le sur-mesure
+ *  (`offer_id` et `offer_name` à null). Vue `v_offer_performance`. */
+export interface OfferPerformance {
+  organization_id:     string
+  offer_id:            string | null
+  offer_name:          string | null
+  is_active:           boolean | null
+  total_opportunities: string
+  won_opportunities:   string
+  lost_opportunities:  string
+  open_opportunities:  string
+  /** Pourcentage calculé sur les affaires tranchées uniquement (gagnées + perdues).
+   *  `null` tant qu'aucune affaire n'est tranchée. */
+  conversion_rate:     string | null
+  won_value:           string
+  weighted_pipeline:   string
+}
