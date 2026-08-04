@@ -1,0 +1,27 @@
+meta {
+  name: Setup — offre du catalogue
+  type: http
+  seq: 0
+}
+
+post {
+  url: {{apiUrl}}/offers
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "[Bruno] Offre support CRM",
+    "billing_type": "fixed",
+    "price": 2500
+  }
+}
+
+vars:post-response {
+  crmOfferId: res.body.id
+}
+
+assert {
+  res.status: eq 201
+}

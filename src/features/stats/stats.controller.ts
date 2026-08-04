@@ -39,3 +39,8 @@ export async function getCumulativePnl(req: FastifyRequest, reply: FastifyReply)
   const rows = await dm.getCumulativePnl(req.organizationId)
   reply.send(rows)
 }
+
+export async function getOfferPerformance(req: FastifyRequest, reply: FastifyReply) {
+  const rows = await dm.getOfferPerformance(req.organizationId)
+  reply.send(rows)
+}

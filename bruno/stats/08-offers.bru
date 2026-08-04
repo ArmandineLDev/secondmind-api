@@ -1,0 +1,23 @@
+meta {
+  name: Performance par offre
+  type: http
+  seq: 8
+}
+
+get {
+  url: {{apiUrl}}/stats/offers
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body: isArray
+}
+
+docs {
+  Vue v_offer_performance : une ligne par offre du catalogue + une ligne
+  agrégée pour le sur-mesure (offer_id et offer_name à NULL).
+  conversion_rate ne porte que sur les affaires tranchées (gagnées + perdues) ;
+  il vaut NULL tant qu'aucune n'est tranchée.
+}
