@@ -1,0 +1,23 @@
+meta {
+  name: Vérifier la reprise des valeurs
+  type: http
+  seq: 16
+}
+
+get {
+  url: {{apiUrl}}/collections/{{collectionId}}/items
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  Object.keys(res.body[0].data).length: eq 1
+  Object.values(res.body[0].data)[0]: eq 12
+}
+
+docs {
+  ⚠️ Requête sentinelle. « 12 » avait été saisi en TEXTE ; après le passage en
+  type nombre, il doit valoir le NOMBRE 12 — pas la chaîne "12", et surtout pas
+  avoir disparu. Sans cette reprise, changer le type viderait toute la colonne.
+}

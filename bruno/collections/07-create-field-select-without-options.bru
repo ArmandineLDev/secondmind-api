@@ -1,0 +1,30 @@
+meta {
+  name: Refuser une liste sans choix
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{apiUrl}}/collections/{{collectionId}}/fields
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "[Bruno] Liste vide",
+    "type": "select"
+  }
+}
+
+assert {
+  res.status: eq 400
+}
+
+docs {
+  ⚠️ Requête sentinelle. La règle « select ⇄ options » est portée à DEUX
+  endroits : le `superRefine` Zod (field.schema.ts) et un CHECK en base
+  (collection_field_options_only_for_select). Un 201 ici voudrait dire que les
+  deux ont sauté ; un 500 voudrait dire que Zod ne fait plus son travail et que
+  seule la base rattrape — le message serait alors incompréhensible.
+}

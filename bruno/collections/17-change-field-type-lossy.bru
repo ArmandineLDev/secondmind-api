@@ -1,0 +1,23 @@
+meta {
+  name: Changer pour un type incompatible
+  type: http
+  seq: 17
+}
+
+put {
+  url: {{apiUrl}}/collections/{{collectionId}}/fields/{{priceFieldId}}
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "type": "select",
+    "options": ["forfait", "régie"]
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.type: eq select
+}

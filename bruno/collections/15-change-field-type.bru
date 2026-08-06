@@ -1,0 +1,30 @@
+meta {
+  name: Changer le type d'une colonne (texte → nombre)
+  type: http
+  seq: 15
+}
+
+put {
+  url: {{apiUrl}}/collections/{{collectionId}}/fields/{{priceFieldId}}
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "type": "number"
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.type: eq number
+  res.body.name: eq Prix
+  res.body.options: isNull
+}
+
+docs {
+  ⚠️ Requête sentinelle. Une mise à jour est partielle : le corps ne contient
+  QUE `type`. Le nom doit survivre, et surtout les valeurs déjà saisies sont
+  reprises dans la même transaction (cf. requête suivante).
+}

@@ -1,0 +1,21 @@
+meta {
+  name: Supprimer une colonne
+  type: http
+  seq: 19
+}
+
+delete {
+  url: {{apiUrl}}/collections/{{collectionId}}/fields/{{statusFieldId}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 204
+}
+
+docs {
+  La suppression d'une colonne retire AUSSI ses valeurs de toutes les entrées,
+  dans une transaction. Sans ce second temps, `data` garderait indéfiniment des
+  clés pointant vers une colonne disparue.
+}

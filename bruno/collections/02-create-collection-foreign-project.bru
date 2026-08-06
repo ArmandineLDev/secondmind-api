@@ -1,0 +1,31 @@
+meta {
+  name: Refuser un projet d'un autre workspace
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{apiUrl}}/collections
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "[Bruno] Ne doit pas être créée",
+    "project_id": "00000000-0000-0000-0000-000000000000"
+  }
+}
+
+assert {
+  res.status: eq 400
+}
+
+docs {
+  ⚠️ Requête sentinelle — cloisonnement.
+
+  La clé étrangère `collection.project_id` ne vérifie QUE l'existence du projet,
+  pas son appartenance au workspace. Sans le contrôle explicite du controller,
+  un id deviné suffirait à rattacher une fiche au projet de quelqu'un d'autre.
+  Un 201 ici serait une fuite de cloisonnement.
+}

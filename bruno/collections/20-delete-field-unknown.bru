@@ -1,0 +1,15 @@
+meta {
+  name: Supprimer une colonne inexistante
+  type: http
+  seq: 20
+}
+
+delete {
+  url: {{apiUrl}}/collections/{{collectionId}}/fields/00000000-0000-0000-0000-000000000000
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 404
+}

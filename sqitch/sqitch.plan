@@ -38,3 +38,4 @@ stats_0006_offer_performance [crm_0006_opportunity_offer_link stats_0005_rename_
 auth_0002_member_unique [auth_0001_BetterAuth_Initialization] 2026-08-04T16:17:58Z Armandine,,, <armandine@portableDebian> # Unicité (userId, organizationId) sur member : rôle non ambigu + ON CONFLICT fonctionnel
 document_0002_client_nullable [document_0001_document] 2026-08-04T17:00:46Z Armandine,,, <armandine@portableDebian> # document.client_id nullable + ON DELETE SET NULL (RGPD : effacer un client ne détruit pas les documents)
 task_0002_inbox [project_0002_kanban_and_tasks kanban_0002_task_recurrence] 2026-08-04T18:33:51Z Armandine,,, <armandine@portableDebian> # Capture/Inbox : stage + snooze_until sur task, project_id/column_id nullables
+collection_0001_init [project_0001_Project_initialization] 2026-08-04T22:56:05Z Armandine,,, <armandine@portableDebian> # Module Collections : collection, collection_field, collection_item (valeurs en JSONB)

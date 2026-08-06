@@ -1,0 +1,29 @@
+meta {
+  name: Renommer une fiche
+  type: http
+  seq: 21
+}
+
+put {
+  url: {{apiUrl}}/collections/{{collectionId}}
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "[Bruno] Domaines et abonnements",
+    "icon": null
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.name: eq [Bruno] Domaines et abonnements
+  res.body.icon: isNull
+}
+
+docs {
+  `icon: null` doit EFFACER l'icône, pas être ignoré. Le datamapper distingue
+  « clé absente » (ne pas toucher) de « clé à null » (vider) via `'icon' in input`.
+}

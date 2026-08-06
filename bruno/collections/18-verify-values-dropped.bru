@@ -1,0 +1,22 @@
+meta {
+  name: Vérifier l'abandon des valeurs inconvertibles
+  type: http
+  seq: 18
+}
+
+get {
+  url: {{apiUrl}}/collections/{{collectionId}}/items
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  Object.keys(res.body[0].data).length: eq 0
+}
+
+docs {
+  ⚠️ Requête sentinelle. 12 n'est pas l'un des choix de la nouvelle liste : la
+  valeur est ABANDONNÉE, pas conservée en douce. La garder produirait une
+  cellule affichant un choix qui n'existe plus dans la colonne.
+}

@@ -1,0 +1,17 @@
+meta {
+  name: Lister les entrées
+  type: http
+  seq: 13
+}
+
+get {
+  url: {{apiUrl}}/collections/{{collectionId}}/items
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body: isArray
+  res.body.length: eq 1
+}

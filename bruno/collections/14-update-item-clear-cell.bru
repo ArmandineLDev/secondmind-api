@@ -1,0 +1,31 @@
+meta {
+  name: Vider une cellule (remplacement intégral)
+  type: http
+  seq: 14
+}
+
+put {
+  url: {{apiUrl}}/collections/{{collectionId}}/items/{{itemId}}
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "data": {
+      "{{priceFieldId}}": "12"
+    }
+  }
+}
+
+assert {
+  res.status: eq 200
+  Object.keys(res.body.data).length: eq 1
+}
+
+docs {
+  ⚠️ Requête sentinelle. La mise à jour REMPLACE `data`, elle ne fusionne pas.
+  Avec une fusion (`data || $3`), une clé absente signifierait « ne pas
+  toucher » et il deviendrait impossible de vider une cellule depuis l'éditeur.
+  Ici « Statut » n'est plus envoyé : il doit disparaître.
+}

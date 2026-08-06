@@ -1,0 +1,15 @@
+meta {
+  name: Nettoyage — supprimer l'entrée
+  type: http
+  seq: 90
+}
+
+delete {
+  url: {{apiUrl}}/collections/{{collectionId}}/items/{{itemId}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 204
+}
