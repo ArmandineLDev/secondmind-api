@@ -25,7 +25,7 @@ async function assertTaskAccess(
 
 export async function getDependencies(request: FastifyRequest, reply: FastifyReply) {
   const params = taskParamsSchema.safeParse(request.params)
-  if (!params.success) return reply.badRequest(params.error.message)
+  if (!params.success) throw params.error
 
   const ok = await assertTaskAccess(params.data.id, params.data.taskId, request.organizationId, reply)
   if (!ok) return
@@ -36,10 +36,10 @@ export async function getDependencies(request: FastifyRequest, reply: FastifyRep
 
 export async function createDependency(request: FastifyRequest, reply: FastifyReply) {
   const params = taskParamsSchema.safeParse(request.params)
-  if (!params.success) return reply.badRequest(params.error.message)
+  if (!params.success) throw params.error
 
   const body = addDependencySchema.safeParse(request.body)
-  if (!body.success) return reply.badRequest(body.error.message)
+  if (!body.success) throw body.error
 
   if (params.data.taskId === body.data.depends_on_id) {
     return reply.badRequest('Une tâche ne peut pas dépendre d\'elle-même')
@@ -59,7 +59,7 @@ export async function createDependency(request: FastifyRequest, reply: FastifyRe
 
 export async function deleteDependency(request: FastifyRequest, reply: FastifyReply) {
   const params = dependencyParamsSchema.safeParse(request.params)
-  if (!params.success) return reply.badRequest(params.error.message)
+  if (!params.success) throw params.error
 
   const project = await findProjectById(params.data.id, request.organizationId)
   if (!project) return reply.notFound('Projet introuvable')

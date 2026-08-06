@@ -38,7 +38,7 @@ async function assertProjectAccess(projectId: string, organizationId: string, re
 
 export async function getTasks(request: FastifyRequest, reply: FastifyReply) {
   const query = listTasksQuerySchema.safeParse(request.query)
-  if (!query.success) return reply.badRequest(query.error.message)
+  if (!query.success) throw query.error
 
   const tasks = await findAllTasks(request.organizationId, query.data)
   return reply.send(tasks)
@@ -46,7 +46,7 @@ export async function getTasks(request: FastifyRequest, reply: FastifyReply) {
 
 export async function getProjectTasks(request: FastifyRequest, reply: FastifyReply) {
   const params = projectParamsSchema.safeParse(request.params)
-  if (!params.success) return reply.badRequest(params.error.message)
+  if (!params.success) throw params.error
 
   const ok = await assertProjectAccess(params.data.id, request.organizationId, reply)
   if (!ok) return
@@ -57,10 +57,10 @@ export async function getProjectTasks(request: FastifyRequest, reply: FastifyRep
 
 export async function addTask(request: FastifyRequest, reply: FastifyReply) {
   const params = projectParamsSchema.safeParse(request.params)
-  if (!params.success) return reply.badRequest(params.error.message)
+  if (!params.success) throw params.error
 
   const body = createTaskSchema.safeParse(request.body)
-  if (!body.success) return reply.badRequest(body.error.message)
+  if (!body.success) throw body.error
 
   const ok = await assertProjectAccess(params.data.id, request.organizationId, reply)
   if (!ok) return
@@ -71,10 +71,10 @@ export async function addTask(request: FastifyRequest, reply: FastifyReply) {
 
 export async function patchTask(request: FastifyRequest, reply: FastifyReply) {
   const params = taskParamsSchema.safeParse(request.params)
-  if (!params.success) return reply.badRequest(params.error.message)
+  if (!params.success) throw params.error
 
   const body = updateTaskSchema.safeParse(request.body)
-  if (!body.success) return reply.badRequest(body.error.message)
+  if (!body.success) throw body.error
 
   const task = await updateTask(params.data.taskId, params.data.id, request.organizationId, body.data)
   if (!task) return reply.notFound('Tâche introuvable')
@@ -83,10 +83,10 @@ export async function patchTask(request: FastifyRequest, reply: FastifyReply) {
 
 export async function relocateTask(request: FastifyRequest, reply: FastifyReply) {
   const params = taskParamsSchema.safeParse(request.params)
-  if (!params.success) return reply.badRequest(params.error.message)
+  if (!params.success) throw params.error
 
   const body = moveTaskSchema.safeParse(request.body)
-  if (!body.success) return reply.badRequest(body.error.message)
+  if (!body.success) throw body.error
 
   const task = await moveTask(params.data.taskId, params.data.id, request.organizationId, body.data)
   if (!task) return reply.notFound('Tâche introuvable')
@@ -98,7 +98,7 @@ export async function relocateTask(request: FastifyRequest, reply: FastifyReply)
 // récurrence est clôturée (recurrence_freq repassé à null) et la tâche reste en place.
 export async function rescheduleRecurringTask(request: FastifyRequest, reply: FastifyReply) {
   const params = taskParamsSchema.safeParse(request.params)
-  if (!params.success) return reply.badRequest(params.error.message)
+  if (!params.success) throw params.error
 
   const task = await findTaskById(params.data.taskId, params.data.id, request.organizationId)
   if (!task) return reply.notFound('Tâche introuvable')
@@ -126,7 +126,7 @@ export async function rescheduleRecurringTask(request: FastifyRequest, reply: Fa
 
 export async function removeTask(request: FastifyRequest, reply: FastifyReply) {
   const params = taskParamsSchema.safeParse(request.params)
-  if (!params.success) return reply.badRequest(params.error.message)
+  if (!params.success) throw params.error
 
   const deleted = await deleteTask(params.data.taskId, params.data.id, request.organizationId)
   if (!deleted) return reply.notFound('Tâche introuvable')
@@ -139,7 +139,7 @@ export async function removeTask(request: FastifyRequest, reply: FastifyReply) {
 // un projet — c'est tout le point, la tâche n'en a pas encore.
 export async function captureTask(request: FastifyRequest, reply: FastifyReply) {
   const body = captureTaskSchema.safeParse(request.body)
-  if (!body.success) return reply.badRequest(body.error.message)
+  if (!body.success) throw body.error
 
   const task = await createCapturedTask(request.organizationId, body.data.title)
   return reply.status(201).send(task)
@@ -148,10 +148,10 @@ export async function captureTask(request: FastifyRequest, reply: FastifyReply) 
 // Tri hebdomadaire : valider / différer / annuler.
 export async function triage(request: FastifyRequest, reply: FastifyReply) {
   const params = taskIdParamsSchema.safeParse(request.params)
-  if (!params.success) return reply.badRequest(params.error.message)
+  if (!params.success) throw params.error
 
   const body = triageTaskSchema.safeParse(request.body)
-  if (!body.success) return reply.badRequest(body.error.message)
+  if (!body.success) throw body.error
 
   const task = await triageCapturedTask(params.data.taskId, request.organizationId, body.data)
   if (!task) {
@@ -167,10 +167,10 @@ export async function triage(request: FastifyRequest, reply: FastifyReply) {
 // Passage sur un board : la tâche devient `active`.
 export async function assign(request: FastifyRequest, reply: FastifyReply) {
   const params = taskIdParamsSchema.safeParse(request.params)
-  if (!params.success) return reply.badRequest(params.error.message)
+  if (!params.success) throw params.error
 
   const body = assignTaskSchema.safeParse(request.body)
-  if (!body.success) return reply.badRequest(body.error.message)
+  if (!body.success) throw body.error
 
   const task = await assignCapturedTask(params.data.taskId, request.organizationId, body.data)
   // Un null ici signifie soit une tâche inconnue, soit un projet/colonne hors du
