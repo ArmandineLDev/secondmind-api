@@ -19,6 +19,7 @@ import { vpCanvasRoutes } from '@/features/marketing/vp-canvas/vp-canvas.routes'
 import { editorialPostRoutes } from '@/features/marketing/editorial-posts/editorial-post.routes'
 import { statsRoutes } from '@/features/stats/stats.routes'
 import { documentRoutes } from '@/features/documents/document.routes'
+import { collectionRoutes } from '@/features/collections/collection.routes'
 import { clientRoutes }    from '@/features/client/client.routes'
 import { settingsRoutes }  from '@/features/settings/settings.routes'
 
@@ -46,6 +47,7 @@ export async function registerRoutes(fastify: FastifyInstance) {
   fastify.register(editorialPostRoutes,  { prefix: '/api/v1' })
   fastify.register(statsRoutes,          { prefix: '/api/v1' })
   fastify.register(documentRoutes,       { prefix: '/api/v1' })
+  fastify.register(collectionRoutes,     { prefix: '/api/v1' })
   fastify.register(clientRoutes,         { prefix: '/api/v1' })
   fastify.register(settingsRoutes,       { prefix: '/api/v1' })
 }

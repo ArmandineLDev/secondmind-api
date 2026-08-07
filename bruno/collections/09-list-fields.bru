@@ -1,0 +1,17 @@
+meta {
+  name: Lister les colonnes
+  type: http
+  seq: 9
+}
+
+get {
+  url: {{apiUrl}}/collections/{{collectionId}}/fields
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body: isArray
+  res.body.length: eq 2
+}

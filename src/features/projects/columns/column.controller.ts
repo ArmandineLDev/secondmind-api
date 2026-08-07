@@ -27,7 +27,7 @@ async function assertProjectAccess(projectId: string, organizationId: string, re
 
 export async function getColumns(request: FastifyRequest, reply: FastifyReply) {
   const params = projectParamsSchema.safeParse(request.params)
-  if (!params.success) return reply.badRequest(params.error.message)
+  if (!params.success) throw params.error
 
   const ok = await assertProjectAccess(params.data.id, request.organizationId, reply)
   if (!ok) return
@@ -38,10 +38,10 @@ export async function getColumns(request: FastifyRequest, reply: FastifyReply) {
 
 export async function addColumn(request: FastifyRequest, reply: FastifyReply) {
   const params = projectParamsSchema.safeParse(request.params)
-  if (!params.success) return reply.badRequest(params.error.message)
+  if (!params.success) throw params.error
 
   const body = createColumnSchema.safeParse(request.body)
-  if (!body.success) return reply.badRequest(body.error.message)
+  if (!body.success) throw body.error
 
   const ok = await assertProjectAccess(params.data.id, request.organizationId, reply)
   if (!ok) return
@@ -52,10 +52,10 @@ export async function addColumn(request: FastifyRequest, reply: FastifyReply) {
 
 export async function patchColumn(request: FastifyRequest, reply: FastifyReply) {
   const params = columnParamsSchema.safeParse(request.params)
-  if (!params.success) return reply.badRequest(params.error.message)
+  if (!params.success) throw params.error
 
   const body = updateColumnSchema.safeParse(request.body)
-  if (!body.success) return reply.badRequest(body.error.message)
+  if (!body.success) throw body.error
 
   const ok = await assertProjectAccess(params.data.id, request.organizationId, reply)
   if (!ok) return
@@ -67,7 +67,7 @@ export async function patchColumn(request: FastifyRequest, reply: FastifyReply) 
 
 export async function removeColumn(request: FastifyRequest, reply: FastifyReply) {
   const params = columnParamsSchema.safeParse(request.params)
-  if (!params.success) return reply.badRequest(params.error.message)
+  if (!params.success) throw params.error
 
   const ok = await assertProjectAccess(params.data.id, request.organizationId, reply)
   if (!ok) return
@@ -81,10 +81,10 @@ export async function removeColumn(request: FastifyRequest, reply: FastifyReply)
 
 export async function reorder(request: FastifyRequest, reply: FastifyReply) {
   const params = projectParamsSchema.safeParse(request.params)
-  if (!params.success) return reply.badRequest(params.error.message)
+  if (!params.success) throw params.error
 
   const body = reorderColumnsSchema.safeParse(request.body)
-  if (!body.success) return reply.badRequest(body.error.message)
+  if (!body.success) throw body.error
 
   const ok = await assertProjectAccess(params.data.id, request.organizationId, reply)
   if (!ok) return

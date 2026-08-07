@@ -16,7 +16,7 @@ import {
 
 export async function getProjects(request: FastifyRequest, reply: FastifyReply) {
   const query = listProjectsQuerySchema.safeParse(request.query)
-  if (!query.success) return reply.badRequest(query.error.message)
+  if (!query.success) throw query.error
 
   const projects = await findAllProjects(request.organizationId, query.data.archived)
   return reply.send(projects)
@@ -24,7 +24,7 @@ export async function getProjects(request: FastifyRequest, reply: FastifyReply) 
 
 export async function getProject(request: FastifyRequest, reply: FastifyReply) {
   const params = projectParamsSchema.safeParse(request.params)
-  if (!params.success) return reply.badRequest(params.error.message)
+  if (!params.success) throw params.error
 
   const project = await findProjectById(params.data.id, request.organizationId)
   if (!project) return reply.notFound('Projet introuvable')
@@ -33,7 +33,7 @@ export async function getProject(request: FastifyRequest, reply: FastifyReply) {
 
 export async function createProject(request: FastifyRequest, reply: FastifyReply) {
   const body = createProjectSchema.safeParse(request.body)
-  if (!body.success) return reply.badRequest(body.error.message)
+  if (!body.success) throw body.error
 
   const project = await createProjectWithDefaults(request.organizationId, body.data)
   return reply.status(201).send(project)
@@ -41,10 +41,10 @@ export async function createProject(request: FastifyRequest, reply: FastifyReply
 
 export async function patchProject(request: FastifyRequest, reply: FastifyReply) {
   const params = projectParamsSchema.safeParse(request.params)
-  if (!params.success) return reply.badRequest(params.error.message)
+  if (!params.success) throw params.error
 
   const body = updateProjectSchema.safeParse(request.body)
-  if (!body.success) return reply.badRequest(body.error.message)
+  if (!body.success) throw body.error
 
   const project = await updateProject(params.data.id, request.organizationId, body.data)
   if (!project) return reply.notFound('Projet introuvable')
@@ -53,7 +53,7 @@ export async function patchProject(request: FastifyRequest, reply: FastifyReply)
 
 export async function toggleArchiveProject(request: FastifyRequest, reply: FastifyReply) {
   const params = projectParamsSchema.safeParse(request.params)
-  if (!params.success) return reply.badRequest(params.error.message)
+  if (!params.success) throw params.error
 
   const body = (request.body as { archive?: unknown })
   const archive = Boolean(body?.archive)
@@ -65,7 +65,7 @@ export async function toggleArchiveProject(request: FastifyRequest, reply: Fasti
 
 export async function removeProject(request: FastifyRequest, reply: FastifyReply) {
   const params = projectParamsSchema.safeParse(request.params)
-  if (!params.success) return reply.badRequest(params.error.message)
+  if (!params.success) throw params.error
 
   const deleted = await deleteProject(params.data.id, request.organizationId)
   if (!deleted) return reply.notFound('Projet introuvable ou projet par défaut non supprimable')

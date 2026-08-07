@@ -1,0 +1,20 @@
+meta {
+  name: Nettoyage — supprimer la fiche
+  type: http
+  seq: 91
+}
+
+delete {
+  url: {{apiUrl}}/collections/{{collectionId}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 204
+}
+
+docs {
+  La suppression de la fiche emporte ses colonnes et ses entrées (CASCADE) :
+  inutile de supprimer la colonne restante à la main.
+}

@@ -24,21 +24,30 @@ export async function upload(req: FastifyRequest, reply: FastifyReply) {
     return reply.badRequest('Type de fichier non autorisé')
   }
 
+  // Consommer le fichier AVANT de lire les champs texte.
+  //
+  // `req.file()` résout dès l'en-tête de la part fichier : les parts qui la
+  // suivent dans le flux ne sont pas encore analysées à cet instant. Lire
+  // `data.fields` trop tôt donnait donc `name` et `type` à `undefined` — sauf
+  // sur un fichier minuscule, qui tient dans un seul chunk et masque le
+  // problème. `toBuffer()` termine le parsing et peuple `fields` en entier.
+  const fileBuffer = await data.toBuffer()
+
   const rawMeta: Record<string, string> = {}
   for (const [key, value] of Object.entries(data.fields)) {
-    const field = value as { value: string }
-    rawMeta[key] = field.value
+    // `fields` contient aussi la part fichier elle-même, sans `value`.
+    const field = value as { type?: string; value?: string }
+    if (field?.type === 'field' && typeof field.value === 'string') rawMeta[key] = field.value
   }
 
-  const metaResult = documentMetaSchema.safeParse(rawMeta)
-  if (!metaResult.success) {
-    return reply.badRequest(metaResult.error.message)
-  }
+  // `.parse()` et non `.safeParse()` : le gestionnaire d'erreurs reconstruit un
+  // message lisible à partir des `issues`. Renvoyer `error.message` à la main
+  // affichait le dump JSON brut de la ZodError dans l'interface.
+  const meta = documentMetaSchema.parse(rawMeta)
 
-  const fileBuffer = await data.toBuffer()
   const doc = await svc.uploadDocument(
     req.organizationId,
-    metaResult.data,
+    meta,
     fileBuffer,
     data.mimetype,
     fileBuffer.length,

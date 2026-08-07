@@ -1,0 +1,34 @@
+meta {
+  name: Créer une fiche
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{apiUrl}}/collections
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "[Bruno] Noms de domaine",
+    "icon": "🌐"
+  }
+}
+
+vars:post-response {
+  collectionId: res.body.id
+}
+
+assert {
+  res.status: eq 201
+  res.body.name: eq [Bruno] Noms de domaine
+  res.body.project_id: isNull
+}
+
+docs {
+  Module « Mes fiches » (Collections) — la soupape flexible du produit
+  (cf. functional-spec §3.7). Le code, la base et les routes disent
+  `collection` ; seule l'interface dit « fiche ».
+}

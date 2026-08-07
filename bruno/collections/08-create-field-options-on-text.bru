@@ -1,0 +1,23 @@
+meta {
+  name: Refuser des choix sur une colonne texte
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{apiUrl}}/collections/{{collectionId}}/fields
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "[Bruno] Texte avec choix",
+    "type": "text",
+    "options": ["a", "b"]
+  }
+}
+
+assert {
+  res.status: eq 400
+}

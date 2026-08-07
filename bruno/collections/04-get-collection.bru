@@ -1,0 +1,22 @@
+meta {
+  name: Détail d'une fiche
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{apiUrl}}/collections/{{collectionId}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body.fields: isArray
+  res.body.fields.length: eq 0
+}
+
+docs {
+  Le détail renvoie la fiche ET ses colonnes : l'une ne s'affiche pas sans
+  l'autre, autant éviter un aller-retour supplémentaire.
+}

@@ -1,0 +1,29 @@
+meta {
+  name: Refuser une colonne inconnue
+  type: http
+  seq: 12
+}
+
+post {
+  url: {{apiUrl}}/collections/{{collectionId}}/items
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "data": {
+      "00000000-0000-0000-0000-000000000000": "valeur fantôme"
+    }
+  }
+}
+
+assert {
+  res.status: eq 400
+}
+
+docs {
+  Une clé qui ne correspond à aucune colonne est refusée, pas ignorée en
+  silence : acceptée, elle produirait des données invisibles à l'écran mais bien
+  présentes en base — et de retour à l'export.
+}

@@ -1,0 +1,15 @@
+meta {
+  name: Nettoyage — la fiche a bien disparu
+  type: http
+  seq: 92
+}
+
+get {
+  url: {{apiUrl}}/collections/{{collectionId}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 404
+}

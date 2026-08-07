@@ -1,0 +1,34 @@
+meta {
+  name: Créer une entrée
+  type: http
+  seq: 10
+}
+
+post {
+  url: {{apiUrl}}/collections/{{collectionId}}/items
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "data": {
+      "{{priceFieldId}}": "12",
+      "{{statusFieldId}}": "actif"
+    }
+  }
+}
+
+vars:post-response {
+  itemId: res.body.id
+}
+
+assert {
+  res.status: eq 201
+  res.body.data: isDefined
+}
+
+docs {
+  Les valeurs sont indexées par l'**id de la colonne**, jamais par son nom :
+  renommer « Prix » ne doit pas orpheliner ce qui a déjà été saisi.
+}

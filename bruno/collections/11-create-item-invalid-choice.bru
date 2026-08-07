@@ -1,0 +1,29 @@
+meta {
+  name: Refuser un choix hors liste
+  type: http
+  seq: 11
+}
+
+post {
+  url: {{apiUrl}}/collections/{{collectionId}}/items
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "data": {
+      "{{statusFieldId}}": "douteux"
+    }
+  }
+}
+
+assert {
+  res.status: eq 400
+}
+
+docs {
+  ⚠️ Requête sentinelle. `data` est un JSONB libre : la base ne vérifie que sa
+  forme d'objet. La cohérence valeur ↔ type de colonne repose ENTIÈREMENT sur
+  `collection.service.ts`. Un 201 ici voudrait dire que ce garde-fou est tombé.
+}

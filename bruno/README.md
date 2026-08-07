@@ -38,6 +38,7 @@ en PR, et suit les migrations du schéma.
 | `marketing` | Canvas hybride, SWOT, VP Canvas, offres, personas, objectifs, calendrier |
 | `stats` | Les 7 vues PostgreSQL |
 | `documents` | Liste des documents (lancé automatiquement) |
+| `collections` | « Mes fiches » : colonnes, entrées, changement de type, purge (§3.7) |
 | `settings` | Préférences, accès clients |
 | `client` | Espace client (à lancer connecté **en tant que client**) |
 | `zz-documents-manuel` | Upload / URL signée / suppression — **à la main**, écrit réellement sur Scaleway |

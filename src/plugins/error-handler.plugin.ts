@@ -16,6 +16,12 @@ import type { FastifyError, FastifyInstance, FastifyReply, FastifyRequest } from
  * marketing) laissaient remonter la `ZodError` telle quelle : Fastify la traitait
  * en **500**, avec le détail du schéma dans la réponse. Une simple faute de saisie
  * devenait indiscernable d'un vrai plantage serveur.
+ *
+ * Corollaire pour les contrôleurs en `safeParse()` (projets, colonnes, tâches,
+ * dépendances) : faire `reply.badRequest(result.error.message)` **court-circuite
+ * ce plugin**. Le `message` d'une `ZodError` est un tableau JSON de ses `issues` —
+ * c'est ce pavé qui s'affichait tel quel dans l'interface. Ces contrôleurs font
+ * donc `throw result.error` et laissent le formatage ci-dessous s'appliquer.
  */
 export default fp(async (fastify: FastifyInstance) => {
   fastify.setErrorHandler((

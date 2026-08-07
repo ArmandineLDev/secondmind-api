@@ -1,0 +1,30 @@
+meta {
+  name: Ajouter une colonne liste de choix
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{apiUrl}}/collections/{{collectionId}}/fields
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "Statut",
+    "type": "select",
+    "options": ["actif", "expiré"]
+  }
+}
+
+vars:post-response {
+  statusFieldId: res.body.id
+}
+
+assert {
+  res.status: eq 201
+  res.body.type: eq select
+  res.body.options.length: eq 2
+  res.body.position: eq 1
+}
