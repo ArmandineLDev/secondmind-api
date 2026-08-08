@@ -6,6 +6,7 @@ import {
   contactQuerySchema,
 } from './contact.schema'
 import * as dm from '@/db/datamappers/contact.datamapper'
+import * as projectDm from '@/db/datamappers/project.datamapper'
 
 export async function getAll(req: FastifyRequest, reply: FastifyReply) {
   const query = contactQuerySchema.parse(req.query)
@@ -67,6 +68,17 @@ export async function exportData(req: FastifyRequest, reply: FastifyReply) {
         + 'être effacées : leur conservation est une obligation comptable (10 ans).',
       ...data,
     })
+}
+
+// Projets réalisés pour cette personne (fiche contact 360).
+//
+// Pendant de `GET /companies/:id/projects` : tout client n'est pas une
+// entreprise, et un projet peut n'être rattaché qu'à une personne physique.
+export async function getProjects(req: FastifyRequest, reply: FastifyReply) {
+  const { id } = contactParamsSchema.parse(req.params)
+  const contact = await dm.findContactById(id, req.organizationId)
+  if (!contact) return reply.notFound('Contact introuvable')
+  reply.send(await projectDm.findProjectsByContact(id, req.organizationId))
 }
 
 // Empreinte de la personne dans la base : ce qu'une suppression détruirait,

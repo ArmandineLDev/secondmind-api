@@ -13,6 +13,10 @@ export async function contactRoutes(fastify: FastifyInstance) {
   fastify.put('/contacts/:id', auth, contact.update)
   fastify.delete('/contacts/:id', auth, contact.remove)
 
+  // Fiche 360 : ce qu'on a fait pour cette personne. Pendant de la même route
+  // sur les entreprises — tout client n'est pas une personne morale.
+  fastify.get('/contacts/:id/projects', auth,  contact.getProjects)
+
   // RGPD — droit d'accès / portabilité (art. 15 et 20) et aperçu de l'empreinte
   // avant effacement. Placées avant les routes imbriquées pour rester lisibles.
   fastify.get('/contacts/:id/export', auth,    contact.exportData)

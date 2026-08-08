@@ -4,6 +4,7 @@ export interface Project {
   id: string
   organization_id: string
   company_id: string | null
+  contact_id: string | null
   name: string
   description: string | null
   status: ProjectStatus

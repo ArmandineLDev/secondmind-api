@@ -6,7 +6,8 @@ export const createProjectSchema = z.object({
   name:        z.string().min(1).max(100),
   description: z.string().max(2000).optional(),
   status:      z.enum(PROJECT_STATUS).optional(),
-  company_id:  z.string().uuid().optional(),
+  company_id:  z.string().uuid().nullable().optional(),
+  contact_id:  z.string().uuid().nullable().optional(),
   start_date:  z.string().date().optional(),
   end_date:    z.string().date().optional(),
 })
@@ -16,6 +17,7 @@ export const updateProjectSchema = z.object({
   description: z.string().max(2000).nullable().optional(),
   status:      z.enum(PROJECT_STATUS).optional(),
   company_id:  z.string().uuid().nullable().optional(),
+  contact_id:  z.string().uuid().nullable().optional(),
   start_date:  z.string().date().nullable().optional(),
   end_date:    z.string().date().nullable().optional(),
 })
