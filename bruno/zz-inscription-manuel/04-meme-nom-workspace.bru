@@ -1,0 +1,45 @@
+meta {
+  name: Même nom de workspace → 201
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{apiUrl}}/signup
+  body: json
+  auth: none
+}
+
+headers {
+  Origin: {{baseUrl}}
+}
+
+body:json {
+  {
+    "name": "Bruno Deux",
+    "email": "bruno-signup+{{runId}}-b@exemple.test",
+    "password": "motdepasse-solide",
+    "organizationName": "[Bruno] Mon Studio"
+  }
+}
+
+assert {
+  res.status: eq 201
+  res.body.organizationId: neq {{orgId}}
+}
+
+docs {
+  LE bug d'origine. `organization.slug` est UNIQUE et le slug était dérivé du
+  nom : deux personnes nommant leur espace « Mon Studio » suffisaient à faire
+  échouer la seconde inscription. Comme le front enchaînait alors trois appels,
+  le compte était déjà créé — il restait SANS organisation, donc 403 partout,
+  sans réinscription possible ni réparation.
+
+  Le slug est désormais dédupliqué côté serveur : `mon-studio`, `mon-studio-2`…
+
+  ⚠️ La réponse ne renvoie pas le slug — cette requête ne prouve donc que
+  l'absence d'échec. La déduplication elle-même se vérifie en SQL :
+
+    SELECT name, slug FROM "organization"
+     WHERE name = '[Bruno] Mon Studio' ORDER BY "createdAt";
+}

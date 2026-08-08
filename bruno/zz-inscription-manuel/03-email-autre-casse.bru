@@ -1,0 +1,41 @@
+meta {
+  name: Même email, autre casse → 409
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{apiUrl}}/signup
+  body: json
+  auth: none
+}
+
+headers {
+  Origin: {{baseUrl}}
+}
+
+script:pre-request {
+  bru.setVar('signupEmailUpper', bru.getVar('signupEmail').toUpperCase());
+}
+
+body:json {
+  {
+    "name": "Bruno Test",
+    "email": "{{signupEmailUpper}}",
+    "password": "motdepasse-solide",
+    "organizationName": "[Bruno] Casse"
+  }
+}
+
+assert {
+  res.status: eq 409
+}
+
+docs {
+  Le contrôle d'unicité compare en minuscules (`lower(email) = lower($1)`).
+
+  À ne pas confondre avec le stockage, qui conserve volontairement la casse
+  saisie : Better Auth compare l'email à l'identique à la connexion, et forcer
+  les minuscules à l'écriture sans le faire aussi au login casserait les
+  comptes en casse mixte (cf. `lib/email.schema.ts`).
+}

@@ -1,0 +1,35 @@
+meta {
+  name: Mot de passe trop court → 400
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{apiUrl}}/signup
+  body: json
+  auth: none
+}
+
+headers {
+  Origin: {{baseUrl}}
+}
+
+body:json {
+  {
+    "name": "Bruno",
+    "email": "bruno-signup+{{runId}}-d@exemple.test",
+    "password": "court",
+    "organizationName": "[Bruno] Studio"
+  }
+}
+
+assert {
+  res.status: eq 400
+}
+
+docs {
+  Minimum 10 caractères, aligné sur `emailAndPassword.minPasswordLength` dans
+  `lib/auth.ts`. Les deux doivent bouger ensemble : Better Auth refuserait sinon
+  un mot de passe que le schéma Zod vient d'accepter, et l'erreur remonterait
+  après la validation, sous une forme moins claire.
+}

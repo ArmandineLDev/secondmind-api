@@ -1,0 +1,48 @@
+meta {
+  name: Renvoi de l'email de confirmation
+  type: http
+  seq: 12
+}
+
+post {
+  url: {{baseUrl}}/api/auth/send-verification-email
+  body: json
+  auth: none
+}
+
+headers {
+  Origin: {{baseUrl}}
+}
+
+body:json {
+  {
+    "email": "{{signupEmail}}"
+  }
+}
+
+assert {
+  res.status: lt 300
+}
+
+docs {
+  ⚠️ Ce n'est pas un confort, c'est le seul chemin de sortie.
+
+  Better Auth envoie l'email de confirmation en TÂCHE DE FOND et avale l'échec :
+  si Brevo refuse (quota épuisé, clé invalide, panne), l'inscription répond quand
+  même 201 et le compte se retrouve créé sans que son email soit parti — donc
+  inactivable, puisque la connexion exige la vérification.
+
+  Vérifié en conditions réelles le 2026-08-08 : clé Brevo invalide → 201, avec
+  « Failed to run background task » dans les logs et rien d'autre.
+
+  Limite : 5 par heure (`customRules` de `lib/auth.ts`) — assez pour un lien
+  perdu ou expiré, trop peu pour noyer une boîte mail.
+
+  En développement, le lien est aussi écrit dans les logs de l'API
+  (`[dev] Lien de confirmation pour … : …`), ce qui permet de dérouler le
+  parcours sans dépendre de la délivrabilité. Jamais en production : ce lien
+  vaut authentification.
+
+  ⚠️ Déclenche un envoi Brevo réel. L'adresse `@exemple.test` n'existant pas,
+  attendre un rejet côté Brevo — c'est normal, la route répond quand même.
+}

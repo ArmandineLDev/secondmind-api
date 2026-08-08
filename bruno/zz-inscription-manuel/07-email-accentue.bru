@@ -1,0 +1,35 @@
+meta {
+  name: Email accentué → 400
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{apiUrl}}/signup
+  body: json
+  auth: none
+}
+
+headers {
+  Origin: {{baseUrl}}
+}
+
+body:json {
+  {
+    "name": "Bruno",
+    "email": "brunô-signup+{{runId}}@exemple.test",
+    "password": "motdepasse-solide",
+    "organizationName": "[Bruno] Studio"
+  }
+}
+
+assert {
+  res.status: eq 400
+}
+
+docs {
+  Garde-fou ASCII (`lib/email.schema.ts`). Un caractère accentué transforme le
+  domaine en Punycode (xn--…) au stockage : le compte devient introuvable si
+  l'utilisateur retape la version « propre » de l'adresse. C'est l'incident du
+  2026-07-17 — reset de mot de passe silencieusement sans effet.
+}
