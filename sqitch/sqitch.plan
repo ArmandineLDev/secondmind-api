@@ -41,3 +41,4 @@ task_0002_inbox [project_0002_kanban_and_tasks kanban_0002_task_recurrence] 2026
 collection_0001_init [project_0001_Project_initialization] 2026-08-04T22:56:05Z Armandine,,, <armandine@portableDebian> # Module Collections : collection, collection_field, collection_item (valeurs en JSONB)
 project_0005_single_default_project [project_0001_Project_initialization] 2026-08-07T08:56:26Z Armandine,,, <armandine@portableDebian> # Index partiel : un seul projet par défaut par workspace (is_default)
 project_0006_contact_id [project_0004_company_id crm_0001_company_and_contact] 2026-08-08T15:56:31Z Armandine,,, <armandine@portableDebian> # project.contact_id : client personne physique (paire company_id/contact_id, comme invoice)
+auth_0003_last_organization [auth_0001_BetterAuth_Initialization] 2026-08-09T14:38:31Z Armandine,,, <armandine@portableDebian> # user.lastOrganizationId : mémoriser le workspace choisi entre deux sessions

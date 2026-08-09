@@ -4,7 +4,7 @@ import { APIError } from 'better-auth/api'
 import { db } from '@/lib/db'
 import { env } from '@/lib/env'
 import { sendBrevoEmail, buildResetPasswordEmail, buildVerifyEmail } from '@/lib/brevo'
-import { findFirstOrganizationIdForUser } from '@/db/datamappers/organization.datamapper'
+import { resolveActiveOrganizationId } from '@/db/datamappers/organization.datamapper'
 import { normalizeEmail, ASCII_EMAIL } from '@/lib/email.schema'
 
 // Origine du front : les liens des emails doivent pointer vers l'app, pas vers l'API.
@@ -109,7 +109,11 @@ export const auth = betterAuth({
   // À chaque création de session (connexion incluse), on restaure l'organisation
   // active de l'utilisateur. Sans ça, `activeOrganizationId` serait null après une
   // reconnexion → le hook `authenticate` renverrait 403 sur toutes les routes métier.
-  // Le `setActive` fait au signup ne couvre que la toute première session.
+  //
+  // La résolution donne la priorité au **dernier workspace choisi**, et retombe
+  // sur l'adhésion la plus ancienne à défaut. L'ancienne règle — toujours la plus
+  // ancienne — ramenait systématiquement dans le premier espace rejoint quelqu'un
+  // qui en fréquente plusieurs.
   databaseHooks: {
     // Garde-fou email : on trime et on refuse tout caractère non-ASCII à la création
     // du compte (seul chemin de création : le signup). Un « â » deviendrait un domaine
@@ -132,7 +136,7 @@ export const auth = betterAuth({
     session: {
       create: {
         before: async (session) => {
-          const activeOrganizationId = await findFirstOrganizationIdForUser(session.userId)
+          const activeOrganizationId = await resolveActiveOrganizationId(session.userId)
           return { data: { activeOrganizationId } }
         },
       },
