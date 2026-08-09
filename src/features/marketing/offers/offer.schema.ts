@@ -4,7 +4,7 @@ const BILLING_TYPES = ['fixed', 'hourly', 'monthly', 'custom'] as const
 
 export const createOfferSchema = z.object({
   name:         z.string().min(1).max(255),
-  description:  z.string().optional(),
+  description:  z.string().nullish(),
   price:        z.number().positive().optional(),
   currency:     z.string().length(3).default('EUR'),
   billing_type: z.enum(BILLING_TYPES),

@@ -6,7 +6,7 @@ export const createTimeEntrySchema = z.object({
   project_id:       z.string().uuid().optional(),
   task_id:          z.string().uuid().optional(),
   hourly_rate:      z.number().positive().optional(),
-  description:      z.string().optional(),
+  description:      z.string().nullish(),
 })
 
 export const updateTimeEntrySchema = z.object({

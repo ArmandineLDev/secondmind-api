@@ -9,8 +9,8 @@ export const createPostSchema = z.object({
   title:        z.string().max(255).optional(),
   content:      z.string().optional(),
   persona_id:   z.string().uuid().optional(),
-  scheduled_at: z.string().datetime().optional(),
-  published_at: z.string().datetime().optional(),
+  scheduled_at: z.string().datetime().nullish(),
+  published_at: z.string().datetime().nullish(),
   tags:         z.array(z.string()).default([]),
 })
 

@@ -4,12 +4,12 @@ const PROJECT_STATUS = ['not_started', 'in_progress', 'on_hold', 'completed', 'c
 
 export const createProjectSchema = z.object({
   name:        z.string().min(1).max(100),
-  description: z.string().max(2000).optional(),
+  description: z.string().max(2000).nullish(),
   status:      z.enum(PROJECT_STATUS).optional(),
   company_id:  z.string().uuid().nullable().optional(),
   contact_id:  z.string().uuid().nullable().optional(),
-  start_date:  z.string().date().optional(),
-  end_date:    z.string().date().optional(),
+  start_date:  z.string().date().nullish(),
+  end_date:    z.string().date().nullish(),
 })
 
 export const updateProjectSchema = z.object({

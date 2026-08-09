@@ -13,7 +13,7 @@ export const createContactSchema = z.object({
   status:            z.enum(CONTACT_STATUSES).default('lead'),
   source_channel:    z.enum(CONTACT_SOURCE_CHANNELS).optional(),
   source_detail:     z.string().optional(),
-  next_follow_up_at: z.string().date().optional(),
+  next_follow_up_at: z.string().date().nullish(),
   follow_up_note:    z.string().optional(),
   notes:             z.string().optional(),
 })

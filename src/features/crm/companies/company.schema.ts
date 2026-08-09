@@ -3,7 +3,7 @@ import { z } from 'zod'
 export const createCompanySchema = z.object({
   name:     z.string().min(1).max(255),
   website:  z.string().url().max(255).optional(),
-  industry: z.string().max(100).optional(),
+  industry: z.string().max(100).nullish(),
   notes:    z.string().optional(),
 })
 
