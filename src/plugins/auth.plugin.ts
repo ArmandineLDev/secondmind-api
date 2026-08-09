@@ -8,7 +8,7 @@ import { findMember } from '@/db/datamappers/settings.datamapper'
 type Session = NonNullable<Awaited<ReturnType<typeof auth.api.getSession>>>
 
 // Rôle du membre dans l'organisation active. Better Auth stocke une chaîne libre
-// dans `member.role` ; côté Oriant seuls ces deux rôles existent — tout autre
+// dans `member.role` ; côté Eunomie seuls ces deux rôles existent — tout autre
 // valeur est traitée comme non-owner, par précaution.
 export type MemberRole = 'owner' | 'client'
 

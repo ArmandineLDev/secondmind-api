@@ -60,7 +60,7 @@ export function buildVerifyEmail(url: string, name?: string): string {
           <h1 style="margin:0 0 16px;font-size:20px;line-height:1.3;">Confirmez votre adresse email</h1>
           <p style="margin:0 0 16px;font-size:15px;line-height:1.6;">${greeting}</p>
           <p style="margin:0 0 24px;font-size:15px;line-height:1.6;">
-            Bienvenue sur Oriant. Il ne reste qu'une étape : confirmer votre adresse email
+            Bienvenue sur Eunomie. Il ne reste qu'une étape : confirmer votre adresse email
             pour activer votre compte. Ce lien est valable 24 heures.
           </p>
           <p style="margin:0 0 24px;">
@@ -96,7 +96,7 @@ export function buildResetPasswordEmail(url: string, name?: string): string {
           <h1 style="margin:0 0 16px;font-size:20px;line-height:1.3;">Réinitialisation de votre mot de passe</h1>
           <p style="margin:0 0 16px;font-size:15px;line-height:1.6;">${greeting}</p>
           <p style="margin:0 0 24px;font-size:15px;line-height:1.6;">
-            Vous avez demandé à réinitialiser votre mot de passe Oriant.
+            Vous avez demandé à réinitialiser votre mot de passe Eunomie.
             Cliquez sur le bouton ci-dessous pour en choisir un nouveau. Ce lien est valable 1 heure.
           </p>
           <p style="margin:0 0 24px;">
