@@ -1,0 +1,34 @@
+meta {
+  name: Nom de workspace vide → 400
+  type: http
+  seq: 9
+}
+
+post {
+  url: {{apiUrl}}/signup
+  body: json
+  auth: none
+}
+
+headers {
+  Origin: {{baseUrl}}
+}
+
+body:json {
+  {
+    "name": "Bruno",
+    "email": "bruno-signup+{{runId}}-e@exemple.test",
+    "password": "motdepasse-solide",
+    "organizationName": "   "
+  }
+}
+
+assert {
+  res.status: eq 400
+}
+
+docs {
+  Le nom est trimé avant validation : trois espaces ne constituent pas un nom.
+  Sans ce contrôle, le slug retomberait sur `workspace` et l'espace de travail
+  s'afficherait sans titre.
+}

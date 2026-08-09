@@ -1,0 +1,34 @@
+meta {
+  name: Email invalide → 400
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{apiUrl}}/signup
+  body: json
+  auth: none
+}
+
+headers {
+  Origin: {{baseUrl}}
+}
+
+body:json {
+  {
+    "name": "Bruno",
+    "email": "pas-un-email",
+    "password": "motdepasse-solide",
+    "organizationName": "[Bruno] Studio"
+  }
+}
+
+assert {
+  res.status: eq 400
+}
+
+docs {
+  Le message doit être lisible, pas le tableau JSON brut des `issues` d'une
+  ZodError. Le contrôleur laisse remonter l'erreur, que le gestionnaire global
+  met en forme : « Données invalides — email : … ».
+}

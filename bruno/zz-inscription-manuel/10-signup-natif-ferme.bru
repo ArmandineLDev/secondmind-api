@@ -1,0 +1,41 @@
+meta {
+  name: Inscription native fermée → 404
+  type: http
+  seq: 10
+}
+
+post {
+  url: {{baseUrl}}/api/auth/sign-up/email
+  body: json
+  auth: none
+}
+
+headers {
+  Origin: {{baseUrl}}
+}
+
+body:json {
+  {
+    "name": "Contournement",
+    "email": "bruno-signup+{{runId}}-x@exemple.test",
+    "password": "motdepasse-solide"
+  }
+}
+
+assert {
+  res.status: eq 404
+}
+
+docs {
+  Un 201 ici serait une régression de sécurité : la route native de Better Auth
+  créerait un compte SANS organisation, donc 403 sur toutes les routes métier,
+  et sans réinscription possible puisque l'email serait pris.
+
+  ⚠️ La fermeture ne passe PAS par `disableSignUp`. Ce réglage bloquerait aussi
+  l'appel interne `auth.api.signUpEmail` dont dépend `POST /api/v1/signup` : il
+  est donc à `false`, et c'est le proxy `/auth/*` qui renvoie 404 sur
+  `/api/auth/sign-up` (cf. `features/auth/auth.routes.ts`).
+
+  Remplace l'ancienne requête `auth/sign-up.bru`, qui testait la fermeture par
+  `disableSignUp`.
+}

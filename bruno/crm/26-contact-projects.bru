@@ -1,0 +1,37 @@
+meta {
+  name: Projets d'un contact
+  type: http
+  seq: 28
+}
+
+get {
+  url: {{apiUrl}}/contacts/{{contactId}}/projects
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body: isArray
+}
+
+docs {
+  Fiche contact 360 : projets reliés via `project.contact_id`.
+
+  Pendant de `06-company-projects`. `project` n'a longtemps porté que
+  `company_id` : un client particulier — ou une entreprise dont on n'avait pas
+  encore les informations au moment de créer le projet — ne pouvait être
+  rattaché à rien, et ses projets n'apparaissaient sur aucune fiche.
+  Migration `project_0006_contact_id`.
+
+  Les deux colonnes sont **indépendantes** : un projet portant les deux figure
+  sur les deux fiches, ce qui est le comportement voulu.
+
+  ⚠️ Placée en fin de dossier et non à la suite de `09-get-contact` : les `seq`
+  1 à 27 sont contigus, et insérer au milieu aurait imposé de décaler quinze
+  fichiers. `contactId` reste défini à ce stade.
+
+  ⚠️ Renvoie une liste vide tant qu'aucun projet n'est rattaché à ce contact —
+  la collection `projects` n'en crée pas. Pour un test complet, créer un projet
+  avec `"contact_id": "{{contactId}}"` puis relancer cette requête.
+}

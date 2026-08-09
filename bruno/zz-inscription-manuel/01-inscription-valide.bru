@@ -1,0 +1,83 @@
+meta {
+  name: Inscription valide
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{apiUrl}}/signup
+  body: json
+  auth: none
+}
+
+headers {
+  Origin: {{baseUrl}}
+}
+
+script:pre-request {
+  // Un identifiant unique par passage : l'inscription ne peut pas se nettoyer
+  // elle-même (aucune route ne supprime un compte), donc rejouer le dossier avec
+  // des adresses fixes renverrait 409 au lieu de 201. Toutes les requêtes du
+  // dossier réutilisent cette valeur.
+  const runId = Date.now();
+  bru.setVar('runId', runId);
+  bru.setVar('signupEmail', `bruno-signup+${runId}@exemple.test`);
+}
+
+body:json {
+  {
+    "name": "Bruno Test",
+    "email": "{{signupEmail}}",
+    "password": "motdepasse-solide",
+    "organizationName": "[Bruno] Mon Studio"
+  }
+}
+
+vars:post-response {
+  orgId: res.body.organizationId
+}
+
+assert {
+  res.status: eq 201
+  res.body.organizationId: isString
+  res.body.emailVerificationRequired: isBoolean
+}
+
+docs {
+  ⚠️ DOSSIER MANUEL — il laisse des comptes en base (voir le nettoyage plus bas).
+
+  Seule porte d'entrée pour créer un compte. Crée d'un bloc : le compte,
+  l'organisation, l'adhésion `owner`, le projet par défaut (`is_default = true`)
+  et ses trois colonnes de kanban.
+
+  AUCUNE SESSION n'est ouverte : la réponse ne pose pas de cookie. C'est au
+  client de se connecter ensuite.
+
+  `emailVerificationRequired` reflète le réglage réel de `lib/auth.ts`, lu par le
+  contrôleur — d'où l'assertion sur le type et non sur la valeur.
+  ⚠️ Il vaut `false` aujourd'hui : la vérification d'adresse est désactivée le
+  temps que le domaine expéditeur soit authentifié chez Brevo. À remettre à
+  `true` avant d'ouvrir l'inscription au public.
+
+  ⚠️ Déclenche un envoi Brevo réel.
+
+  ─────────────────────────────────────────────────────────────────────────────
+  NETTOYAGE — à lancer après le passage du dossier
+
+  Aucune route ne supprime un compte (cf. docs/rgpd.md §5, « suppression de
+  compte : non implémentée »). Le dossier ne peut donc pas respecter la règle
+  « chaque dossier nettoie derrière lui » ; le nettoyage se fait en SQL.
+
+  Supprimer les organisations AVANT les comptes : c'est l'adhésion qui permet de
+  les retrouver, et elle disparaît avec le compte.
+
+    DELETE FROM "organization" o
+     WHERE o.id IN (
+       SELECT m."organizationId" FROM "member" m
+         JOIN "user" u ON u.id = m."userId"
+        WHERE u.email LIKE 'bruno-signup+%@exemple.test'
+     );
+    DELETE FROM "user" WHERE email LIKE 'bruno-signup+%@exemple.test';
+
+  La suppression d'une organisation cascade sur `project`, puis `kanban_column`.
+}

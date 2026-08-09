@@ -1,0 +1,39 @@
+meta {
+  name: Nom de workspace non latin → 201
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{apiUrl}}/signup
+  body: json
+  auth: none
+}
+
+headers {
+  Origin: {{baseUrl}}
+}
+
+body:json {
+  {
+    "name": "Bruno Trois",
+    "email": "bruno-signup+{{runId}}-c@exemple.test",
+    "password": "motdepasse-solide",
+    "organizationName": "日本語"
+  }
+}
+
+assert {
+  res.status: eq 201
+}
+
+docs {
+  Un nom composé uniquement de caractères non latins ou de ponctuation produit
+  un slug vide une fois translittéré — donc un slug partagé par tous, et une
+  violation d'unicité dès le deuxième cas. Le slug retombe sur `workspace`,
+  puis `workspace-2`, `workspace-3`…
+
+  À vérifier en SQL, la réponse ne renvoyant pas le slug :
+
+    SELECT name, slug FROM "organization" WHERE slug LIKE 'workspace%';
+}

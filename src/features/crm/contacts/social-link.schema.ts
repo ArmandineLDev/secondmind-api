@@ -4,7 +4,7 @@ const SOCIAL_PLATFORMS = ['instagram', 'facebook', 'linkedin', 'telegram', 'what
 
 export const createSocialLinkSchema = z.object({
   platform: z.enum(SOCIAL_PLATFORMS),
-  label:    z.string().max(100).optional(),
+  label:    z.string().max(100).nullish(),
   url:      z.string().url().max(2048),
   position: z.number().int().min(0).optional(),
 })

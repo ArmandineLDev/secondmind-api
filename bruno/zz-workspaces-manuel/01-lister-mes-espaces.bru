@@ -1,0 +1,49 @@
+meta {
+  name: Lister mes espaces
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{apiUrl}}/workspaces
+  body: none
+  auth: none
+}
+
+headers {
+  Origin: {{baseUrl}}
+}
+
+script:post-response {
+  // On mémorise l'espace courant et, s'il existe, un second vers lequel basculer.
+  const actif = res.body.find((w) => w.is_active);
+  const autre = res.body.find((w) => !w.is_active);
+  bru.setVar('wsActif', actif ? actif.id : '');
+  bru.setVar('wsAutre', autre ? autre.id : '');
+  if (!autre) {
+    console.log('⚠️ Un seul espace : les requêtes 03 à 06 ne prouveront rien.');
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body: isArray
+}
+
+docs {
+  ⚠️ DOSSIER MANUEL — la requête 03 CHANGE l'espace de travail de la session.
+  Relancer `auth` en sortant, ou exécuter la 06 qui remet tout en place.
+
+  Le sélecteur d'espace existe parce qu'on peut être propriétaire du sien **et**
+  client dans celui d'un autre. La session prenait auparavant l'adhésion la plus
+  ancienne, sans recours : un client invité avant d'avoir créé son propre espace
+  restait enfermé chez autrui, en lecture seule.
+
+  ⚠️ **Prérequis pour que ce dossier ait un sens : appartenir à DEUX espaces.**
+  Depuis un second compte, invite l'adresse de `TEST_EMAIL` via
+  Paramètres → Accès clients. Sans cela, les requêtes 03 à 06 tournent à vide —
+  la 01 le signale dans la console.
+
+  Chaque entrée porte son `role`. Ce n'est pas décoratif : il annonce que
+  basculer changera d'interface, en lecture seule côté client.
+}

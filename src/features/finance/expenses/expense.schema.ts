@@ -7,7 +7,7 @@ export const createExpenseSchema = z.object({
   description: z.string().min(1),
   amount:      z.number().positive(),
   date:        z.string().date(),
-  project_id:  z.string().uuid().optional(),
+  project_id:  z.string().uuid().nullish(),
   currency:    z.string().length(3).default('EUR'),
 })
 

@@ -1,0 +1,40 @@
+meta {
+  name: Email déjà pris → 409
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{apiUrl}}/signup
+  body: json
+  auth: none
+}
+
+headers {
+  Origin: {{baseUrl}}
+}
+
+body:json {
+  {
+    "name": "Bruno Test",
+    "email": "{{signupEmail}}",
+    "password": "motdepasse-solide",
+    "organizationName": "[Bruno] Autre nom"
+  }
+}
+
+assert {
+  res.status: eq 409
+  res.body.error: contains existe déjà
+}
+
+docs {
+  Un 500 ici serait une régression connue.
+
+  Sur une adresse déjà prise, `auth.api.signUpEmail` n'expose rien
+  d'exploitable : il annule sa propre transaction mais renvoie tout de même un
+  utilisateur, dont l'`id` ne correspond à aucune ligne. Créer le workspace
+  là-dessus violait la clé étrangère de `member` → 500 au lieu de 409.
+  L'unicité est donc contrôlée AVANT l'appel à Better Auth, et revérifiée après
+  pour couvrir la course entre les deux.
+}

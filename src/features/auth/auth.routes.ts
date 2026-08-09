@@ -22,6 +22,21 @@ export async function authRoutes(fastify: FastifyInstance) {
     url: '/auth/*',
     async handler(request, reply) {
       const url = new URL(request.url, `${request.protocol}://${request.headers.host}`)
+
+      // L'inscription native de Better Auth est fermée : elle créerait un compte
+      // sans organisation, donc inutilisable (403 sur toutes les routes métier)
+      // et impossible à réinscrire puisque l'email serait pris.
+      // `POST /api/v1/signup` est la seule porte d'entrée — elle crée le compte,
+      // l'organisation, l'adhésion et le projet par défaut d'un bloc.
+      // `disableSignUp` ne peut pas jouer ce rôle : il bloquerait aussi l'appel
+      // interne `auth.api.signUpEmail` sur lequel repose cette route.
+      if (url.pathname.startsWith('/api/auth/sign-up')) {
+        return reply.status(404).send({
+          error: `Route introuvable : ${request.method} ${request.url}`,
+          status: 404,
+        })
+      }
+
       const headers = fromNodeHeaders(request.headers)
 
       // IP client de confiance pour le rate-limiting de Better Auth.

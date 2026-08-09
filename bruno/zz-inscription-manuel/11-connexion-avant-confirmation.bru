@@ -1,0 +1,43 @@
+meta {
+  name: Connexion avant confirmation → refusée
+  type: http
+  seq: 11
+}
+
+post {
+  url: {{baseUrl}}/api/auth/sign-in/email
+  body: json
+  auth: none
+}
+
+headers {
+  Origin: {{baseUrl}}
+}
+
+body:json {
+  {
+    "email": "{{signupEmail}}",
+    "password": "motdepasse-solide"
+  }
+}
+
+assert {
+  res.status: gte 400
+}
+
+docs {
+  `requireEmailVerification: true` — la connexion est refusée tant que l'adresse
+  n'est pas confirmée.
+
+  Indispensable dès lors que l'inscription est publique : sans cela, une faute
+  de frappe dans l'adresse produit un compte définitivement inaccessible, le
+  lien de réinitialisation partant lui aussi dans le vide.
+
+  ⚠️ Cette requête ne doit PAS poser de cookie de session. Si les requêtes
+  suivantes se comportent comme connectées, c'est ici qu'il faut regarder.
+
+  Le compte de test utilise une adresse `@exemple.test`, qui n'existe pas : il
+  restera non confirmé. Pour dérouler la confirmation jusqu'au bout, refaire
+  l'inscription à la main avec une vraie adresse — ou récupérer le lien dans les
+  logs de l'API en développement (`[dev] Lien de confirmation pour …`).
+}

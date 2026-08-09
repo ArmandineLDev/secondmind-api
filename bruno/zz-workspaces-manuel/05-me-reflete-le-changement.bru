@@ -1,0 +1,34 @@
+meta {
+  name: /api/me reflète le nouvel espace
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{baseUrl}}/api/me
+  body: none
+  auth: none
+}
+
+headers {
+  Origin: {{baseUrl}}
+}
+
+assert {
+  res.status: eq 200
+  res.body.organizationId: eq {{wsAutre}}
+}
+
+docs {
+  Le point réellement important : la bascule doit changer **l'organisation ET le
+  rôle**. `authenticate` relit l'adhésion en base à chaque requête, donc le
+  `role` renvoyé ici correspond à celui du nouvel espace.
+
+  Si tu as basculé vers un espace où tu es invité, `res.body.role` vaut `client`
+  — et toutes les routes métier `/api/v1` répondront alors 403, à l'exception de
+  `/workspaces`. C'est exactement pour ce cas que ces deux routes échappent à
+  `requireOwner` : sans elles, tu ne pourrais plus revenir chez toi.
+
+  Vérifie le rôle à l'œil dans la réponse ; il dépend de ton jeu de comptes,
+  donc pas d'assertion figée.
+}

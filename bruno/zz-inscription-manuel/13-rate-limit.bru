@@ -1,0 +1,48 @@
+meta {
+  name: Rate limit — inscription
+  type: http
+  seq: 13
+}
+
+post {
+  url: {{apiUrl}}/signup
+  body: json
+  auth: none
+}
+
+headers {
+  Origin: {{baseUrl}}
+}
+
+body:json {
+  {
+    "name": "Rafale",
+    "email": "bruno-signup+{{runId}}-flood@exemple.test",
+    "password": "motdepasse-solide",
+    "organizationName": "[Bruno] Rafale"
+  }
+}
+
+docs {
+  ⚠️ SANS ASSERTION — à lancer PLUSIEURS FOIS d'affilée, à la main.
+
+  Le corps ne change pas d'un envoi à l'autre : les premiers passages renvoient
+  donc 409 (email déjà pris), ce qui suffit — le compteur s'incrémente en
+  `onRequest`, avant même la validation.
+
+  Attendu :
+    · les premières fois → 201 puis 409
+    · au-delà du seuil   → 429, avec un en-tête `Retry-After`
+
+  Seuils (`features/auth/signup.routes.ts`) :
+    · en production → 15 requêtes / heure / IP
+    · en local      → 100 / heure (pour ne pas couper un passage du dossier)
+
+  Une requête refusée consomme du quota : c'est volontaire, mais c'est aussi
+  pourquoi le seuil est large. À 5, quelques fautes de frappe bloquaient une
+  personne légitime pour une heure — constaté dès le premier essai.
+
+  ⚠️ Même réserve que le limiteur de Better Auth : les compteurs vivent dans la
+  mémoire du process et repartent à zéro à chaque redémarrage. Deux instances de
+  l'API compteraient chacune de leur côté.
+}

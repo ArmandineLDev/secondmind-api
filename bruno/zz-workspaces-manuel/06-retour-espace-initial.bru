@@ -1,0 +1,27 @@
+meta {
+  name: Retour à l'espace de départ
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{apiUrl}}/workspaces/{{wsActif}}/activate
+  body: none
+  auth: none
+}
+
+headers {
+  Origin: {{baseUrl}}
+}
+
+assert {
+  res.status: eq 204
+}
+
+docs {
+  Remet la session dans l'espace où le dossier l'avait trouvée. **Ne pas sauter
+  cette requête** : les dossiers suivants tourneraient sur les données d'un autre
+  workspace, ou tomberaient en 403 si tu y es simple client.
+
+  Après quoi, `01` doit de nouveau montrer `wsActif` comme espace courant.
+}

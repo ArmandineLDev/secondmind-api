@@ -44,6 +44,8 @@ en PR, et suit les migrations du schéma.
 | `zz-documents-manuel` | Upload / URL signée / suppression — **à la main**, écrit réellement sur Scaleway |
 | `zz-securite-manuel` | Vérification du rate-limiting — **à la main**, à répéter jusqu'au 429 |
 | `zz-cloisonnement-client` | Cloisonnement vu depuis un **compte client** — **à la main**, remplace la session |
+| `zz-inscription-manuel` | `POST /api/v1/signup` — **à la main**, laisse des comptes en base (nettoyage SQL fourni) |
+| `zz-workspaces-manuel` | Sélecteur d'espace de travail — **à la main**, change l'espace actif de la session |
 | `zz-deconnexion` | Sign Out — **à lancer à la main uniquement**, il détruit la session |
 
 ## Chaînage automatique
@@ -73,6 +75,40 @@ Elles n'ont volontairement pas d'assertion bloquante et sont documentées dans l
   (`fixtures/exemple.pdf`, un PDF minimal de 595 octets) est committé. Le multipart exige
   **trois** champs : `file`, `name` et `type` — envoyer le fichier seul renvoie un 400.
 - `settings/04-add-client`, `settings/05-assign-project` — exigent un compte client existant.
+- `zz-inscription-manuel/*` — crée de vrais comptes et **ne peut pas nettoyer derrière lui** :
+  aucune route ne supprime un compte (cf. `docs/rgpd.md` §5). C'est la seule entorse à la règle
+  « chaque dossier nettoie ses données ». Les adresses sont préfixées `bruno-signup+` et
+  horodatées, ce qui rend le dossier rejouable et le nettoyage sûr :
+
+  ```sql
+  -- Les organisations D'ABORD : c'est l'adhésion qui permet de les retrouver,
+  -- et elle disparaît avec le compte. La suppression cascade sur project et kanban_column.
+  DELETE FROM "organization" o
+   WHERE o.id IN (
+     SELECT m."organizationId" FROM "member" m
+       JOIN "user" u ON u.id = m."userId"
+      WHERE u.email LIKE 'bruno-signup+%@exemple.test'
+   );
+  DELETE FROM "user" WHERE email LIKE 'bruno-signup+%@exemple.test';
+  ```
+
+  ⚠️ La requête `11` **remplace la session courante** par celle du compte de test. Relancer le
+  dossier `auth` ensuite pour revenir sur le compte habituel.
+- `zz-workspaces-manuel/*` — la requête `04` **change l'espace de travail de la session** ; la `06`
+  la remet en place, ne pas interrompre le dossier entre les deux. Pour que le dossier ait un sens,
+  il faut **appartenir à deux espaces** : depuis un second compte, inviter l'adresse de `TEST_EMAIL`
+  via Paramètres → Accès clients. La requête `01` prévient dans la console si ce n'est pas le cas,
+  et la `07` ne se joue qu'à la main, entre une déconnexion et une reconnexion.
+
+  ⚠️ La déduplication du slug — le cœur du correctif — **ne se voit pas sur la réponse HTTP**,
+  qui ne renvoie pas le slug. Après le passage du dossier :
+
+  ```sql
+  SELECT name, slug FROM "organization" WHERE name LIKE '[Bruno]%' ORDER BY "createdAt";
+  -- attendu : mon-studio, puis mon-studio-2
+  SELECT count(*) FROM "user" u LEFT JOIN "member" m ON m."userId" = u.id WHERE m.id IS NULL;
+  -- attendu : 0 — aucun compte sans organisation, c'est LE test du correctif
+  ```
 - `client/*` — reste dans le run automatique, mais teste désormais l'inverse : **connecté en
   owner, ces 4 routes doivent répondre 403**. Le versant « un client ne voit que ses projets »
   est dans `zz-cloisonnement-client`.
