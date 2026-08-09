@@ -1,0 +1,33 @@
+meta {
+  name: Bascule vers un espace étranger → 404
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{apiUrl}}/workspaces/00000000-0000-4000-8000-000000000000/activate
+  body: none
+  auth: none
+}
+
+headers {
+  Origin: {{baseUrl}}
+}
+
+assert {
+  res.status: eq 404
+}
+
+docs {
+  LA requête de sécurité du dossier. Un 204 ici signifierait que n'importe qui
+  peut s'inviter dans le workspace d'un autre : toutes les données métier sont
+  filtrées sur `organization_id`, et rien d'autre ne les protège.
+
+  ⚠️ **404 et non 403**, délibérément. Un 403 confirmerait l'existence du
+  workspace à quelqu'un qui essaie des identifiants au hasard ; le 404 ne
+  distingue pas « n'existe pas » de « pas à vous ».
+
+  La garde vit dans la transaction de `switchWorkspace`
+  (`organization.datamapper.ts`) — c'est le seul endroit qui protège, puisque ces
+  routes n'ont volontairement pas `requireOwner`.
+}

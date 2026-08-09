@@ -1,0 +1,30 @@
+meta {
+  name: L'espace actif n'a pas bougé
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{apiUrl}}/workspaces
+  body: none
+  auth: none
+}
+
+headers {
+  Origin: {{baseUrl}}
+}
+
+assert {
+  res.status: eq 200
+  res.body.find(w => w.is_active).id: eq {{wsActif}}
+}
+
+docs {
+  Contrôle complémentaire du refus précédent : il ne suffit pas que la bascule
+  réponde 404, il faut vérifier qu'elle n'a rien modifié en chemin.
+
+  Better Auth, sur sa propre route `set-active`, remet `activeOrganizationId` à
+  `null` quand l'appartenance échoue — l'utilisateur se retrouve alors sans
+  workspace actif et reçoit 403 partout. Notre implémentation annule la
+  transaction et ne touche à rien. C'est cette différence qu'on vérifie ici.
+}

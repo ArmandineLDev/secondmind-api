@@ -1,0 +1,33 @@
+meta {
+  name: Basculer vers mon autre espace
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{apiUrl}}/workspaces/{{wsAutre}}/activate
+  body: none
+  auth: none
+}
+
+headers {
+  Origin: {{baseUrl}}
+}
+
+assert {
+  res.status: eq 204
+}
+
+docs {
+  ⚠️ **À partir d'ici, la session travaille dans un AUTRE espace.** La requête 06
+  la remet en place ; ne pas interrompre le dossier avant.
+
+  Renvoie 204 sans corps : la bascule ne pose pas de nouveau cookie. Elle met à
+  jour `session.activeOrganizationId` en base — c'est une colonne de la table
+  `session`, la lecture suivante la voit. On évite ainsi de faire traverser au
+  proxy Fastify la pose de cookie que ferait `POST /organization/set-active` de
+  Better Auth.
+
+  ⚠️ Échoue en 404 si `wsAutre` est vide, c'est-à-dire si le compte n'appartient
+  qu'à un seul espace. Voir le prérequis en tête de dossier.
+}

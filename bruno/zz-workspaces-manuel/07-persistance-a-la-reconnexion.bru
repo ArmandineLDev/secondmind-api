@@ -1,0 +1,48 @@
+meta {
+  name: Le choix survit à la reconnexion
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{baseUrl}}/api/auth/sign-in/email
+  body: json
+  auth: none
+}
+
+headers {
+  Origin: {{baseUrl}}
+}
+
+body:json {
+  {
+    "email": "{{process.env.TEST_EMAIL}}",
+    "password": "{{process.env.TEST_PASSWORD}}"
+  }
+}
+
+assert {
+  res.status: eq 200
+}
+
+docs {
+  ⚠️ **À exécuter à la main, après avoir basculé et t'être déconnectée**, sinon
+  elle ne prouve rien : une reconnexion sur une session déjà ouverte ne rejoue
+  pas le hook de création de session.
+
+  Marche à suivre :
+    1. lancer `04` pour basculer sur l'autre espace ;
+    2. lancer `zz-deconnexion` ;
+    3. lancer cette requête ;
+    4. lancer `01` — l'espace actif doit être **celui choisi en 04**, pas le plus
+       ancien.
+
+  C'est `user.lastOrganizationId` (migration `auth_0003`) qui le permet, relu par
+  `resolveActiveOrganizationId`. Sans lui, le sélecteur était à moitié fait : on
+  choisissait un espace, et la déconnexion suivante ramenait dans le plus ancien.
+
+  ⚠️ La résolution **revérifie l'adhésion**. Si l'accès a été révoqué entre-temps,
+  on retombe sur l'adhésion la plus ancienne plutôt que d'atterrir en 403 dans un
+  espace qui n'est plus le sien. Pour l'éprouver : faire retirer l'accès depuis
+  l'autre compte, puis rejouer 2 et 3.
+}
