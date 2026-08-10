@@ -11,7 +11,7 @@ import { normalizeEmail, ASCII_EMAIL } from '@/lib/email.schema'
 const APP_ORIGIN = env.APP_URL ?? env.CORS_ORIGIN
 
 export const auth = betterAuth({
-  appName: 'Eunomie',
+  appName: 'Estaple',
   secret: env.BETTER_AUTH_SECRET,
   baseURL: env.BETTER_AUTH_URL,
 
@@ -57,7 +57,7 @@ export const auth = betterAuth({
 
       await sendBrevoEmail({
         to: [{ email: user.email, name: user.name }],
-        subject: 'Réinitialisation de votre mot de passe — Eunomie',
+        subject: 'Réinitialisation de votre mot de passe — Estaple',
         htmlContent: buildResetPasswordEmail(url, user.name),
       })
     },
@@ -100,7 +100,7 @@ export const auth = betterAuth({
 
       await sendBrevoEmail({
         to: [{ email: user.email, name: user.name }],
-        subject: 'Confirmez votre adresse email — Eunomie',
+        subject: 'Confirmez votre adresse email — Estaple',
         htmlContent: buildVerifyEmail(url, user.name),
       })
     },
