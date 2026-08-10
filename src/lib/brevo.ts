@@ -60,8 +60,8 @@ export function buildVerifyEmail(url: string, name?: string): string {
           <h1 style="margin:0 0 16px;font-size:20px;line-height:1.3;">Confirmez votre adresse email</h1>
           <p style="margin:0 0 16px;font-size:15px;line-height:1.6;">${greeting}</p>
           <p style="margin:0 0 24px;font-size:15px;line-height:1.6;">
-            Bienvenue sur Eunomie. Il ne reste qu'une étape : confirmer votre adresse email
-            pour activer votre compte. Ce lien est valable 24 heures.
+            Bienvenue sur Estaple. Il ne reste qu'une chose à faire : confirmer votre adresse
+            email pour activer votre compte. Ce lien est valable 24 heures.
           </p>
           <p style="margin:0 0 24px;">
             <a href="${url}" style="display:inline-block;padding:12px 20px;background-color:#4f46e5;color:#ffffff;font-size:15px;font-weight:600;text-decoration:none;border-radius:6px;">
@@ -96,7 +96,7 @@ export function buildResetPasswordEmail(url: string, name?: string): string {
           <h1 style="margin:0 0 16px;font-size:20px;line-height:1.3;">Réinitialisation de votre mot de passe</h1>
           <p style="margin:0 0 16px;font-size:15px;line-height:1.6;">${greeting}</p>
           <p style="margin:0 0 24px;font-size:15px;line-height:1.6;">
-            Vous avez demandé à réinitialiser votre mot de passe Eunomie.
+            Vous avez demandé à réinitialiser votre mot de passe Estaple.
             Cliquez sur le bouton ci-dessous pour en choisir un nouveau. Ce lien est valable 1 heure.
           </p>
           <p style="margin:0 0 24px;">
