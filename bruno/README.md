@@ -40,6 +40,7 @@ en PR, et suit les migrations du schéma.
 | `documents` | Liste des documents (lancé automatiquement) |
 | `collections` | « Mes fiches » : colonnes, entrées, changement de type, purge (§3.7) |
 | `settings` | Préférences, accès clients |
+| `account` | Export RGPD du compte connecté (art. 15 et 20) |
 | `client` | Espace client (à lancer connecté **en tant que client**) |
 | `zz-documents-manuel` | Upload / URL signée / suppression — **à la main**, écrit réellement sur Scaleway |
 | `zz-securite-manuel` | Vérification du rate-limiting — **à la main**, à répéter jusqu'au 429 |
@@ -112,6 +113,9 @@ Elles n'ont volontairement pas d'assertion bloquante et sont documentées dans l
 - `client/*` — reste dans le run automatique, mais teste désormais l'inverse : **connecté en
   owner, ces 4 routes doivent répondre 403**. Le versant « un client ne voit que ses projets »
   est dans `zz-cloisonnement-client`.
+- `zz-cloisonnement-client/21-export-compte-client` — l'export RGPD vu depuis un compte client :
+  même URL que `account/01`, réponse différente. `shared_documents` attendu, `workspaces` **absent**.
+  S'il apparaît, un client invité reçoit les données commerciales de l'owner.
 - `auth/sign-up` — **doit échouer** (`disableSignUp: true`). Un 200 ici serait une régression.
 - `auth/request-password-reset` — déclenche un **envoi Brevo réel** si le compte existe.
 - `zz-deconnexion/sign-out` — détruit la session.

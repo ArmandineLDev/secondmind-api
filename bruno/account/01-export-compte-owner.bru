@@ -1,0 +1,35 @@
+meta {
+  name: RGPD — export du compte (owner)
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{apiUrl}}/account/export
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body.notice: isDefined
+  res.body.account: isDefined
+  res.body.memberships: isArray
+  res.body.workspaces: isArray
+}
+
+docs {
+  Droit d'accès et de portabilité (RGPD art. 15 et 20) sur son PROPRE compte.
+
+  La route ne prend aucun identifiant : elle exporte toujours la session en
+  cours. C'est ce qui la rend sûre sans `requireOwner` — il n'existe aucun
+  moyen d'exporter le compte d'un autre.
+
+  Connecté en owner, `workspaces` contient un objet par espace possédé, chacun
+  avec l'intégralité des 27 tables métier sous `content`.
+
+  ⚠️ Vérifier à la main que `account` ne contient NI mot de passe haché NI
+  jeton : seuls le fournisseur et la date de création figurent dans
+  `auth_providers`. Une régression là-dessus n'est pas rattrapable — le fichier
+  est déjà chez la personne.
+}

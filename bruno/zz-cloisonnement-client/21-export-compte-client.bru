@@ -1,0 +1,32 @@
+meta {
+  name: RGPD — export du compte (client invité)
+  type: http
+  seq: 21
+}
+
+get {
+  url: {{apiUrl}}/account/export
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body.notice: isDefined
+  res.body.account: isDefined
+  res.body.memberships: isArray
+  res.body.shared_documents: isArray
+}
+
+docs {
+  ⚠️ Requête MANUELLE : à jouer connecté avec un compte `client`, pas owner.
+  L'URL est la même — c'est le rôle de la session qui change la réponse.
+
+  Attendu : `shared_documents` présent, `workspaces` ABSENT. Un client invité
+  n'emporte pas le contenu de l'espace qui l'héberge ; les documents sont
+  listés (nom, type, taille, date) sans `file_key`, qui est la clé S3 interne.
+
+  Si `workspaces` apparaît ici, c'est que la détection de rôle du controller
+  est cassée et qu'un client reçoit les données commerciales de l'owner —
+  fuite grave, à traiter en priorité.
+}

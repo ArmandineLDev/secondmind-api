@@ -2,6 +2,7 @@ import { FastifyInstance } from 'fastify'
 import { authRoutes } from '@/features/auth/auth.routes'
 import { signupRoutes } from '@/features/auth/signup.routes'
 import { workspaceRoutes } from '@/features/workspaces/workspace.routes'
+import { accountRoutes } from '@/features/account/account.routes'
 import { projectRoutes } from '@/features/projects/project.routes'
 import { taskRoutes } from '@/features/tasks/task.routes'
 import { taskDependencyRoutes } from '@/features/tasks/task-dependency.routes'
@@ -34,6 +35,9 @@ export async function registerRoutes(fastify: FastifyInstance) {
 
   // Espaces de travail — accessible aux owners comme aux clients.
   fastify.register(workspaceRoutes, { prefix: '/api/v1' })
+
+  // Compte personnel (export RGPD) — owners comme clients, chacun pour soi.
+  fastify.register(accountRoutes, { prefix: '/api/v1' })
 
   // Routes métier — toutes préfixées /api/v1
   fastify.register(projectRoutes,        { prefix: '/api/v1' })
