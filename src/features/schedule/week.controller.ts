@@ -101,5 +101,18 @@ export async function setBlockStatus(req: FastifyRequest, reply: FastifyReply) {
   // Une durée réelle n'a de sens que pour du temps effectivement passé.
   const counts        = input.status === 'done' || input.status === 'partial'
   const actualMinutes = counts ? input.actual_minutes ?? null : null
-  reply.send(await dm.setBlockStatus(block.id, req.organizationId, input.status, actualMinutes))
+
+  // Les valeurs suivent la définition copiée sur le créneau : une clé inconnue
+  // serait invisible à l'écran, une valeur du mauvais type fausserait les totaux.
+  // Une case vide n'est pas stockée.
+  const values: Record<string, number | string> = {}
+  for (const [label, value] of Object.entries(input.measure_values ?? {})) {
+    const measure = block.measures.find((m) => m.label === label)
+    if (!measure) return reply.badRequest(`Mesure inconnue : ${label}`)
+    if (value === '') continue
+    if (measure.type === 'number' && typeof value !== 'number') return reply.badRequest(`${label} : un nombre est attendu`)
+    values[label] = measure.type === 'text' ? String(value).trim() : value
+  }
+
+  reply.send(await dm.setBlockStatus(block.id, req.organizationId, input.status, actualMinutes, input.note?.trim() || null, values))
 }
