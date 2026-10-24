@@ -9,6 +9,7 @@ import {
   updateBlockSchema,
   blockStatusSchema,
   idParamsSchema,
+  toMinutes,
 } from './schedule.schema'
 import { addDays, buildWeekView, foreignReference, invertedTimes, ownerOf } from './schedule.service'
 import * as dm from '@/db/datamappers/schedule-week.datamapper'
@@ -110,8 +111,13 @@ export async function setBlockStatus(req: FastifyRequest, reply: FastifyReply) {
   const block  = await dm.findBlockById(id, ownerOf(req))
   if (!block) return reply.notFound('Créneau introuvable')
   // Une durée réelle n'a de sens que pour du temps effectivement passé.
-  const counts        = input.status === 'done' || input.status === 'partial'
-  const actualMinutes = counts ? input.actual_minutes ?? null : null
+  const counts      = input.status === 'done' || input.status === 'partial'
+  const actualStart = counts ? input.actual_start ?? null : null
+  const actualEnd   = counts ? input.actual_end ?? null : null
+  // Les heures réelles, quand elles sont notées, font foi pour la durée.
+  const actualMinutes = !counts ? null
+    : actualStart && actualEnd ? toMinutes(actualEnd) - toMinutes(actualStart)
+    : input.actual_minutes ?? null
 
   // Les valeurs suivent la définition copiée sur le créneau : une clé inconnue
   // serait invisible à l'écran, une valeur du mauvais type fausserait les totaux.
@@ -125,5 +131,12 @@ export async function setBlockStatus(req: FastifyRequest, reply: FastifyReply) {
     values[label] = measure.type === 'text' ? String(value).trim() : value
   }
 
-  reply.send(await dm.setBlockStatus(block.id, req.organizationId, input.status, actualMinutes, input.note?.trim() || null, values))
+  reply.send(await dm.setBlockStatus(block.id, req.organizationId, {
+    status: input.status,
+    actualMinutes,
+    actualStart,
+    actualEnd,
+    note: input.note?.trim() || null,
+    measureValues: values,
+  }))
 }

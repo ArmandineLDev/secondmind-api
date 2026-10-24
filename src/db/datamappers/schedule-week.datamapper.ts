@@ -258,19 +258,25 @@ export async function deleteBlock(id: string): Promise<void> {
 export async function setBlockStatus(
   id: string,
   organizationId: string,
-  status: ScheduleBlockStatus,
-  actualMinutes: number | null,
-  note: string | null,
-  measureValues: MeasureValues
+  review: {
+    status: ScheduleBlockStatus
+    actualMinutes: number | null
+    actualStart: string | null
+    actualEnd: string | null
+    note: string | null
+    measureValues: MeasureValues
+  }
 ): Promise<ScheduleBlock> {
+  const { status, actualMinutes, actualStart, actualEnd, note, measureValues } = review
   const client = await db.connect()
   try {
     await client.query('BEGIN')
     const result = await client.query<ScheduleBlock>(
       `UPDATE schedule_block
-       SET status = $2, actual_minutes = $3, note = $4, measure_values = $5::jsonb
+       SET status = $2, actual_minutes = $3, note = $4, measure_values = $5::jsonb,
+           actual_start = $6, actual_end = $7
        WHERE id = $1 RETURNING *`,
-      [id, status, actualMinutes, note, JSON.stringify(measureValues)]
+      [id, status, actualMinutes, note, JSON.stringify(measureValues), actualStart, actualEnd]
     )
     const block = result.rows[0]
 
