@@ -1,6 +1,6 @@
 import { db } from '@/lib/db'
-import type { Canvas } from '@/features/marketing/canvases/canvas.types'
-import type { CreateCanvasInput, UpdateCanvasInput } from '@/features/marketing/canvases/canvas.schema'
+import type { Canvas } from '@/features/strategy/canvases/canvas.types'
+import type { CreateCanvasInput, UpdateCanvasInput } from '@/features/strategy/canvases/canvas.schema'
 
 export async function findAllCanvases(organizationId: string): Promise<Canvas[]> {
   const result = await db.query<Canvas>(

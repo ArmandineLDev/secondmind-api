@@ -47,7 +47,7 @@ export interface InvoiceSummaryRow {
   open_count:      string
 }
 
-export interface MarketingKpis {
+export interface CommercialKpis {
   organization_id:                string
   total_opportunities:            string
   opportunities_with_interaction: string

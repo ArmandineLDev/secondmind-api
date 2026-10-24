@@ -13,7 +13,7 @@ import type { FastifyError, FastifyInstance, FastifyReply, FastifyRequest } from
  *   · `auth.plugin.ts` renvoyait déjà `{ error, status }` à la main.
  *
  * Et surtout, les contrôleurs qui utilisent `schema.parse()` (CRM, finance,
- * marketing) laissaient remonter la `ZodError` telle quelle : Fastify la traitait
+ * stratégie) laissaient remonter la `ZodError` telle quelle : Fastify la traitait
  * en **500**, avec le détail du schéma dans la réponse. Une simple faute de saisie
  * devenait indiscernable d'un vrai plantage serveur.
  *

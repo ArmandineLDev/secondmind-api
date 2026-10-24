@@ -1,6 +1,6 @@
 import { db } from '@/lib/db'
-import type { VpCanvasWithRelations } from '@/features/marketing/vp-canvas/vp-canvas.types'
-import type { CreateVpCanvasInput, UpdateVpCanvasInput } from '@/features/marketing/vp-canvas/vp-canvas.schema'
+import type { VpCanvasWithRelations } from '@/features/strategy/vp-canvas/vp-canvas.types'
+import type { CreateVpCanvasInput, UpdateVpCanvasInput } from '@/features/strategy/vp-canvas/vp-canvas.schema'
 
 const SELECT_WITH_RELATIONS = `
   SELECT vpc.*, o.name AS offer_name, p.name AS persona_name

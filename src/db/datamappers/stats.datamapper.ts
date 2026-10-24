@@ -5,7 +5,7 @@ import type {
   OpportunityPipelineRow,
   ProjectProfitability,
   InvoiceSummaryRow,
-  MarketingKpis,
+  CommercialKpis,
   CumulativePnl,
   OfferPerformance,
 } from '@/features/stats/stats.types'
@@ -63,9 +63,9 @@ export async function getInvoiceSummary(organizationId: string): Promise<Invoice
   return result.rows
 }
 
-export async function getMarketingKpis(organizationId: string): Promise<MarketingKpis | null> {
-  const result = await db.query<MarketingKpis>(
-    `SELECT * FROM v_marketing_kpis WHERE organization_id = $1`,
+export async function getCommercialKpis(organizationId: string): Promise<CommercialKpis | null> {
+  const result = await db.query<CommercialKpis>(
+    `SELECT * FROM v_commercial_kpis WHERE organization_id = $1`,
     [organizationId]
   )
   return result.rows[0] ?? null
