@@ -43,6 +43,11 @@ const OWNED_TABLES = [
   'business_model_canvas',
   'value_proposition_canvas',
   'collection',
+  'schedule_template_block',
+  'school_holiday_period',
+  'schedule_week',
+  'appointment_template',
+  'appointment',
   'organization_settings',
 ] as const
 
@@ -59,6 +64,8 @@ const CHILD_TABLES: Record<string, string> = {
     + 'OR opportunity_id IN (SELECT id FROM opportunity WHERE organization_id = $1)',
   collection_field:    'collection_id IN (SELECT id FROM collection WHERE organization_id = $1)',
   collection_item:     'collection_id IN (SELECT id FROM collection WHERE organization_id = $1)',
+  schedule_day_off:    'week_id IN (SELECT id FROM schedule_week WHERE organization_id = $1)',
+  schedule_block:      'week_id IN (SELECT id FROM schedule_week WHERE organization_id = $1)',
 }
 
 /**
