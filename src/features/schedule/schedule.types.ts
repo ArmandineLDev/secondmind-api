@@ -73,6 +73,8 @@ export interface ScheduleBlock {
   project_id: string | null
   status: ScheduleBlockStatus
   actual_minutes: number | null
+  actual_start: string | null
+  actual_end: string | null
   measures: ScheduleMeasure[]
   measure_values: MeasureValues
   note: string | null
