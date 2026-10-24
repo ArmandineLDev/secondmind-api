@@ -41,6 +41,17 @@ export async function reapplyTemplate(req: FastifyRequest, reply: FastifyReply) 
   reply.send(await buildWeekView(owner, week.week_start))
 }
 
+export async function cancelWeek(req: FastifyRequest, reply: FastifyReply) {
+  const { id } = idParamsSchema.parse(req.params)
+  const owner  = ownerOf(req)
+  const week   = await dm.findWeekById(id, owner)
+  if (!week) return reply.notFound('Semaine introuvable')
+  if (!(await dm.deleteWeekIfUntouched(week.id))) {
+    return reply.conflict('Cette semaine a déjà un bilan : sa préparation ne peut plus être annulée')
+  }
+  reply.send(await buildWeekView(owner, week.week_start))
+}
+
 export async function updateReview(req: FastifyRequest, reply: FastifyReply) {
   const { id } = idParamsSchema.parse(req.params)
   const input  = reviewSchema.parse(req.body)
@@ -101,5 +112,18 @@ export async function setBlockStatus(req: FastifyRequest, reply: FastifyReply) {
   // Une durée réelle n'a de sens que pour du temps effectivement passé.
   const counts        = input.status === 'done' || input.status === 'partial'
   const actualMinutes = counts ? input.actual_minutes ?? null : null
-  reply.send(await dm.setBlockStatus(block.id, req.organizationId, input.status, actualMinutes))
+
+  // Les valeurs suivent la définition copiée sur le créneau : une clé inconnue
+  // serait invisible à l'écran, une valeur du mauvais type fausserait les totaux.
+  // Une case vide n'est pas stockée.
+  const values: Record<string, number | string> = {}
+  for (const [label, value] of Object.entries(input.measure_values ?? {})) {
+    const measure = block.measures.find((m) => m.label === label)
+    if (!measure) return reply.badRequest(`Mesure inconnue : ${label}`)
+    if (value === '') continue
+    if (measure.type === 'number' && typeof value !== 'number') return reply.badRequest(`${label} : un nombre est attendu`)
+    values[label] = measure.type === 'text' ? String(value).trim() : value
+  }
+
+  reply.send(await dm.setBlockStatus(block.id, req.organizationId, input.status, actualMinutes, input.note?.trim() || null, values))
 }

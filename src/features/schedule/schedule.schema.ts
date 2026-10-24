@@ -25,6 +25,17 @@ const endAfterStart = <T extends { start_time?: string; end_time?: string }>(v: 
   !v.start_time || !v.end_time || toMinutes(v.end_time) > toMinutes(v.start_time)
 const endAfterStartError = { message: 'La fin doit suivre le début', path: ['end_time'] }
 
+// Mesures au bilan : quelques-unes par créneau, libellés uniques (ils servent de
+// clé aux valeurs et de regroupement pour les totaux de la semaine).
+const measureSchema = z.object({
+  label: z.string().trim().min(1).max(50),
+  type:  z.enum(['number', 'text']),
+  unit:  z.string().trim().max(20).nullish().transform((u) => u || null),
+})
+const measuresSchema = z.array(measureSchema).max(6)
+  .refine((list) => new Set(list.map((m) => m.label.toLowerCase())).size === list.length,
+    'Deux mesures portent le même libellé')
+
 // ── Semaine type ──────────────────────────────────────────────────────────────
 export const createTemplateBlockSchema = z.object({
   weekday:     z.number().int().min(1).max(7),
@@ -34,6 +45,7 @@ export const createTemplateBlockSchema = z.object({
   category:    z.enum(CATEGORY).optional(),
   project_id:  z.string().uuid().nullish(),
   period_rule: z.enum(PERIOD_RULE).optional(),
+  measures:    measuresSchema.optional(),
 }).refine(endAfterStart, endAfterStartError)
 
 export const updateTemplateBlockSchema = z.object({
@@ -44,6 +56,7 @@ export const updateTemplateBlockSchema = z.object({
   category:    z.enum(CATEGORY).optional(),
   project_id:  z.string().uuid().nullish(),
   period_rule: z.enum(PERIOD_RULE).optional(),
+  measures:    measuresSchema.optional(),
 }).refine(endAfterStart, endAfterStartError)
 
 // ── Vacances scolaires ────────────────────────────────────────────────────────
@@ -82,6 +95,7 @@ export const createBlockSchema = z.object({
   label:      z.string().min(1).max(255),
   category:   z.enum(CATEGORY).optional(),
   project_id: z.string().uuid().nullish(),
+  measures:   measuresSchema.optional(),
 }).refine(endAfterStart, endAfterStartError)
 
 export const updateBlockSchema = z.object({
@@ -91,11 +105,14 @@ export const updateBlockSchema = z.object({
   label:      z.string().min(1).max(255).optional(),
   category:   z.enum(CATEGORY).optional(),
   project_id: z.string().uuid().nullish(),
+  measures:   measuresSchema.optional(),
 }).refine(endAfterStart, endAfterStartError)
 
 export const blockStatusSchema = z.object({
   status:         z.enum(STATUS),
   actual_minutes: z.number().int().positive().max(24 * 60).nullish(),
+  note:           z.string().max(2000).nullish(),
+  measure_values: z.record(z.string(), z.union([z.number().min(0), z.string().max(500)])).optional(),
 }).refine((v) => v.status !== 'partial' || v.actual_minutes,
   { message: 'Indiquez la durée réellement passée', path: ['actual_minutes'] })
 

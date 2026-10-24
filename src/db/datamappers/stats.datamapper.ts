@@ -8,6 +8,7 @@ import type {
   CommercialKpis,
   CumulativePnl,
   OfferPerformance,
+  CrmDailyActivity,
 } from '@/features/stats/stats.types'
 
 export async function getKpis(organizationId: string): Promise<Kpis | null> {
@@ -85,6 +86,25 @@ export async function getOfferPerformance(organizationId: string): Promise<Offer
      WHERE organization_id = $1
      ORDER BY won_value DESC, offer_name ASC NULLS LAST`,
     [organizationId]
+  )
+  return result.rows
+}
+
+/**
+ * Activité CRM jour par jour sur une période (vue `v_crm_daily_activity`) :
+ * échanges et nouveaux contacts. Les jours sans interaction sont absents.
+ */
+export async function findCrmDailyActivity(
+  organizationId: string,
+  from: string,
+  to: string
+): Promise<CrmDailyActivity[]> {
+  const result = await db.query<CrmDailyActivity>(
+    `SELECT day::text AS date, interactions::int, new_contacts::int
+     FROM v_crm_daily_activity
+     WHERE organization_id = $1 AND day BETWEEN $2 AND $3
+     ORDER BY day`,
+    [organizationId, from, to]
   )
   return result.rows
 }
