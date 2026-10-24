@@ -23,6 +23,7 @@ import { editorialPostRoutes } from '@/features/strategy/editorial-posts/editori
 import { statsRoutes } from '@/features/stats/stats.routes'
 import { documentRoutes } from '@/features/documents/document.routes'
 import { collectionRoutes } from '@/features/collections/collection.routes'
+import { scheduleRoutes }   from '@/features/schedule/schedule.routes'
 import { clientRoutes }    from '@/features/client/client.routes'
 import { settingsRoutes }  from '@/features/settings/settings.routes'
 
@@ -60,6 +61,7 @@ export async function registerRoutes(fastify: FastifyInstance) {
   fastify.register(statsRoutes,          { prefix: '/api/v1' })
   fastify.register(documentRoutes,       { prefix: '/api/v1' })
   fastify.register(collectionRoutes,     { prefix: '/api/v1' })
+  fastify.register(scheduleRoutes,       { prefix: '/api/v1' })
   fastify.register(clientRoutes,         { prefix: '/api/v1' })
   fastify.register(settingsRoutes,       { prefix: '/api/v1' })
 }

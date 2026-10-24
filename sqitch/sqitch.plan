@@ -43,3 +43,5 @@ project_0005_single_default_project [project_0001_Project_initialization] 2026-0
 project_0006_contact_id [project_0004_company_id crm_0001_company_and_contact] 2026-08-08T15:56:31Z Armandine,,, <armandine@portableDebian> # project.contact_id : client personne physique (paire company_id/contact_id, comme invoice)
 auth_0003_last_organization [auth_0001_BetterAuth_Initialization] 2026-08-09T14:38:31Z Armandine,,, <armandine@portableDebian> # user.lastOrganizationId : mémoriser le workspace choisi entre deux sessions
 stats_0007_rename_commercial_kpis [stats_0005_rename_lead_views] 2026-10-24T16:45:00Z Armandine <armandine@allskyweb.fr> # Renomme v_marketing_kpis en v_commercial_kpis (module Marketing devenu Stratégie)
+schedule_0001_init [project_0001_Project_initialization crm_0001_company_and_contact finance_0001_revenue_budget_expense_time] 2026-10-24T17:27:39Z Armandine <armandine@allskyweb.fr> # Ma semaine : semaine type, semaines réelles, rendez-vous, lien time_entry
+schedule_0002_functions [schedule_0001_init] 2026-10-24T17:27:39Z Armandine <armandine@allskyweb.fr> # Ma semaine : jours fériés et dépliage de la semaine type
