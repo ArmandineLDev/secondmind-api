@@ -2,6 +2,7 @@ import { FastifyInstance } from 'fastify'
 import { authRoutes } from '@/features/auth/auth.routes'
 import { signupRoutes } from '@/features/auth/signup.routes'
 import { workspaceRoutes } from '@/features/workspaces/workspace.routes'
+import { accountRoutes } from '@/features/account/account.routes'
 import { projectRoutes } from '@/features/projects/project.routes'
 import { taskRoutes } from '@/features/tasks/task.routes'
 import { taskDependencyRoutes } from '@/features/tasks/task-dependency.routes'
@@ -12,13 +13,13 @@ import { budgetRoutes } from '@/features/finance/budgets/budget.routes'
 import { expenseRoutes } from '@/features/finance/expenses/expense.routes'
 import { timeEntryRoutes } from '@/features/finance/time-entries/time-entry.routes'
 import { invoiceRoutes } from '@/features/finance/invoices/invoice.routes'
-import { offerRoutes } from '@/features/marketing/offers/offer.routes'
-import { personaRoutes } from '@/features/marketing/personas/persona.routes'
-import { goalRoutes } from '@/features/marketing/goals/goal.routes'
-import { canvasRoutes } from '@/features/marketing/canvases/canvas.routes'
-import { swotRoutes } from '@/features/marketing/swot/swot.routes'
-import { vpCanvasRoutes } from '@/features/marketing/vp-canvas/vp-canvas.routes'
-import { editorialPostRoutes } from '@/features/marketing/editorial-posts/editorial-post.routes'
+import { offerRoutes } from '@/features/strategy/offers/offer.routes'
+import { personaRoutes } from '@/features/strategy/personas/persona.routes'
+import { goalRoutes } from '@/features/strategy/goals/goal.routes'
+import { canvasRoutes } from '@/features/strategy/canvases/canvas.routes'
+import { swotRoutes } from '@/features/strategy/swot/swot.routes'
+import { vpCanvasRoutes } from '@/features/strategy/vp-canvas/vp-canvas.routes'
+import { editorialPostRoutes } from '@/features/strategy/editorial-posts/editorial-post.routes'
 import { statsRoutes } from '@/features/stats/stats.routes'
 import { documentRoutes } from '@/features/documents/document.routes'
 import { collectionRoutes } from '@/features/collections/collection.routes'
@@ -34,6 +35,9 @@ export async function registerRoutes(fastify: FastifyInstance) {
 
   // Espaces de travail — accessible aux owners comme aux clients.
   fastify.register(workspaceRoutes, { prefix: '/api/v1' })
+
+  // Compte personnel (export RGPD) — owners comme clients, chacun pour soi.
+  fastify.register(accountRoutes, { prefix: '/api/v1' })
 
   // Routes métier — toutes préfixées /api/v1
   fastify.register(projectRoutes,        { prefix: '/api/v1' })

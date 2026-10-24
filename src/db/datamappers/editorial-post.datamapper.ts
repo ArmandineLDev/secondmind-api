@@ -1,6 +1,6 @@
 import { db } from '@/lib/db'
-import type { EditorialPost } from '@/features/marketing/editorial-posts/editorial-post.types'
-import type { CreatePostInput, UpdatePostInput, PostQuery } from '@/features/marketing/editorial-posts/editorial-post.schema'
+import type { EditorialPost } from '@/features/strategy/editorial-posts/editorial-post.types'
+import type { CreatePostInput, UpdatePostInput, PostQuery } from '@/features/strategy/editorial-posts/editorial-post.schema'
 
 export async function findAllPosts(
   organizationId: string,

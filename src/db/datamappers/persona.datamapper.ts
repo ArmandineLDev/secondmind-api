@@ -1,6 +1,6 @@
 import { db } from '@/lib/db'
-import type { Persona } from '@/features/marketing/personas/persona.types'
-import type { CreatePersonaInput, UpdatePersonaInput } from '@/features/marketing/personas/persona.schema'
+import type { Persona } from '@/features/strategy/personas/persona.types'
+import type { CreatePersonaInput, UpdatePersonaInput } from '@/features/strategy/personas/persona.schema'
 
 export async function findAllPersonas(organizationId: string): Promise<Persona[]> {
   const result = await db.query<Persona>(

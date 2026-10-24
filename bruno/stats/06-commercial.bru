@@ -1,0 +1,19 @@
+meta {
+  name: KPIs commerciaux
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{apiUrl}}/stats/commercial
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}
+
+docs {
+  Vue PostgreSQL : v_commercial_kpis — total_opportunities, won_opportunities
+}
