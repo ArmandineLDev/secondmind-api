@@ -1,3 +1,5 @@
+import type { CrmDailyActivity } from '@/features/stats/stats.types'
+
 export type ScheduleCategory     = 'pro' | 'perso'
 export type SchedulePeriodRule   = 'always' | 'school_days' | 'school_holidays'
 export type ScheduleBlockStatus  = 'planned' | 'done' | 'partial' | 'skipped'
@@ -153,6 +155,8 @@ export interface WeekView {
   appointments: Appointment[]
   public_holidays: PublicHoliday[]
   conflicts: string[]
+  /** Activité du CRM sur la semaine (workspace entier), jours sans échange absents. */
+  crm_activity: CrmDailyActivity[]
 }
 
 /** Une semaine appartient à un utilisateur DANS un workspace : toute requête filtre sur les deux. */

@@ -47,6 +47,13 @@ export interface InvoiceSummaryRow {
   open_count:      string
 }
 
+/** Une journée d'activité CRM : échanges, et personnes contactées pour la première fois. */
+export interface CrmDailyActivity {
+  date: string
+  interactions: number
+  new_contacts: number
+}
+
 export interface CommercialKpis {
   organization_id:                string
   total_opportunities:            string
