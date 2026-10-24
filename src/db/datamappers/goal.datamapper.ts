@@ -1,6 +1,6 @@
 import { db } from '@/lib/db'
-import type { Goal } from '@/features/marketing/goals/goal.types'
-import type { CreateGoalInput, UpdateGoalInput, GoalQuery } from '@/features/marketing/goals/goal.schema'
+import type { Goal } from '@/features/strategy/goals/goal.types'
+import type { CreateGoalInput, UpdateGoalInput, GoalQuery } from '@/features/strategy/goals/goal.schema'
 
 export async function findAllGoals(
   organizationId: string,

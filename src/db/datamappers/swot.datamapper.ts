@@ -1,6 +1,6 @@
 import { db } from '@/lib/db'
-import type { Swot } from '@/features/marketing/swot/swot.types'
-import type { CreateSwotInput, UpdateSwotInput } from '@/features/marketing/swot/swot.schema'
+import type { Swot } from '@/features/strategy/swot/swot.types'
+import type { CreateSwotInput, UpdateSwotInput } from '@/features/strategy/swot/swot.schema'
 
 export async function findAllSwots(organizationId: string): Promise<Swot[]> {
   const result = await db.query<Swot>(

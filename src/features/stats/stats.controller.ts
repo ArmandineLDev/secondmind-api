@@ -30,8 +30,8 @@ export async function getInvoiceSummary(req: FastifyRequest, reply: FastifyReply
   reply.send(rows)
 }
 
-export async function getMarketingKpis(req: FastifyRequest, reply: FastifyReply) {
-  const kpis = await dm.getMarketingKpis(req.organizationId)
+export async function getCommercialKpis(req: FastifyRequest, reply: FastifyReply) {
+  const kpis = await dm.getCommercialKpis(req.organizationId)
   reply.send(kpis ?? {})
 }
 

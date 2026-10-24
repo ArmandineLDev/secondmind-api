@@ -1,6 +1,6 @@
 import { db } from '@/lib/db'
-import type { Offer } from '@/features/marketing/offers/offer.types'
-import type { CreateOfferInput, UpdateOfferInput, OfferQuery } from '@/features/marketing/offers/offer.schema'
+import type { Offer } from '@/features/strategy/offers/offer.types'
+import type { CreateOfferInput, UpdateOfferInput, OfferQuery } from '@/features/strategy/offers/offer.schema'
 
 export async function findAllOffers(
   organizationId: string,
