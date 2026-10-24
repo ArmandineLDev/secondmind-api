@@ -112,6 +112,29 @@ export async function reapplyTemplate(weekId: string): Promise<void> {
 }
 
 /**
+ * Annule la préparation d'une semaine : elle redevient une projection du modèle.
+ * Refusé (false) dès qu'un bilan existe — créneau renseigné, note, mesure, ou
+ * bilan de la semaine : supprimer ferait perdre l'historique, et les entrées de
+ * temps déjà créées resteraient orphelines (puis doublées au bilan suivant).
+ * Une seule requête : la vérification et la suppression ne peuvent pas se croiser.
+ * Les rendez-vous, rattachés à une date, ne sont pas concernés.
+ */
+export async function deleteWeekIfUntouched(weekId: string): Promise<boolean> {
+  const result = await db.query(
+    `DELETE FROM schedule_week w
+     WHERE w.id = $1
+       AND w.reviewed_at IS NULL
+       AND NOT EXISTS (
+         SELECT 1 FROM schedule_block b
+         WHERE b.week_id = w.id
+           AND (b.status <> 'planned' OR b.note IS NOT NULL OR b.measure_values <> '{}'::jsonb)
+       )`,
+    [weekId]
+  )
+  return (result.rowCount ?? 0) > 0
+}
+
+/**
  * Chômer un jour retire ses créneaux issus du modèle encore prévus (les
  * créneaux ajoutés à la main restent) ; le rétablir recopie le modèle pour ce
  * seul jour.

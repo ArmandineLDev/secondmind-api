@@ -41,6 +41,17 @@ export async function reapplyTemplate(req: FastifyRequest, reply: FastifyReply) 
   reply.send(await buildWeekView(owner, week.week_start))
 }
 
+export async function cancelWeek(req: FastifyRequest, reply: FastifyReply) {
+  const { id } = idParamsSchema.parse(req.params)
+  const owner  = ownerOf(req)
+  const week   = await dm.findWeekById(id, owner)
+  if (!week) return reply.notFound('Semaine introuvable')
+  if (!(await dm.deleteWeekIfUntouched(week.id))) {
+    return reply.conflict('Cette semaine a déjà un bilan : sa préparation ne peut plus être annulée')
+  }
+  reply.send(await buildWeekView(owner, week.week_start))
+}
+
 export async function updateReview(req: FastifyRequest, reply: FastifyReply) {
   const { id } = idParamsSchema.parse(req.params)
   const input  = reviewSchema.parse(req.body)
