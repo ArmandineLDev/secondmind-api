@@ -108,13 +108,23 @@ export const updateBlockSchema = z.object({
   measures:   measuresSchema.optional(),
 }).refine(endAfterStart, endAfterStartError)
 
+// Heure réelle : à la minute près, pas de pas imposé — on note ce qui s'est passé.
+const actualTime = z.string().regex(/^([01]\d|2[0-3]):[0-5]\d(:00)?$/, 'Heure au format HH:MM')
+
 export const blockStatusSchema = z.object({
   status:         z.enum(STATUS),
   actual_minutes: z.number().int().positive().max(24 * 60).nullish(),
+  actual_start:   actualTime.nullish(),
+  actual_end:     actualTime.nullish(),
   note:           z.string().max(2000).nullish(),
   measure_values: z.record(z.string(), z.union([z.number().min(0), z.string().max(500)])).optional(),
-}).refine((v) => v.status !== 'partial' || v.actual_minutes,
-  { message: 'Indiquez la durée réellement passée', path: ['actual_minutes'] })
+})
+  .refine((v) => !v.actual_start === !v.actual_end,
+    { message: 'Indiquez l\'heure de début ET l\'heure de fin réelles', path: ['actual_end'] })
+  .refine((v) => !v.actual_start || !v.actual_end || toMinutes(v.actual_end) > toMinutes(v.actual_start),
+    { message: 'La fin réelle doit suivre le début', path: ['actual_end'] })
+  .refine((v) => v.status !== 'partial' || v.actual_minutes || v.actual_start,
+    { message: 'Indiquez le temps réellement passé', path: ['actual_minutes'] })
 
 export const idParamsSchema = z.object({ id: z.string().uuid() })
 

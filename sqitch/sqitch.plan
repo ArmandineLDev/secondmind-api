@@ -47,3 +47,4 @@ schedule_0001_init [project_0001_Project_initialization crm_0001_company_and_con
 schedule_0002_functions [schedule_0001_init] 2026-10-24T17:27:39Z Armandine <armandine@allskyweb.fr> # Ma semaine : jours fériés et dépliage de la semaine type
 schedule_0003_block_measures [schedule_0002_functions] 2026-10-24T18:33:12Z Armandine <armandine@allskyweb.fr> # Ma semaine : mesures au bilan (définies dans la semaine type, copiées), note libre
 stats_0008_crm_daily_activity [crm_0002_lead_and_interaction] 2026-10-24T18:46:28Z Armandine <armandine@allskyweb.fr> # Activité CRM par jour : nouveaux contacts et échanges (Ma semaine)
+schedule_0004_block_actual_times [schedule_0003_block_measures] 2026-10-24T19:48:45Z Armandine <armandine@allskyweb.fr> # Ma semaine : heures réelles de début et de fin au bilan d'un créneau
