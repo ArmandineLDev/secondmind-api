@@ -1,5 +1,6 @@
 import { db } from '@/lib/db'
 import type {
+  MeasureValues,
   ProjectedBlock,
   PublicHoliday,
   ScheduleBlock,
@@ -60,7 +61,7 @@ export async function findBlocks(weekId: string): Promise<ScheduleBlock[]> {
 /** Ce que serait une semaine non créée : la semaine type dépliée, rien n'est écrit. */
 export async function projectWeek(owner: ScheduleOwner, weekStart: string): Promise<ProjectedBlock[]> {
   const result = await db.query<ProjectedBlock>(
-    `SELECT block_date AS date, template_block_id, start_time, end_time, label, category, project_id
+    `SELECT block_date AS date, template_block_id, start_time, end_time, label, category, project_id, measures
      FROM schedule_template_expand($1, $2, $3::date, $3::date + 6)`,
     [owner.organizationId, owner.userId, weekStart]
   )
@@ -108,6 +109,29 @@ export async function reapplyTemplate(weekId: string): Promise<void> {
   } finally {
     client.release()
   }
+}
+
+/**
+ * Annule la préparation d'une semaine : elle redevient une projection du modèle.
+ * Refusé (false) dès qu'un bilan existe — créneau renseigné, note, mesure, ou
+ * bilan de la semaine : supprimer ferait perdre l'historique, et les entrées de
+ * temps déjà créées resteraient orphelines (puis doublées au bilan suivant).
+ * Une seule requête : la vérification et la suppression ne peuvent pas se croiser.
+ * Les rendez-vous, rattachés à une date, ne sont pas concernés.
+ */
+export async function deleteWeekIfUntouched(weekId: string): Promise<boolean> {
+  const result = await db.query(
+    `DELETE FROM schedule_week w
+     WHERE w.id = $1
+       AND w.reviewed_at IS NULL
+       AND NOT EXISTS (
+         SELECT 1 FROM schedule_block b
+         WHERE b.week_id = w.id
+           AND (b.status <> 'planned' OR b.note IS NOT NULL OR b.measure_values <> '{}'::jsonb)
+       )`,
+    [weekId]
+  )
+  return (result.rowCount ?? 0) > 0
 }
 
 /**
@@ -181,10 +205,11 @@ export async function findBlockById(
 
 export async function createBlock(weekId: string, input: CreateBlockInput): Promise<ScheduleBlock> {
   const result = await db.query<ScheduleBlock>(
-    `INSERT INTO schedule_block (week_id, date, start_time, end_time, label, category, project_id)
-     VALUES ($1, $2, $3, $4, $5, COALESCE($6, 'pro')::schedule_category, $7)
+    `INSERT INTO schedule_block (week_id, date, start_time, end_time, label, category, project_id, measures)
+     VALUES ($1, $2, $3, $4, $5, COALESCE($6, 'pro')::schedule_category, $7, $8::jsonb)
      RETURNING *`,
-    [weekId, input.date, input.start_time, input.end_time, input.label, input.category ?? null, input.project_id ?? null]
+    [weekId, input.date, input.start_time, input.end_time, input.label, input.category ?? null, input.project_id ?? null,
+     JSON.stringify(input.measures ?? [])]
   )
   return result.rows[0]
 }
@@ -197,7 +222,15 @@ export async function updateBlock(id: string, input: UpdateBlockInput): Promise<
          end_time   = COALESCE($4, end_time),
          label      = COALESCE($5, label),
          category   = COALESCE($6::schedule_category, category),
-         project_id = CASE WHEN $7::boolean THEN $8 ELSE project_id END
+         project_id = CASE WHEN $7::boolean THEN $8 ELSE project_id END,
+         measures   = COALESCE($9::jsonb, measures),
+         -- Une mesure retirée emporte sa valeur : sinon elle resterait en base,
+         -- invisible à l'écran mais comptée dans les totaux.
+         measure_values = CASE WHEN $9::jsonb IS NULL THEN measure_values ELSE (
+           SELECT COALESCE(jsonb_object_agg(v.key, v.value), '{}'::jsonb)
+           FROM jsonb_each(measure_values) v
+           WHERE EXISTS (SELECT 1 FROM jsonb_array_elements($9::jsonb) m WHERE m ->> 'label' = v.key)
+         ) END
      WHERE id = $1
      RETURNING *`,
     [
@@ -205,6 +238,7 @@ export async function updateBlock(id: string, input: UpdateBlockInput): Promise<
       input.date ?? null, input.start_time ?? null, input.end_time ?? null, input.label ?? null,
       input.category ?? null,
       'project_id' in input, input.project_id ?? null,
+      input.measures ? JSON.stringify(input.measures) : null,
     ]
   )
   return result.rows[0]
@@ -225,14 +259,18 @@ export async function setBlockStatus(
   id: string,
   organizationId: string,
   status: ScheduleBlockStatus,
-  actualMinutes: number | null
+  actualMinutes: number | null,
+  note: string | null,
+  measureValues: MeasureValues
 ): Promise<ScheduleBlock> {
   const client = await db.connect()
   try {
     await client.query('BEGIN')
     const result = await client.query<ScheduleBlock>(
-      `UPDATE schedule_block SET status = $2, actual_minutes = $3 WHERE id = $1 RETURNING *`,
-      [id, status, actualMinutes]
+      `UPDATE schedule_block
+       SET status = $2, actual_minutes = $3, note = $4, measure_values = $5::jsonb
+       WHERE id = $1 RETURNING *`,
+      [id, status, actualMinutes, note, JSON.stringify(measureValues)]
     )
     const block = result.rows[0]
 

@@ -3,6 +3,7 @@ import * as weeks from '@/db/datamappers/schedule-week.datamapper'
 import { findAppointments } from '@/db/datamappers/appointment.datamapper'
 import { findProjectById } from '@/db/datamappers/project.datamapper'
 import { findContactById } from '@/db/datamappers/contact.datamapper'
+import { findCrmDailyActivity } from '@/db/datamappers/stats.datamapper'
 import { toMinutes } from './schedule.schema'
 import type { Appointment, ScheduleOwner, WeekView } from './schedule.types'
 
@@ -75,10 +76,14 @@ function findConflicts(
  * figer sur un modèle qui aura changé d'ici là.
  */
 export async function buildWeekView(owner: ScheduleOwner, weekStart: string): Promise<WeekView> {
-  const [week, appointments, publicHolidays] = await Promise.all([
+  const weekEnd = addDays(weekStart, 6)
+  const [week, appointments, publicHolidays, crmActivity] = await Promise.all([
     weeks.findWeekByStart(owner, weekStart),
-    findAppointments(owner, { from: weekStart, to: addDays(weekStart, 6) }),
+    findAppointments(owner, { from: weekStart, to: weekEnd }),
     weeks.findPublicHolidays(weekStart),
+    // Le CRM est commun au workspace : l'activité n'est pas filtrée par utilisateur
+    // (une interaction ne porte pas encore son auteur).
+    findCrmDailyActivity(owner.organizationId, weekStart, weekEnd),
   ])
 
   if (week) {
@@ -93,6 +98,7 @@ export async function buildWeekView(owner: ScheduleOwner, weekStart: string): Pr
       appointments,
       public_holidays: publicHolidays,
       conflicts: findConflicts(blocks.map((b) => ({ ...b, key: b.id })), appointments),
+      crm_activity: crmActivity,
     }
   }
 
@@ -116,5 +122,6 @@ export async function buildWeekView(owner: ScheduleOwner, weekStart: string): Pr
       projected.map((b) => ({ ...b, key: `${b.template_block_id}:${b.date}` })),
       appointments
     ),
+    crm_activity: crmActivity,
   }
 }

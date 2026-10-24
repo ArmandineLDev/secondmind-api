@@ -1,8 +1,19 @@
+import type { CrmDailyActivity } from '@/features/stats/stats.types'
+
 export type ScheduleCategory     = 'pro' | 'perso'
 export type SchedulePeriodRule   = 'always' | 'school_days' | 'school_holidays'
 export type ScheduleBlockStatus  = 'planned' | 'done' | 'partial' | 'skipped'
 export type ScheduleDayOffReason = 'public_holiday' | 'personal'
 export type AppointmentStatus    = 'planned' | 'done' | 'cancelled'
+
+/** Mesure facultative saisie au bilan (« Contacts », nombre). Libellé unique dans un créneau. */
+export interface ScheduleMeasure {
+  label: string
+  type: 'number' | 'text'
+  unit: string | null
+}
+
+export type MeasureValues = Record<string, number | string>
 
 export interface ScheduleTemplateBlock {
   id: string
@@ -15,6 +26,7 @@ export interface ScheduleTemplateBlock {
   category: ScheduleCategory
   project_id: string | null
   period_rule: SchedulePeriodRule
+  measures: ScheduleMeasure[]
   created_at: Date
   updated_at: Date
 }
@@ -61,6 +73,9 @@ export interface ScheduleBlock {
   project_id: string | null
   status: ScheduleBlockStatus
   actual_minutes: number | null
+  measures: ScheduleMeasure[]
+  measure_values: MeasureValues
+  note: string | null
   created_at: Date
   updated_at: Date
 }
@@ -74,6 +89,7 @@ export interface ProjectedBlock {
   label: string
   category: ScheduleCategory
   project_id: string | null
+  measures: ScheduleMeasure[]
 }
 
 export interface AppointmentTemplate {
@@ -139,6 +155,8 @@ export interface WeekView {
   appointments: Appointment[]
   public_holidays: PublicHoliday[]
   conflicts: string[]
+  /** Activité du CRM sur la semaine (workspace entier), jours sans échange absents. */
+  crm_activity: CrmDailyActivity[]
 }
 
 /** Une semaine appartient à un utilisateur DANS un workspace : toute requête filtre sur les deux. */

@@ -25,6 +25,8 @@ export async function scheduleRoutes(fastify: FastifyInstance) {
   fastify.get('/schedule/weeks/:weekStart', auth,          week.getWeek)
   fastify.post('/schedule/weeks', auth,                    week.createWeek)
   fastify.post('/schedule/weeks/:id/reapply-template', auth, week.reapplyTemplate)
+  // Annuler la préparation : la semaine redevient une projection (refusé après un bilan).
+  fastify.delete('/schedule/weeks/:id', auth,              week.cancelWeek)
   fastify.put('/schedule/weeks/:id/review', auth,          week.updateReview)
   fastify.put('/schedule/weeks/:id/days/:date', auth,      week.setDayOff)
   fastify.post('/schedule/weeks/:id/blocks', auth,         week.createBlock)

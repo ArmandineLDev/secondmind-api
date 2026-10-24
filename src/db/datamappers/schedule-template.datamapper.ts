@@ -26,14 +26,15 @@ export async function createTemplateBlock(
 ): Promise<ScheduleTemplateBlock> {
   const result = await db.query<ScheduleTemplateBlock>(
     `INSERT INTO schedule_template_block
-       (organization_id, user_id, weekday, start_time, end_time, label, category, project_id, period_rule)
+       (organization_id, user_id, weekday, start_time, end_time, label, category, project_id, period_rule, measures)
      VALUES ($1, $2, $3, $4, $5, $6, COALESCE($7, 'pro')::schedule_category, $8,
-             COALESCE($9, 'always')::schedule_period_rule)
+             COALESCE($9, 'always')::schedule_period_rule, $10::jsonb)
      RETURNING *`,
     [
       owner.organizationId, owner.userId,
       input.weekday, input.start_time, input.end_time, input.label,
       input.category ?? null, input.project_id ?? null, input.period_rule ?? null,
+      JSON.stringify(input.measures ?? []),
     ]
   )
   return result.rows[0]
@@ -52,7 +53,8 @@ export async function updateTemplateBlock(
          label       = COALESCE($7, label),
          category    = COALESCE($8::schedule_category, category),
          period_rule = COALESCE($9::schedule_period_rule, period_rule),
-         project_id  = CASE WHEN $10::boolean THEN $11 ELSE project_id END
+         project_id  = CASE WHEN $10::boolean THEN $11 ELSE project_id END,
+         measures    = COALESCE($12::jsonb, measures)
      WHERE id = $1 AND organization_id = $2 AND user_id = $3
      RETURNING *`,
     [
@@ -60,6 +62,7 @@ export async function updateTemplateBlock(
       input.weekday ?? null, input.start_time ?? null, input.end_time ?? null, input.label ?? null,
       input.category ?? null, input.period_rule ?? null,
       'project_id' in input, input.project_id ?? null,
+      input.measures ? JSON.stringify(input.measures) : null,
     ]
   )
   return result.rows[0] ?? null
